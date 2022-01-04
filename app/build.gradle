@@ -1,8 +1,12 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
 }
-
+//Properties를 선언하고 local.properties에 새로 등록된 api_key값을 load하여
+//BuildConfig에 저장
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
 android {
     compileSdk 31
 
@@ -14,6 +18,15 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField "String","OPEN_WEATHER_API_KEY", properties['open_weather_api_key']
+    }
+    //뷰바인딩
+    viewBinding {
+        enabled = true
+    }
+    //데이터 바인딩
+    dataBinding {
+        enabled = true
     }
 
     buildTypes {
@@ -33,11 +46,25 @@ android {
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.3.2'
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.google.android.material:material:1.3.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    testImplementation 'junit:junit:4.+'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.4.0'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
+
+    //retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    //room library
+    implementation("androidx.room:room-runtime:2.4.0")
+    //gms
+    implementation 'com.google.android.gms:play-services-location:19.0.0'
+
+    testImplementation 'junit:junit:'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    //room annotation
+    annotationProcessor("androidx.room:room-compiler:2.4.0")
+    //annotationProcessor to kapt
+    kapt("androidx.room:room-compiler:2.4.0")
 }
