@@ -8,5 +8,8 @@ data class WeatherModel(
     val main : String,
     //날씨 정보
     @SerializedName("description")
-    val description : String
+    val description : String,
+    //날씨 정보 아이콘
+    @SerializedName("icon")
+    val icon : String
 )
