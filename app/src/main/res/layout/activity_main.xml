@@ -6,9 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".view.MainActivity">
 
-    <fragment
+    <!--name : NavHost 구현의 클래스 이름-->
+    <!--navGraph : 앱에서 이동할 수 있는 모든 플로우를 보여주고 앱 내의 Fragment를 한눈에 확인 할 수 있는 xml 리소스-->
+    <!--defaultNavHost : true 속성을 지정하면 Navigation에 맞게 동작-->
+
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_fragment"
-        android:name="com.example.myweather.view.WeatherFragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"

@@ -11,7 +11,7 @@ interface FavoriteDao {
     @Query("SELECT * FROM favorite")
     fun getAll():List<Favorite>
     //즐겨찾기한 특정 지역 좌표 가져오는 쿼리
-    @Query("SELECT :id FROm favorite")
+    @Query("SELECT * FROM favorite WHERE id == :id")
     fun getFavoriteInfo(id : Int) : Favorite
     //즐겨찾기 추가하는 쿼리
     @Insert

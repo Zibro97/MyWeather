@@ -2,72 +2,23 @@ package com.example.myweather.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import androidx.room.Room
-import com.example.myweather.AppDatabase
-import com.example.myweather.api.WeatherService
-import com.example.myweather.databinding.ActivityMainBinding
-import com.example.myweather.model.Favorite
-import com.example.myweather.model.WeatherDTO
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
+import com.example.myweather.R
 
 class MainActivity : AppCompatActivity() {
-    //바인딩 클래스
-    private lateinit var binding: ActivityMainBinding
-    //db
-    private lateinit var db : AppDatabase
+
+    private lateinit var navController : NavController
+    private lateinit var navFragment : NavHostFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
+        setContentView(R.layout.activity_main)
 
-        //db생성
-        db = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java,
-            "WeatherDB"
-        ).build()
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://api.openweathermap.org")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        val weatherService = retrofit.create(WeatherService::class.java)
-
-        weatherService.getWeather(37.41664127743908, 126.88485337117136)
-            .enqueue(object : Callback<WeatherDTO>{
-                override fun onResponse(call: Call<WeatherDTO>, response: Response<WeatherDTO>) {
-                    // TODO: 성공처리
-                    if(response.isSuccessful.not()){
-                        Log.e(TAG, "Response is Empty")
-                        return
-                    }
-                    response.body()?.let {
-                        Log.d(TAG, it.toString())
-                        binding.weather = it
-                    }
-                }
-
-                override fun onFailure(call: Call<WeatherDTO>, t: Throwable) {
-                    // TODO: 실패처리
-                    Log.e(TAG, t.toString() )
-                }
-
-            })
-
-    }
-    fun saveFavortie(){
-        Thread{
-            db.favoriteDao().insertFavorite(Favorite(1,1.0,1.0))
-        }.start()
-    }
-    companion object{
-        private const val TAG = "MainActivity"
+        //NavHostFragment는 개별적으로 NavController를 가짐
+        navFragment = supportFragmentManager.findFragmentById(R.id.nav_fragment) as NavHostFragment
+        //navigation_graph 정보를 바탕으로 네비게이션 간 이동을 담당하는 navigation을 찾음
+        navController = navFragment.findNavController()
     }
 }
