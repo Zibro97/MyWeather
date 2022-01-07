@@ -8,7 +8,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.myweather.R
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var navController : NavController
     private lateinit var navFragment : NavHostFragment
 
