@@ -6,7 +6,7 @@
     app:startDestination="@id/weatherContainer">
     <fragment
         android:id="@+id/weatherContainer"
-        android:name="com.example.myweather.view.WeatherFragment"
+        android:name="com.example.myweather.view.fragment.WeatherFragment"
         android:label="fragment_weather"
         tools:layout="@layout/fragment_weather"
         >
@@ -17,7 +17,7 @@
     </fragment>
     <fragment
         android:id="@+id/favoriteContainer"
-        android:name="com.example.myweather.view.FavoriteFragment"
+        android:name="com.example.myweather.view.fragment.FavoriteFragment"
         android:label="fragment_favorite"
         tools:layout="@layout/fragment_favorite"
         >

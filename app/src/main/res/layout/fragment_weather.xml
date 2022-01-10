@@ -119,10 +119,11 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/hourly_rv"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="100dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/houly_weather_tv"
+                        tools:listitem="@layout/item_hourly"
                         />
                 </androidx.constraintlayout.widget.ConstraintLayout>
                 <androidx.constraintlayout.widget.ConstraintLayout
