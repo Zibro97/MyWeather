@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">My Weather</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="favorite">favorite</string>
     <string name="weather">광명시</string>
     <string name="hourly_weather_textview">시간별 일기예보</string>

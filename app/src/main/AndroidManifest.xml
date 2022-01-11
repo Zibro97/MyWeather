@@ -5,8 +5,9 @@
 
     <!--api통신하기 위한 인터넷 사용 권한 -->
     <uses-permission android:name="android.permission.INTERNET"/>
-    <!--사용자 위치 받아 오기 위한 권한-->
+    <!--COARSE를 요청할때 제공되는 위치보다 더 정확한 위치 제공-->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <!--도시 블록 내에 위치 정확성을 제공하도록하는 권한-->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application

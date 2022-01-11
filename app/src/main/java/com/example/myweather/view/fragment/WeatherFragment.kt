@@ -1,12 +1,20 @@
 package com.example.myweather.view.fragment
 
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
+import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
+import android.os.Looper
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.HorizontalScrollView
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -14,16 +22,26 @@ import com.example.myweather.R
 import com.example.myweather.databinding.FragmentWeatherBinding
 import com.example.myweather.model.HourlyWeatherModel
 import com.example.myweather.view.adapter.HourlyAdapter
+import com.example.myweather.viewmodel.WeatherViewModel
+import com.google.android.gms.location.*
+import java.util.jar.Manifest
 
 class WeatherFragment : Fragment() {
-    private lateinit var binding : FragmentWeatherBinding
-    private lateinit var hourlyAdapter : HourlyAdapter
-    private val hourlyList = mutableListOf<HourlyWeatherModel>()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
+    companion object{
+        private val PERMISSIONS = arrayOf(
+            ACCESS_FINE_LOCATION,
+            ACCESS_COARSE_LOCATION)
     }
+    //데이터 바인딩을 위한 바인딩 객체
+    private lateinit var binding : FragmentWeatherBinding
+    //매 시각 날씨 RecyclerView에 붙일 Adapter
+    private lateinit var hourlyAdapter : HourlyAdapter
+    //매 시각 날씨 RecyclerView에 들어갈 데이터 List
+    private val hourlyList = mutableListOf<HourlyWeatherModel>()
+    //WeatherViewModel
+    private val viewModel : WeatherViewModel by viewModels()
+    //현재 위치를 가져오기 위한 변수
+    private lateinit var fusedLocationClient : FusedLocationProviderClient
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,6 +56,8 @@ class WeatherFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        getLocation()
+        //viewModel.getWeather()
         bindingRecyclerView()
         setBackground()
     }
@@ -65,5 +85,20 @@ class WeatherFragment : Fragment() {
             .load(R.drawable.ic_rain_background)
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
             .into(binding.weatherBackground)
+    }
+
+    //사용자 위치 받아오기
+    private fun getLocation(){
+        if(ActivityCompat.checkSelfPermission(
+                requireContext(),ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(requireContext(),ACCESS_FINE_LOCATION) !=PackageManager.PERMISSION_GRANTED){
+            return
+        }
+        var currentLocation : Location?
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location->
+                currentLocation = location
+                Log.d("TAG", "getLocation: $currentLocation")
+            }
     }
 }
