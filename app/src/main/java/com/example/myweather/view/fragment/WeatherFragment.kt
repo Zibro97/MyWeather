@@ -79,12 +79,12 @@ class WeatherFragment : Fragment() {
         //.into() : 이미지를 보여줄 View를 지정하는 합수
         //.diskCacheStrategy(): 디스크에 캐싱하지 않으려면 DiskCacheStrategy.NONE 사용
         //.fitCenter() : 실제 이미지가 이미지뷰의 사이즈와 다를 때, 이미지와 이미지뷰의 중간을 맞춰서 이미지 크기를 스케일링하는 함수
-        Glide.with(this)
+       /* Glide.with(this)
             .asGif()
             .fitCenter()
-            .load(R.drawable.ic_rain_background)
+            .load(R.drawable.ic_cloudy_background)
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            .into(binding.weatherBackground)
+            .into(binding.rootLayout)*/
     }
 
     //사용자 위치 받아오기
