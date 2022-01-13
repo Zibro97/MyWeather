@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../layout/custom_preview.xml" value="0.30648148148148147" />
+        <entry key="app/src/main/res/drawable/background_bottom_navigation.xml" value="0.11296296296296296" />
         <entry key="app/src/main/res/drawable/btm_navigation_color.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_cardview_background.xml" value="0.23697916666666666" />
         <entry key="app/src/main/res/drawable/ic_daily_weather.xml" value="0.30648148148148147" />

@@ -3,6 +3,6 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="favorite">favorite</string>
     <string name="weather">광명시</string>
-    <string name="hourly_weather_textview">시간별 일기예보</string>
-    <string name="daily_weather_textview">일주일간 일기예보</string>
+    <string name="hourly_weather_textview"> 시간별 일기예보</string>
+    <string name="daily_weather_textview"> 일주일간 일기예보</string>
 </resources>

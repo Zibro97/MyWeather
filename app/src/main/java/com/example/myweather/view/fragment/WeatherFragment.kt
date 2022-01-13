@@ -2,6 +2,7 @@ package com.example.myweather.view.fragment
 
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
@@ -19,19 +20,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.myweather.R
+import com.example.myweather.RetrofitClient
 import com.example.myweather.databinding.FragmentWeatherBinding
 import com.example.myweather.model.HourlyWeatherModel
+import com.example.myweather.model.WeatherDTO
+import com.example.myweather.view.MainActivity
 import com.example.myweather.view.adapter.HourlyAdapter
 import com.example.myweather.viewmodel.WeatherViewModel
 import com.google.android.gms.location.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.jar.Manifest
 
 class WeatherFragment : Fragment() {
-    companion object{
-        private val PERMISSIONS = arrayOf(
-            ACCESS_FINE_LOCATION,
-            ACCESS_COARSE_LOCATION)
-    }
     //데이터 바인딩을 위한 바인딩 객체
     private lateinit var binding : FragmentWeatherBinding
     //매 시각 날씨 RecyclerView에 붙일 Adapter
@@ -41,7 +43,26 @@ class WeatherFragment : Fragment() {
     //WeatherViewModel
     private val viewModel : WeatherViewModel by viewModels()
     //현재 위치를 가져오기 위한 변수
-    private lateinit var fusedLocationClient : FusedLocationProviderClient
+    private var fusedLocationClient : FusedLocationProviderClient? =null
+    //장치 위치가 변경되었거나 더 이상 확인할 수 없는 경우 알림을 수신하기 위한 콜백객체
+    private lateinit var locationCallback : LocationCallback
+    //Fragment는 Context를 갖지 않으므로 Context를 참조할 변수
+    private lateinit var mActivity:MainActivity
+    private val permissionResult = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()){ permissions ->
+        val granted = permissions.entries.all {
+            it.value == true
+        }
+        if(granted){
+            getLocation()
+        }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        //프래그먼트가 액티비티에 붙을때 Context를 액티비티로 형변환해서 할당
+        mActivity = activity as MainActivity
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,13 +77,14 @@ class WeatherFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        getLocation()
-        //viewModel.getWeather()
+        requestPermission()
         bindingRecyclerView()
         setBackground()
     }
 
+    //RecyclerView Settings
     private fun bindingRecyclerView() {
+        //Adapter 객체 초기화
         hourlyAdapter = HourlyAdapter()
         //RecyclerView가 어떻게 그려질 것인지 정의
         binding.hourlyRv.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
@@ -79,26 +101,81 @@ class WeatherFragment : Fragment() {
         //.into() : 이미지를 보여줄 View를 지정하는 합수
         //.diskCacheStrategy(): 디스크에 캐싱하지 않으려면 DiskCacheStrategy.NONE 사용
         //.fitCenter() : 실제 이미지가 이미지뷰의 사이즈와 다를 때, 이미지와 이미지뷰의 중간을 맞춰서 이미지 크기를 스케일링하는 함수
-       /* Glide.with(this)
+        Glide.with(this)
             .asGif()
             .fitCenter()
             .load(R.drawable.ic_cloudy_background)
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            .into(binding.rootLayout)*/
+            .into(binding.weatherBackground)
+    }
+    //위치 권한 요청
+    private fun requestPermission(){
+        permissionResult.launch(arrayOf(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION))
     }
 
     //사용자 위치 받아오기
     private fun getLocation(){
-        if(ActivityCompat.checkSelfPermission(
-                requireContext(),ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(requireContext(),ACCESS_FINE_LOCATION) !=PackageManager.PERMISSION_GRANTED){
-            return
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(mActivity)
+        //apply : 수신 객체의 함수를 사용하지 않고 수신 객체 자신을 다시 반환하려는 경우 사용
+        val locationRequest = LocationRequest.create().apply {
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            interval = 20 * 1000 //20초
         }
-        var currentLocation : Location?
-        fusedLocationClient.lastLocation
-            .addOnSuccessListener { location->
-                currentLocation = location
-                Log.d("TAG", "getLocation: $currentLocation")
+
+        locationCallback = object : LocationCallback(){
+            override fun onLocationResult(locationResult: LocationResult) {
+                //locationResult가 없으면 return
+                locationResult ?: return
+                for(location in locationResult.locations){
+                    location?.let { location->
+                        getWeather(latitude = location.latitude,longitude = location.longitude)
+                    }
+                }
             }
+        }
+        fusedLocationClient?.let { fusedLocationClient->
+            if (ActivityCompat.checkSelfPermission(mActivity, ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mActivity, ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED)
+                {
+                    //위치 권한이 없다면 권한 요청
+                    requestPermission()
+                    return
+            }
+            fusedLocationClient.requestLocationUpdates(locationRequest,locationCallback,Looper.getMainLooper())
+        }
+    }
+    private fun getWeather(latitude:Double,longitude :Double){
+        val retrofit = RetrofitClient.weatherService
+
+        retrofit.getWeather(latitude,longitude).enqueue(object : Callback<WeatherDTO>{
+            //통신 성공 시
+            override fun onResponse(call: Call<WeatherDTO>, response: Response<WeatherDTO>) {
+                if(response.isSuccessful){
+                    response.body()?.let {
+                        hourlyAdapter.submitList(it.hourly)
+                    }
+                }
+            }
+            //통신 실패 시
+            override fun onFailure(call: Call<WeatherDTO>, t: Throwable) {
+                Log.e("getWeather()", t.toString())
+            }
+        })
+    }
+
+    override fun onPause() {
+        super.onPause()
+        stopLocationUpdates()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        requestPermission()
+    }
+
+    private fun stopLocationUpdates(){
+        //Callback 등록 해제 : 앱이 종료되거나 백그라운드로 변경될 시 더 이상 위치 정보를 받을 필요 없어 콜백 등록 해제
+        fusedLocationClient?.let { locationCallback }
     }
 }

@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <!--COARSE를 요청할때 제공되는 위치보다 더 정확한 위치 제공-->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <!--도시 블록 내에 위치 정확성을 제공하도록하는 권한-->
+    <!--도시 블록 내의 정밀도의 위치 정보을 제공하도록하는 권한-->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
@@ -17,6 +17,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyWeather"
+        android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup">
         <activity
             android:name=".view.MainActivity"
