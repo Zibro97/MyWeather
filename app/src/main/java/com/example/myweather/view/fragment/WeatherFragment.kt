@@ -4,10 +4,8 @@ import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.Context
 import android.content.pm.PackageManager
-import android.location.Location
 import android.os.Bundle
 import android.os.Looper
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,30 +14,22 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.myweather.R
-import com.example.myweather.RetrofitClient
 import com.example.myweather.databinding.FragmentWeatherBinding
-import com.example.myweather.model.HourlyWeatherModel
-import com.example.myweather.model.WeatherDTO
 import com.example.myweather.view.MainActivity
 import com.example.myweather.view.adapter.HourlyAdapter
 import com.example.myweather.viewmodel.WeatherViewModel
 import com.google.android.gms.location.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.util.jar.Manifest
 
 class WeatherFragment : Fragment() {
     //데이터 바인딩을 위한 바인딩 객체
     private lateinit var binding : FragmentWeatherBinding
     //매 시각 날씨 RecyclerView에 붙일 Adapter
     private lateinit var hourlyAdapter : HourlyAdapter
-    //매 시각 날씨 RecyclerView에 들어갈 데이터 List
-    private val hourlyList = mutableListOf<HourlyWeatherModel>()
     //WeatherViewModel
     private val viewModel : WeatherViewModel by viewModels()
     //현재 위치를 가져오기 위한 변수
@@ -68,7 +58,7 @@ class WeatherFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_weather, container, false)
         return binding.root
@@ -146,20 +136,10 @@ class WeatherFragment : Fragment() {
         }
     }
     private fun getWeather(latitude:Double,longitude :Double){
-        val retrofit = RetrofitClient.weatherService
-
-        retrofit.getWeather(latitude,longitude).enqueue(object : Callback<WeatherDTO>{
-            //통신 성공 시
-            override fun onResponse(call: Call<WeatherDTO>, response: Response<WeatherDTO>) {
-                if(response.isSuccessful){
-                    response.body()?.let {
-                        hourlyAdapter.submitList(it.hourly)
-                    }
-                }
-            }
-            //통신 실패 시
-            override fun onFailure(call: Call<WeatherDTO>, t: Throwable) {
-                Log.e("getWeather()", t.toString())
+        viewModel.getWeather(latitude = latitude,longitude = longitude)
+        viewModel.weatherLiveData.observe(viewLifecycleOwner, Observer { weather ->
+            weather?.let {
+                hourlyAdapter.submitList(it.hourly)
             }
         })
     }

@@ -32,7 +32,7 @@
             app:layout_constraintTop_toBottomOf="@id/datetime_hourly_weather"
             app:layout_constraintBottom_toTopOf="@id/temp_hourly_weather"
             app:imageFromGlide="@{weather.icon}"
-            />
+            android:contentDescription="@string/description_hourly_icon" />
         <TextView
             android:id="@+id/temp_hourly_weather"
             android:layout_width="wrap_content"
