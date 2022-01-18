@@ -10,11 +10,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
+import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -24,6 +28,7 @@ import com.example.myweather.view.MainActivity
 import com.example.myweather.view.adapter.HourlyAdapter
 import com.example.myweather.viewmodel.WeatherViewModel
 import com.google.android.gms.location.*
+import kotlin.math.roundToInt
 
 class WeatherFragment : Fragment() {
     //데이터 바인딩을 위한 바인딩 객체
@@ -38,6 +43,8 @@ class WeatherFragment : Fragment() {
     private lateinit var locationCallback : LocationCallback
     //Fragment는 Context를 갖지 않으므로 Context를 참조할 변수
     private lateinit var mActivity:MainActivity
+    //navigation Controller
+    private lateinit var navController : NavController
     private val permissionResult = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()){ permissions ->
         val granted = permissions.entries.all {
@@ -66,10 +73,18 @@ class WeatherFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        navController = Navigation.findNavController(view)
 
         requestPermission()
+        initViews()
         bindingRecyclerView()
         setBackground()
+    }
+
+    private fun initViews() {
+        binding.favoriteListImageButton.setOnClickListener {
+            navController.navigate(R.id.action_weatherContainer_to_favoriteContainer)
+        }
     }
 
     //RecyclerView Settings
@@ -137,7 +152,11 @@ class WeatherFragment : Fragment() {
     }
     private fun getWeather(latitude:Double,longitude :Double){
         viewModel.getWeather(latitude = latitude,longitude = longitude)
-        viewModel.weatherLiveData.observe(viewLifecycleOwner, Observer { weather ->
+        viewModel.weatherLiveData.observe(this, Observer { weather ->
+            binding.weatherDTO = weather
+            binding.dailyModel = weather.daily.first()
+            binding.weatherModel =weather.current.weather.first()
+            binding.invalidateAll()
             weather?.let {
                 hourlyAdapter.submitList(it.hourly)
             }
@@ -157,5 +176,20 @@ class WeatherFragment : Fragment() {
     private fun stopLocationUpdates(){
         //Callback 등록 해제 : 앱이 종료되거나 백그라운드로 변경될 시 더 이상 위치 정보를 받을 필요 없어 콜백 등록 해제
         fusedLocationClient?.let { locationCallback }
+    }
+
+    companion object{
+        //temp_textview 뒤에 °붙이기 위한 함수
+        @BindingAdapter("setMaxTempFormat")
+        @JvmStatic
+        fun setMaxTempFormat(view: TextView, temp:Double){
+            view.text = "최고 : ${temp.roundToInt()}°"
+        }
+        //temp_textview 뒤에 °붙이기 위한 함수
+        @BindingAdapter("setMinTempFormat")
+        @JvmStatic
+        fun setMinTempFormat(view: TextView, temp:Double){
+            view.text = "최저 : ${temp.roundToInt()}°"
+        }
     }
 }

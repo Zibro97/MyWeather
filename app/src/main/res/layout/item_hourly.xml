@@ -1,48 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <data>
+
         <variable
             name="hourly"
             type="com.example.myweather.model.HourlyWeatherModel" />
+
         <variable
             name="weather"
             type="com.example.myweather.model.WeatherModel" />
     </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="50dp"
         android:layout_height="100dp">
+
         <TextView
             android:id="@+id/datetime_hourly_weather"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:timeToDate="@{hourly.dt}"
             android:textColor="@color/white"
-            />
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:timeToDate="@{hourly.dt}" />
+
         <ImageView
             android:id="@+id/icon_hourly_weather"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/datetime_hourly_weather"
-            app:layout_constraintBottom_toTopOf="@id/temp_hourly_weather"
+            android:contentDescription="@string/description_hourly_icon"
             app:imageFromGlide="@{weather.icon}"
-            android:contentDescription="@string/description_hourly_icon" />
+            app:layout_constraintBottom_toTopOf="@id/temp_hourly_weather"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/datetime_hourly_weather" />
+
         <TextView
             android:id="@+id/temp_hourly_weather"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/icon_hourly_weather"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:setTempFormat="@{hourly.temp}"
             android:textColor="@color/white"
-            />
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/icon_hourly_weather"
+            app:setTempFormat="@{hourly.temp}" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

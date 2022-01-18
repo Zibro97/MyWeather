@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="8dp"
-    app:cardCornerRadius="5dp"
+    app:cardCornerRadius="8dp"
     app:cardElevation="10dp"
     >
     <ImageView
@@ -34,7 +34,7 @@
                     android:id="@+id/item_title_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:text="나의 위치"
+                    tools:text="관심지역 명"
                     android:textStyle="bold"
                     android:textSize="20sp"
                     android:textColor="@color/white"
@@ -43,7 +43,7 @@
                     android:id="@+id/country_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:text="광명시"
+                    tools:text="지역 명"
                     android:textColor="@color/gray_97"
                     android:textSize="15sp"
                     />
@@ -52,7 +52,7 @@
                 android:id="@+id/current_temp_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="-6°"
+                tools:text="온도°"
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 android:textSize="50sp"
@@ -68,7 +68,7 @@
                 android:layout_weight="8"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                tools:text="내일의 최고 기온은 4°로 그다지 춥지 않음"
+                tools:text="날씨 정보"
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:singleLine="true"
@@ -78,7 +78,8 @@
                 android:id="@+id/max_min_temp_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="최고:1° 최저:-13°"
+                tools:text="최고 최저 온도"
+                android:textColor="@color/white"
                 />
         </LinearLayout>
     </LinearLayout>

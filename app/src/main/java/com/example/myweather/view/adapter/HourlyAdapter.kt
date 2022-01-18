@@ -15,6 +15,7 @@ import com.example.myweather.databinding.ItemHourlyBinding
 import com.example.myweather.model.HourlyWeatherModel
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.roundToInt
 
 class HourlyAdapter : ListAdapter<HourlyWeatherModel,HourlyAdapter.ViewHolder>(diffUtil) {
 
@@ -63,16 +64,16 @@ class HourlyAdapter : ListAdapter<HourlyWeatherModel,HourlyAdapter.ViewHolder>(d
         @BindingAdapter("setTempFormat")
         @JvmStatic
         fun setTempFormat(view:TextView,temp:Double){
-            view.text = "$temp°"
+            view.text = "${temp.roundToInt()}°"
         }
-        val diffUtil = object : DiffUtil.ItemCallback<HourlyWeatherModel>(){
+        private val diffUtil = object : DiffUtil.ItemCallback<HourlyWeatherModel>(){
             //이미 있는 Item인지 체크
             override fun areItemsTheSame(oldItem: HourlyWeatherModel, newItem: HourlyWeatherModel): Boolean {
                 return oldItem == newItem
             }
             //같은 내용의 Item이 있는지 체크
             override fun areContentsTheSame(oldItem: HourlyWeatherModel, newItem: HourlyWeatherModel): Boolean {
-                return oldItem.dt == newItem.dt
+                return oldItem == newItem
             }
 
         }

@@ -9,6 +9,19 @@
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
     <color name="transparent_10">#26000000</color>
+
+    <!--gray-->
     <color name="gray_97">#b9b9c3</color>
     <color name="gray_aa">#222124</color>
+    <color name="gray300">#E0E0E0</color>
+    <color name="gray500">#9E9E9E</color>
+    <color name="gray600">#757575</color>
+    <color name="gray700">#616161</color>
+
+
+    <color name="blue_center">#37aafa</color>
+    <color name="blue_left">#1496fa</color>
+    <color name="blue_right">#4bbefa</color>
+
+
 </resources>

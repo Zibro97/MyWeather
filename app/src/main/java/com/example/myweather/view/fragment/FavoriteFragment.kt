@@ -7,13 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myweather.R
 import com.example.myweather.databinding.FragmentFavoriteBinding
+import com.example.myweather.getAppDatabase
+import com.example.myweather.model.Favorite
+import com.example.myweather.view.adapter.FavoriteAdapter
 
 class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
 
     private lateinit var binding : FragmentFavoriteBinding
-
+    private lateinit var adapter : FavoriteAdapter
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_favorite,container,false)
         return binding.root
@@ -22,6 +26,7 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //우측 상단의 설정 버튼 클릭시 팝업 메뉴 띄우기
         binding.settingsImageButton.setOnClickListener{
             val popup = PopupMenu(context,binding.settingsImageButton)
 
@@ -29,5 +34,32 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
             inf.inflate(R.menu.menu_settings,popup.menu)
             popup.show()
         }
+        initRecyclerView()
     }
+
+    private fun initRecyclerView() {
+        adapter = FavoriteAdapter()
+        binding.favoriteRecyclerView.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
+        binding.favoriteRecyclerView.adapter = adapter
+    }
+    // TODO: db에서 관심지역 가져오기
+    //db에서 모든 관심지역 가져오는 함수
+    private fun getFavorite(){
+        Thread(Runnable {
+            context?.let { context->
+                adapter.submitList(getAppDatabase(context).favoriteDao().getAll())
+            }
+        })
+    }
+
+    // TODO: 관심지역 추가 버튼 클릭시 event
+    //db에 관심 지역 추가
+    private fun insertFavorite(){
+        Thread(Runnable{
+            context?.let { context->
+                getAppDatabase(context).favoriteDao().insertFavorite(Favorite(null,37.123,128.1231234))
+            }
+        }).start()
+    }
+
 }

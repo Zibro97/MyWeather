@@ -24,7 +24,7 @@ class FavoriteAdapter: ListAdapter<Favorite, FavoriteAdapter.ViewHolder>(diffUti
     }
 
     companion object{
-        val diffUtil = object : DiffUtil.ItemCallback<Favorite>() {
+        private val diffUtil = object : DiffUtil.ItemCallback<Favorite>() {
             override fun areItemsTheSame(oldItem: Favorite, newItem: Favorite): Boolean {
                 return oldItem.id == newItem.id
             }

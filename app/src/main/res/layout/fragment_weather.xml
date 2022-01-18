@@ -1,193 +1,254 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+    xmlns:tools="http://schemas.android.com/tools">
+
     <data>
+
         <variable
-            name="weather"
+            name="weatherDTO"
             type="com.example.myweather.model.WeatherDTO" />
 
+        <variable
+            name="weatherModel"
+            type="com.example.myweather.model.WeatherModel" />
+
+        <variable
+            name="dailyModel"
+            type="com.example.myweather.model.DailyWeatherModel" />
     </data>
     <!-- TODO : 상단에 지역,현재 온도,최저최고온도,날씨 부분은 MotionLayout으로 변경하기-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
+
         <ImageView
             android:id="@+id/weather_background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:scaleType="fitXY"
             android:background="@drawable/ic_cloudy_background"
-            android:contentDescription="@string/decription_fragment_backgournd_image_view" />
+            android:contentDescription="@string/decription_fragment_backgournd_image_view"
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <ScrollView
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/bottom_navigation_view"
-            app:layout_constraintTop_toTopOf="parent"
-            >
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                >
+                android:layout_height="0dp">
+
                 <TextView
                     android:id="@+id/city_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="50dp"
                     android:text="@string/weather"
                     android:textColor="@color/white"
                     android:textSize="30sp"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:layout_marginTop="50dp"
-                    />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
                 <TextView
                     android:id="@+id/temp_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/city_tv"
-                    tools:text="-7°"
-                    android:textSize="80sp"
+                    setTempFormat="@{weatherDTO.current.temp}"
                     android:textColor="@color/white"
-                    />
+                    android:textSize="80sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/city_tv"
+                    tools:text="-7°" />
+
                 <TextView
                     android:id="@+id/weather_destination_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/temp_tv"
-                    tools:text="청명함"
+                    android:text="@{weatherModel.description}"
                     android:textColor="@color/white"
                     android:textSize="15sp"
-                    />
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/temp_tv"
+                    tools:text="청명함" />
+
                 <TextView
                     android:id="@+id/max_temp_tv"
+                    setMaxTempFormat="@{dailyModel.temp.maxTemp}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="1dp"
                     android:textColor="@color/white"
-                    tools:text="최고:2°"
-                    app:layout_constraintTop_toBottomOf="@+id/weather_destination_tv"
-                    app:layout_constraintStart_toStartOf="parent"
+                    android:textStyle="bold"
                     app:layout_constraintEnd_toStartOf="@id/min_temp_tv"
                     app:layout_constraintHorizontal_chainStyle="packed"
-                    android:layout_marginEnd="1dp"
-                    />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/weather_destination_tv"
+                    tools:text="최고:2°" />
+
                 <TextView
                     android:id="@+id/min_temp_tv"
+                    setMinTempFormat="@{dailyModel.temp.minTemp}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="1dp"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/max_temp_tv"
                     app:layout_constraintTop_toBottomOf="@id/weather_destination_tv"
-                    tools:text="최저:-8°"
-                    android:textColor="@color/white"
-                    android:layout_marginStart="1dp"
-                    />
+                    tools:text="최저:-8°" />
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/hourly_container"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/max_temp_tv"
-                    android:background="@drawable/ic_cardview_background"
                     android:layout_margin="16dp"
+                    android:background="@drawable/ic_cardview_background"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/max_temp_tv"
                     >
+                    <View
+                        android:id="@+id/divider_hourly"
+                        android:layout_width="0dp"
+                        android:layout_height="0.1dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/houly_weather_tv"
+                        app:layout_constraintBottom_toTopOf="@id/hourly_rv"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:background="@color/gray500"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginVertical="8dp"
+                        />
                     <TextView
                         android:id="@+id/houly_weather_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/white"
+                        android:layout_marginStart="8dp"
                         android:text="@string/hourly_weather_textview"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        app:drawableStartCompat="@drawable/ic_time_24"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        android:layout_marginStart="8dp"
-                        app:drawableStartCompat="@drawable/ic_time_24" />
+                        android:layout_marginTop="8dp"
+                        />
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/hourly_rv"
                         android:layout_width="0dp"
                         android:layout_height="100dp"
-                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/houly_weather_tv"
-                        tools:listitem="@layout/item_hourly"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/divider_hourly"
                         />
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/hourly_container"
-                    android:background="@drawable/ic_cardview_background"
                     android:layout_margin="16dp"
-                    >
+                    android:background="@drawable/ic_cardview_background"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/hourly_container">
+                    <View
+                        android:id="@+id/divider_daily"
+                        android:layout_width="0dp"
+                        android:layout_height="0.1dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/daily_weather_tv"
+                        app:layout_constraintBottom_toTopOf="@id/daily_rv"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:background="@color/gray500"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginVertical="8dp"
+                        />
                     <TextView
                         android:id="@+id/daily_weather_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/white"
+                        android:layout_marginStart="8dp"
                         android:text="@string/daily_weather_textview"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        app:drawableStartCompat="@drawable/ic_daily_weather"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        android:layout_marginStart="5dp"
-                        app:drawableStartCompat="@drawable/ic_daily_weather" />
+                        app:layout_constraintBottom_toTopOf="@id/divider_daily"
+                        android:layout_marginTop="8dp"
+                        />
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/daily_rv"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/daily_weather_tv"
-                        />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/hourly_container"
-                    android:background="@drawable/ic_cardview_background"
-                    android:layout_margin="16dp"
-                    >
-                    <TextView
-                        android:id="@+id/sunrise_weather_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/white"
-                        android:text="@string/daily_weather_textview"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:layout_marginStart="5dp"
-                        app:drawableStartCompat="@drawable/ic_daily_weather" />
+                        app:layout_constraintTop_toBottomOf="@id/divider_daily"
+                        />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
 
-        <com.google.android.material.bottomnavigation.BottomNavigationView
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/bottom_navigation_view"
             android:layout_width="0dp"
-            android:layout_height="40dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_height="?attr/actionBarSize"
             android:background="@drawable/background_bottom_navigation"
-            app:menu="@menu/menu_item"
-            app:labelVisibilityMode="unlabeled"
-            app:itemIconTint="@color/white"
-            />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageButton
+                android:id="@+id/weather_map_image_button"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/ic_map_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/current_weather_image_button"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/ic_current_weather"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/favorite_list_image_button"
+                app:layout_constraintStart_toEndOf="@id/current_weather_image_button"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/favorite_list_image_button"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/ic_favorite_list"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

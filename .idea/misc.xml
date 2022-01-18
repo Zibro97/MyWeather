@@ -6,6 +6,8 @@
         <entry key="../../../../layout/custom_preview.xml" value="0.30648148148148147" />
         <entry key="app/src/main/res/drawable/background_bottom_navigation.xml" value="0.11296296296296296" />
         <entry key="app/src/main/res/drawable/btm_navigation_color.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/daily_seek_background.xml" value="0.3787037037037037" />
+        <entry key="app/src/main/res/drawable/daily_seek_thumb.xml" value="0.3787037037037037" />
         <entry key="app/src/main/res/drawable/ic_background_search_view.xml" value="0.4046875" />
         <entry key="app/src/main/res/drawable/ic_baseline_more_horiz_24.xml" value="0.4046875" />
         <entry key="app/src/main/res/drawable/ic_baseline_panorama_fish_eye_24.xml" value="0.4046875" />
@@ -20,9 +22,10 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.3198090692124105" />
         <entry key="app/src/main/res/layout/fragment_blank.xml" value="0.3619791666666667" />
         <entry key="app/src/main/res/layout/fragment_favorite.xml" value="0.29085872576177285" />
-        <entry key="app/src/main/res/layout/fragment_weather.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_weather.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/item_daily.xml" value="0.9" />
         <entry key="app/src/main/res/layout/item_favorite.xml" value="0.375" />
-        <entry key="app/src/main/res/layout/item_hourly.xml" value="0.37604166666666666" />
+        <entry key="app/src/main/res/layout/item_hourly.xml" value="0.18" />
         <entry key="app/src/main/res/layout/menu_item.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/menu/menu_item.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/menu/menu_settings.xml" value="0.3885416666666667" />
