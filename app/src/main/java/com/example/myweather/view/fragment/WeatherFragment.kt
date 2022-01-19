@@ -2,10 +2,12 @@ package com.example.myweather.view.fragment
 
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Looper
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +18,6 @@ import androidx.core.app.ActivityCompat
 import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,6 +26,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.myweather.R
 import com.example.myweather.databinding.FragmentWeatherBinding
 import com.example.myweather.view.MainActivity
+import com.example.myweather.view.adapter.DailyAdapter
 import com.example.myweather.view.adapter.HourlyAdapter
 import com.example.myweather.viewmodel.WeatherViewModel
 import com.google.android.gms.location.*
@@ -35,6 +37,7 @@ class WeatherFragment : Fragment() {
     private lateinit var binding : FragmentWeatherBinding
     //매 시각 날씨 RecyclerView에 붙일 Adapter
     private lateinit var hourlyAdapter : HourlyAdapter
+    private lateinit var dailyAdapter : DailyAdapter
     //WeatherViewModel
     private val viewModel : WeatherViewModel by viewModels()
     //현재 위치를 가져오기 위한 변수
@@ -91,10 +94,13 @@ class WeatherFragment : Fragment() {
     private fun bindingRecyclerView() {
         //Adapter 객체 초기화
         hourlyAdapter = HourlyAdapter()
+        dailyAdapter = DailyAdapter()
         //RecyclerView가 어떻게 그려질 것인지 정의
         binding.hourlyRv.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
+        binding.dailyRv.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
         //RecyclerView Adapter 연결
         binding.hourlyRv.adapter = hourlyAdapter
+        binding.dailyRv.adapter = dailyAdapter
     }
 
     //날씨에 따라 배경 gif를 설정
@@ -124,16 +130,14 @@ class WeatherFragment : Fragment() {
         //apply : 수신 객체의 함수를 사용하지 않고 수신 객체 자신을 다시 반환하려는 경우 사용
         val locationRequest = LocationRequest.create().apply {
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            interval = 20 * 1000 //20초
+            interval = 60 * 1000 //1분
         }
 
         locationCallback = object : LocationCallback(){
             override fun onLocationResult(locationResult: LocationResult) {
-                //locationResult가 없으면 return
-                locationResult ?: return
                 for(location in locationResult.locations){
-                    location?.let { location->
-                        getWeather(latitude = location.latitude,longitude = location.longitude)
+                    location?.let { currentLocation->
+                        getWeather(latitude = currentLocation.latitude,longitude = currentLocation.longitude)
                     }
                 }
             }
@@ -152,13 +156,15 @@ class WeatherFragment : Fragment() {
     }
     private fun getWeather(latitude:Double,longitude :Double){
         viewModel.getWeather(latitude = latitude,longitude = longitude)
-        viewModel.weatherLiveData.observe(this, Observer { weather ->
+        viewModel.weatherLiveData.observe(this, { weather ->
             binding.weatherDTO = weather
             binding.dailyModel = weather.daily.first()
             binding.weatherModel =weather.current.weather.first()
             binding.invalidateAll()
             weather?.let {
+                Log.d("TAG", "getWeather: ${it.daily}")
                 hourlyAdapter.submitList(it.hourly)
+                dailyAdapter.submitList(it.daily)
             }
         })
     }
@@ -180,12 +186,14 @@ class WeatherFragment : Fragment() {
 
     companion object{
         //temp_textview 뒤에 °붙이기 위한 함수
+        @SuppressLint("SetTextI18n")
         @BindingAdapter("setMaxTempFormat")
         @JvmStatic
         fun setMaxTempFormat(view: TextView, temp:Double){
             view.text = "최고 : ${temp.roundToInt()}°"
         }
         //temp_textview 뒤에 °붙이기 위한 함수
+        @SuppressLint("SetTextI18n")
         @BindingAdapter("setMinTempFormat")
         @JvmStatic
         fun setMinTempFormat(view: TextView, temp:Double){

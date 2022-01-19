@@ -1,16 +1,31 @@
 package com.example.myweather.view.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.myweather.databinding.ItemDailyBinding
 import com.example.myweather.model.DailyWeatherModel
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.math.roundToInt
 
 class DailyAdapter:ListAdapter<DailyWeatherModel,DailyAdapter.ViewHolder>(diffUtil) {
     inner class ViewHolder(private val binding: ItemDailyBinding):RecyclerView.ViewHolder(binding.root){
+        @SuppressLint("SetTextI18n")
         fun bind(item : DailyWeatherModel){
+            val simpleDataFormat = SimpleDateFormat("E", Locale.KOREA)
+            binding.dailyItemDayTv.text = simpleDataFormat.format(item.dt * 1000L)
+            binding.dailyItemMaxTempTv.text = item.temp.maxTemp.roundToInt().toString()+"°"
+            binding.dailyItemMinTempTv.text =item.temp.minTemp.roundToInt().toString()+"°"
+
+            val iconUrl = "http://openweathermap.org/img/wn/${item.weather.first().icon}@2x.png"
+            Glide.with(binding.root)
+                .load(iconUrl)
+                .into(binding.dailyItemWeatherIconIv)
         }
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DailyAdapter.ViewHolder {

@@ -12,4 +12,10 @@
     <string name="decription_fragment_backgournd_image_view">fragment_backgournd_image_view</string>
     <string name="edit_list_popup_menu">목록 편집</string>
     <string name="notification_popup_menu">알림</string>
+    <string name="sunrise_text">일출</string>
+    <string name="wind_text">바람</string>
+    <string name="feel_temp_text">체감 온도</string>
+    <string name="humidity_text">습도</string>
+    <string name="visibility_text">가시거리</string>
+    <string name="snow_rain_text">적설량</string>
 </resources>
