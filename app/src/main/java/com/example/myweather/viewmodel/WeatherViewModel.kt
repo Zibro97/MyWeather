@@ -1,15 +1,11 @@
 package com.example.myweather.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.myweather.RetrofitClient
+import com.example.myweather.util.RetrofitClient
 import com.example.myweather.model.WeatherDTO
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class WeatherViewModel:ViewModel() {
     private val service = RetrofitClient.weatherService
@@ -24,7 +20,7 @@ class WeatherViewModel:ViewModel() {
         //CouroutineScope는 하나 이상의 코루틴을 관리
         //launch : 코루틴을 만들고 함수 본문의 실행을 해당하는 디스패처에 전달하는 함수
         viewModelScope.launch {
-            val jsonArray = service.getWeather(latitude,longitude)
+            val jsonArray = service.getWeather(latitude = latitude,longitude = longitude)
             weatherLiveData.value = jsonArray
         }
     }

@@ -10,14 +10,19 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myweather.R
 import com.example.myweather.databinding.FragmentFavoriteBinding
-import com.example.myweather.getAppDatabase
 import com.example.myweather.model.Favorite
+import com.example.myweather.util.DatabaseProvider
 import com.example.myweather.view.adapter.FavoriteAdapter
 
 class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
 
     private lateinit var binding : FragmentFavoriteBinding
     private lateinit var adapter : FavoriteAdapter
+    private val favoriteDao by lazy {
+        context?.let{ context->
+            DatabaseProvider.getAppDatabase(context).favoriteDao()
+        }
+    }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_favorite,container,false)
         return binding.root
@@ -47,7 +52,7 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
     private fun getFavorite(){
         Thread(Runnable {
             context?.let { context->
-                adapter.submitList(getAppDatabase(context).favoriteDao().getAll())
+                //adapter.submitList(getAppDatabase(context).favoriteDao().getAll())
             }
         })
     }
@@ -57,7 +62,7 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
     private fun insertFavorite(){
         Thread(Runnable{
             context?.let { context->
-                getAppDatabase(context).favoriteDao().insertFavorite(Favorite(null,37.123,128.1231234))
+                //.insertFavorite(Favorite(null,37.123,128.1231234))
             }
         }).start()
     }

@@ -1,12 +1,12 @@
 package com.example.myweather.view.fragment
 
-import android.Manifest.permission.ACCESS_COARSE_LOCATION
-import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.*
+import android.os.Build
 import android.os.Bundle
-import android.os.Looper
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
@@ -29,8 +30,9 @@ import com.example.myweather.view.MainActivity
 import com.example.myweather.view.adapter.DailyAdapter
 import com.example.myweather.view.adapter.HourlyAdapter
 import com.example.myweather.viewmodel.WeatherViewModel
-import com.google.android.gms.location.*
+import java.util.*
 import kotlin.math.roundToInt
+import kotlin.system.exitProcess
 
 class WeatherFragment : Fragment() {
     //데이터 바인딩을 위한 바인딩 객체
@@ -40,21 +42,26 @@ class WeatherFragment : Fragment() {
     private lateinit var dailyAdapter : DailyAdapter
     //WeatherViewModel
     private val viewModel : WeatherViewModel by viewModels()
-    //현재 위치를 가져오기 위한 변수
-    private var fusedLocationClient : FusedLocationProviderClient? =null
-    //장치 위치가 변경되었거나 더 이상 확인할 수 없는 경우 알림을 수신하기 위한 콜백객체
-    private lateinit var locationCallback : LocationCallback
     //Fragment는 Context를 갖지 않으므로 Context를 참조할 변수
     private lateinit var mActivity:MainActivity
     //navigation Controller
     private lateinit var navController : NavController
-    private val permissionResult = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()){ permissions ->
-        val granted = permissions.entries.all {
-            it.value == true
-        }
-        if(granted){
-            getLocation()
+    //locationManager
+    private var locationManager:LocationManager? =null
+    private var locationListener:LocationListener? =null
+    //위치 권한
+    private val locationPermissionRequest = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            when {
+                permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
+                    getLocation()
+                }
+                else -> {
+                    requestPermission()
+                }
+            }
         }
     }
 
@@ -119,44 +126,10 @@ class WeatherFragment : Fragment() {
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
             .into(binding.weatherBackground)
     }
-    //위치 권한 요청
-    private fun requestPermission(){
-        permissionResult.launch(arrayOf(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION))
-    }
-
-    //사용자 위치 받아오기
-    private fun getLocation(){
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(mActivity)
-        //apply : 수신 객체의 함수를 사용하지 않고 수신 객체 자신을 다시 반환하려는 경우 사용
-        val locationRequest = LocationRequest.create().apply {
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            interval = 60 * 1000 //1분
-        }
-
-        locationCallback = object : LocationCallback(){
-            override fun onLocationResult(locationResult: LocationResult) {
-                for(location in locationResult.locations){
-                    location?.let { currentLocation->
-                        getWeather(latitude = currentLocation.latitude,longitude = currentLocation.longitude)
-                    }
-                }
-            }
-        }
-        fusedLocationClient?.let { fusedLocationClient->
-            if (ActivityCompat.checkSelfPermission(mActivity, ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mActivity, ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED)
-                {
-                    //위치 권한이 없다면 권한 요청
-                    requestPermission()
-                    return
-            }
-            fusedLocationClient.requestLocationUpdates(locationRequest,locationCallback,Looper.getMainLooper())
-        }
-    }
+    //날씨 받아오는 함수
     private fun getWeather(latitude:Double,longitude :Double){
         viewModel.getWeather(latitude = latitude,longitude = longitude)
-        viewModel.weatherLiveData.observe(this, { weather ->
+        viewModel.weatherLiveData.observe(viewLifecycleOwner, { weather ->
             binding.weatherDTO = weather
             binding.dailyModel = weather.daily.first()
             binding.weatherModel =weather.current.weather.first()
@@ -174,14 +147,77 @@ class WeatherFragment : Fragment() {
         stopLocationUpdates()
     }
 
-    override fun onResume() {
-        super.onResume()
-        requestPermission()
-    }
-
     private fun stopLocationUpdates(){
         //Callback 등록 해제 : 앱이 종료되거나 백그라운드로 변경될 시 더 이상 위치 정보를 받을 필요 없어 콜백 등록 해제
-        fusedLocationClient?.let { locationCallback }
+        locationManager?.let {locationManager->
+            locationListener?.let { locationListener->
+                locationManager.removeUpdates(locationListener)
+            }
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun getLocation(){
+        //listener 생성
+        locationListener = LocationListener { location ->
+            Log.d("TAG", "getLocation: $location")
+            getWeather(latitude = location.latitude,longitude = location.longitude)
+        }
+        locationManager?.let { locationManager->
+            locationListener?.let { locationListener->
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                    10000,//10s interval
+                    10.0f,
+                    locationListener
+                    )
+            }
+        }
+    }
+    //위치 권한 요청
+    private fun requestPermission(){
+        when {
+            //위치 권한 승인 시
+            ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_COARSE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED -> {
+                getLocation()
+            }
+            //사용자가 권한 요청을 명시적으로 거부한 경우 true를 반환
+            shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)||
+                    shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION) -> {
+                //교육용 팝업
+                showPermissionContextPopup()
+            }
+            //권한 거부
+            else -> {
+                locationPermissionRequest.launch(arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION))
+            }
+        }
+    }
+    //교육용 팝업
+    private fun showPermissionContextPopup(){
+        AlertDialog.Builder(mActivity)
+            .setTitle("위치 권한이 필요합니다.")
+            .setMessage("My Weather 앱에서 현위치의 날씨를 가져오기위해 권한이 필요합니다.")
+            .setPositiveButton("동의하기"){_,_->
+                locationPermissionRequest.launch(arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION))
+            }
+            .setNegativeButton("취소하기"){_,_->
+                //취소 버튼 클릭 시 앱 종료
+                exitProcess(0)
+            }
+            .create()
+            .show()
+    }
+    //주소로 변환
+    private fun getAddress(lat:Double,lng:Double) :String {
+        // TODO: 2022/01/21 locationManager에 있는 Geocoder를 통해 주소로 변환
+        return ""
     }
 
     companion object{

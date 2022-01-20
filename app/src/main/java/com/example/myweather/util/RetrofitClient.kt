@@ -1,17 +1,17 @@
-package com.example.myweather
+package com.example.myweather.util
 
-import com.example.myweather.api.WeatherService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
     private const val BASE_URL = "https://api.openweathermap.org"
 
-    private val weatherRetrofit by lazy{
-        Retrofit.Builder()
+    val weatherService:WeatherService by lazy{ weatherRetrofit().create(WeatherService::class.java)}
+
+    private fun weatherRetrofit():Retrofit{
+        return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
-    val weatherService = weatherRetrofit.create(WeatherService::class.java)
 }

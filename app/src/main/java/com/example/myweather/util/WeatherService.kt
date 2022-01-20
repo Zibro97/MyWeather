@@ -1,8 +1,7 @@
-package com.example.myweather.api
+package com.example.myweather.util
 
 import com.example.myweather.BuildConfig
 import com.example.myweather.model.WeatherDTO
-import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
 

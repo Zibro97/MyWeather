@@ -165,18 +165,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/hourly_layout">
 
-                    <View
-                        android:id="@+id/divider_daily"
-                        android:layout_width="0dp"
-                        android:layout_height="0.1dp"
-                        android:layout_marginHorizontal="16dp"
-                        android:layout_marginVertical="8dp"
-                        android:background="@color/gray500"
-                        app:layout_constraintBottom_toTopOf="@id/daily_rv"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/daily_weather_tv" />
-
                     <TextView
                         android:id="@+id/daily_weather_tv"
                         android:layout_width="wrap_content"
@@ -188,7 +176,7 @@
                         android:textSize="15sp"
                         android:textStyle="bold"
                         app:drawableStartCompat="@drawable/ic_daily_weather"
-                        app:layout_constraintBottom_toTopOf="@id/divider_daily"
+                        app:layout_constraintBottom_toTopOf="@id/daily_rv"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -198,7 +186,7 @@
                         android:layout_height="wrap_content"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/divider_daily" />
+                        app:layout_constraintTop_toBottomOf="@id/daily_weather_tv" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
