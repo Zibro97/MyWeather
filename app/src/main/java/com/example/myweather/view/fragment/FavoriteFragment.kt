@@ -6,17 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myweather.R
 import com.example.myweather.databinding.FragmentFavoriteBinding
-import com.example.myweather.model.Favorite
 import com.example.myweather.util.DatabaseProvider
 import com.example.myweather.view.adapter.FavoriteAdapter
 
 class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
 
-    private lateinit var binding : FragmentFavoriteBinding
+    private var _binding : FragmentFavoriteBinding? = null
+    private val binding get() = _binding!!
     private lateinit var adapter : FavoriteAdapter
     private val favoriteDao by lazy {
         context?.let{ context->
@@ -24,7 +23,7 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
         }
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(inflater,R.layout.fragment_favorite,container,false)
+        _binding = FragmentFavoriteBinding.inflate(inflater,container,false)
         return binding.root
     }
 

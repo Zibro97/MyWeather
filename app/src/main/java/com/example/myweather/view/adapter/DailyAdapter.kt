@@ -19,8 +19,8 @@ class DailyAdapter:ListAdapter<DailyWeatherModel,DailyAdapter.ViewHolder>(diffUt
         fun bind(item : DailyWeatherModel){
             val simpleDataFormat = SimpleDateFormat("E", Locale.KOREA)
             binding.dailyItemDayTv.text = simpleDataFormat.format(item.dt * 1000L)
-            binding.dailyItemMaxTempTv.text = item.temp.maxTemp.roundToInt().toString()+"°"
-            binding.dailyItemMinTempTv.text =item.temp.minTemp.roundToInt().toString()+"°"
+            binding.dailyItemMaxTempTv.text = "${item.temp.maxTemp.roundToInt()}°"
+            binding.dailyItemMinTempTv.text ="${item.temp.minTemp.roundToInt()}°"
 
             val iconUrl = "http://openweathermap.org/img/wn/${item.weather.first().icon}@2x.png"
             Glide.with(binding.root)

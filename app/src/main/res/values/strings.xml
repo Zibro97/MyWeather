@@ -2,7 +2,6 @@
     <string name="app_name">My Weather</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="favorite">날씨</string>
-    <string name="weather">광명시</string>
     <string name="hourly_weather_textview"> 시간별 일기예보</string>
     <string name="daily_weather_textview"> 일주일간 일기예보</string>
     <string name="toolbar_text">날씨</string>
@@ -18,4 +17,8 @@
     <string name="humidity_text">습도</string>
     <string name="visibility_text">가시거리</string>
     <string name="snow_rain_text">적설량</string>
+    <string name="to_favorite_fragment_button">to_favorite_fragment_button</string>
+    <string name="to_weather_fragment_button">to_weather_fragment_button</string>
+    <string name="to_map_button">to_map_button</string>
+    <string name="error_text_view">예기치 못한 문제가 발생했습니다.\n잠시 후 다시 시도해주세요.</string>
 </resources>
