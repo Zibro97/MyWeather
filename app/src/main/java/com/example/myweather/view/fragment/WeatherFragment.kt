@@ -37,7 +37,6 @@ import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.coroutines.CoroutineContext
-import kotlin.math.ln
 import kotlin.math.roundToInt
 import kotlin.system.exitProcess
 
@@ -100,9 +99,9 @@ class WeatherFragment : Fragment(),CoroutineScope {
         navController = Navigation.findNavController(view)
 
         requestPermission()
-        bindingRecyclerView()
         initViews()
         setBackground()
+        bindingRecyclerView()
     }
 
     private fun initViews() {
@@ -116,9 +115,9 @@ class WeatherFragment : Fragment(),CoroutineScope {
             }
             //scrollview와 refreshlayout을 동시에 쓰기 위해서
             //scrollview의 scroll y축이 0, 즉 최상단에 위치했을 때만 refreshLayout을 활성화하도록함
-            scrollView.viewTreeObserver.addOnScrollChangedListener {
-                refreshLayout.isEnabled = scrollView.scrollY ==0
-            }
+            //scrollView.viewTreeObserver.addOnScrollChangedListener {
+            //    refreshLayout.isEnabled = scrollView.scrollY ==0
+            //}
         }
     }
 
@@ -185,9 +184,11 @@ class WeatherFragment : Fragment(),CoroutineScope {
                     getAddress(lat = location.latitude, lng = location.longitude)
                 }
             }catch (exception:Exception){
+                //예외 발생시 에러 경고문구 보여주고, 다른 뷰들은 alpha값 0처리
                 binding.errorDescriptionTextView.visibility = View.VISIBLE
                 binding.contentsLayout.alpha = 0F
             }finally {
+                //데이터가 불러와진 상태 progressBar의 visible값을 gone,refresh 상태를 false로 변경
                 binding.progressBar.visibility = View.GONE
                 binding.refreshLayout.isRefreshing = false
             }
@@ -260,7 +261,7 @@ class WeatherFragment : Fragment(),CoroutineScope {
             windTimeTextView.text = "${weather.current.windSpeed.roundToInt()}m/s"
             realFeelTempTextView.text = "${weather.current.feelsLike.roundToInt()}°"
             realHumidityTextView.text = "${weather.current.humidity}%"
-            dewPointTextView.text = "현재 이슬점이 ${weather.current.dewPoint}°입니다."
+            dewPointTextView.text = "현재 이슬점이 ${weather.current.dewPoint.roundToInt()}°입니다."
             realVisibilityTextView.text = "${weather.current.visibility/1000}KM"
             realSnowRainTextView.text = "${weather.current.snow}MM"
         }
