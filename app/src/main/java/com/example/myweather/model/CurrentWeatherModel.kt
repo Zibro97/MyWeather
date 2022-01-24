@@ -31,12 +31,12 @@ data class CurrentWeatherModel(
     //풍향
     @SerializedName("wind_deg")
     val windDeg : Double,
-    //강우량(비가 올 경우)
+    /*//강우량(비가 올 경우)
     @SerializedName("rain")
     val rain : Int,
     //적설량(눈 올 경우)
     @SerializedName("snow")
-    val snow:Int,
+    val snow:Int,*/
     //날씨
     @SerializedName("weather")
     val weather : List<WeatherModel>

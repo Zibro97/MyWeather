@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <Transition
+        motion:constraintSetEnd="@+id/end"
+        motion:constraintSetStart="@id/start"
+        motion:duration="1000">
+
+        <OnSwipe
+            motion:dragDirection="dragUp"
+            motion:touchAnchorId="@id/city_tv"
+            motion:touchAnchorSide="bottom"
+            />
+       <KeyFrameSet>
+
+       </KeyFrameSet>
+    </Transition>
+
+    <ConstraintSet android:id="@+id/start">
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/end">
+        <Constraint
+            android:id="@+id/city_tv"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="30dp" />
+        <Constraint
+            android:id="@+id/temp_tv"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            motion:layout_constraintTop_toBottomOf="@+id/city_tv"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:alpha="0"
+            />
+        <Constraint
+            android:id="@+id/weather_destination_tv"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            motion:layout_constraintTop_toBottomOf="@id/temp_tv"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:alpha="0"
+            />
+        <Constraint
+            android:id="@+id/max_temp_tv"
+            motion:layout_constraintEnd_toStartOf="@id/min_temp_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="1dp"
+            motion:layout_constraintHorizontal_chainStyle="packed"
+            motion:layout_constraintTop_toBottomOf="@+id/weather_destination_tv"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:alpha="0"
+            />
+        <Constraint
+            android:id="@+id/min_temp_tv"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toEndOf="@id/max_temp_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            motion:layout_constraintTop_toBottomOf="@id/weather_destination_tv"
+            android:layout_marginStart="1dp"
+            android:alpha="0"
+            />
+    </ConstraintSet>
+</MotionScene>

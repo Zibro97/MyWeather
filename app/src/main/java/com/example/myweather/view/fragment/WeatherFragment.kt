@@ -115,9 +115,9 @@ class WeatherFragment : Fragment(),CoroutineScope {
             }
             //scrollview와 refreshlayout을 동시에 쓰기 위해서
             //scrollview의 scroll y축이 0, 즉 최상단에 위치했을 때만 refreshLayout을 활성화하도록함
-            //scrollView.viewTreeObserver.addOnScrollChangedListener {
-            //    refreshLayout.isEnabled = scrollView.scrollY ==0
-            //}
+            scrollView.viewTreeObserver.addOnScrollChangedListener {
+                refreshLayout.isEnabled = scrollView.scrollY ==0
+            }
         }
     }
 
@@ -263,7 +263,7 @@ class WeatherFragment : Fragment(),CoroutineScope {
             realHumidityTextView.text = "${weather.current.humidity}%"
             dewPointTextView.text = "현재 이슬점이 ${weather.current.dewPoint.roundToInt()}°입니다."
             realVisibilityTextView.text = "${weather.current.visibility/1000}KM"
-            realSnowRainTextView.text = "${weather.current.snow}MM"
+            //realSnowRainTextView.text = "${weather.current.snow}MM"
         }
         binding.contentsLayout.animate()
             .alpha(1.0F)

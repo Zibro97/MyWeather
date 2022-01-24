@@ -29,7 +29,7 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.3198090692124105" />
         <entry key="app/src/main/res/layout/fragment_blank.xml" value="0.3619791666666667" />
         <entry key="app/src/main/res/layout/fragment_favorite.xml" value="0.29085872576177285" />
-        <entry key="app/src/main/res/layout/fragment_weather.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/fragment_weather.xml" value="0.1" />
         <entry key="app/src/main/res/layout/item_daily.xml" value="0.21" />
         <entry key="app/src/main/res/layout/item_favorite.xml" value="0.375" />
         <entry key="app/src/main/res/layout/item_hourly.xml" value="0.18" />
