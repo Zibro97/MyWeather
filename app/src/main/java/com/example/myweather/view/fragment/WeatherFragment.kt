@@ -1,9 +1,9 @@
 package com.example.myweather.view.fragment
 
-import android.Manifest.permission.ACCESS_COARSE_LOCATION
-import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.Manifest.permission.*
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.os.Build
@@ -212,9 +212,12 @@ class WeatherFragment : Fragment(),CoroutineScope {
             }
             //권한 거부
             else -> {
-                locationPermissionRequest.launch(arrayOf(
-                    ACCESS_FINE_LOCATION,
-                    ACCESS_COARSE_LOCATION))
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+                    locationPermissionRequest.launch(arrayOf(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION))
+                    backgroundPermissionPopup()
+                }else{
+                    locationPermissionRequest.launch(arrayOf(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION))
+                }
             }
         }
     }
@@ -230,6 +233,27 @@ class WeatherFragment : Fragment(),CoroutineScope {
                 else
                     address[0].locality
         }
+    }
+    //백그라운드 위치 권한 요청
+    //Android 11이상 부터는 위치 권한 항상 허용 옵션이 포함되지 않아서
+    //포그라운드 위치권한과 백그라운드 위치 권한을 동시에 요청하면 시스템이 요청을 무시하고 앱에 어떤 권한도 부여하지 않음
+    private fun backgroundPermission(){
+        ActivityCompat.requestPermissions(
+            mActivity,
+            arrayOf(
+                ACCESS_BACKGROUND_LOCATION
+            ),
+            2
+        )
+    }
+    //
+    private fun backgroundPermissionPopup(){
+        AlertDialog.Builder(mActivity)
+            .setTitle("위젯 사용 시 백그라운드 위치 권한을 위해 항상 허용으로 설정해주세요.")
+            .setPositiveButton("네"){ _,p1->
+                backgroundPermission()
+            }
+            .setNegativeButton("아니오"){_,_-> }
     }
     //교육용 팝업
     private fun showPermissionContextPopup(){
@@ -263,6 +287,7 @@ class WeatherFragment : Fragment(),CoroutineScope {
             realHumidityTextView.text = "${weather.current.humidity}%"
             dewPointTextView.text = "현재 이슬점이 ${weather.current.dewPoint.roundToInt()}°입니다."
             realVisibilityTextView.text = "${weather.current.visibility/1000}KM"
+            tempDestinationTv.text = "${weather.current.temp.roundToInt()}°|${weather.current.weather.first().description}"
             //realSnowRainTextView.text = "${weather.current.snow}MM"
         }
         binding.contentsLayout.animate()

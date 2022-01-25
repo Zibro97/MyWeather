@@ -9,12 +9,11 @@
         motion:duration="1000">
 
         <OnSwipe
-            motion:dragDirection="dragUp"
-            motion:touchAnchorId="@id/city_tv"
+            motion:dragDirection="dragDown"
+            motion:touchAnchorId="@id/scroll_view"
             motion:touchAnchorSide="bottom"
             />
        <KeyFrameSet>
-
        </KeyFrameSet>
     </Transition>
 
@@ -31,24 +30,6 @@
             motion:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="30dp" />
         <Constraint
-            android:id="@+id/temp_tv"
-            motion:layout_constraintEnd_toEndOf="parent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            motion:layout_constraintTop_toBottomOf="@+id/city_tv"
-            motion:layout_constraintStart_toStartOf="parent"
-            android:alpha="0"
-            />
-        <Constraint
-            android:id="@+id/weather_destination_tv"
-            motion:layout_constraintEnd_toEndOf="parent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            motion:layout_constraintTop_toBottomOf="@id/temp_tv"
-            motion:layout_constraintStart_toStartOf="parent"
-            android:alpha="0"
-            />
-        <Constraint
             android:id="@+id/max_temp_tv"
             motion:layout_constraintEnd_toStartOf="@id/min_temp_tv"
             android:layout_width="wrap_content"
@@ -57,7 +38,7 @@
             motion:layout_constraintHorizontal_chainStyle="packed"
             motion:layout_constraintTop_toBottomOf="@+id/weather_destination_tv"
             motion:layout_constraintStart_toStartOf="parent"
-            android:alpha="0"
+            android:visibility="gone"
             />
         <Constraint
             android:id="@+id/min_temp_tv"
@@ -67,7 +48,44 @@
             android:layout_height="wrap_content"
             motion:layout_constraintTop_toBottomOf="@id/weather_destination_tv"
             android:layout_marginStart="1dp"
-            android:alpha="0"
+            android:visibility="gone"
+            />
+        <Constraint
+            android:id="@+id/scroll_view"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintTop_toBottomOf="@id/temp_destination_tv"
+            motion:layout_constraintStart_toStartOf="parent"
+            />
+        <Constraint
+            android:id="@+id/weather_destination_tv"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            motion:layout_constraintTop_toBottomOf="@id/temp_tv"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:visibility="gone"
+            />
+        <Constraint
+            android:id="@+id/temp_tv"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            motion:layout_constraintTop_toBottomOf="@+id/city_tv"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:visibility="gone"
+            />
+        <Constraint
+            android:id="@+id/temp_destination_tv"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:visibility="visible"
+            android:alpha="1"
+            motion:layout_constraintTop_toBottomOf="@id/city_tv"
+            motion:layout_constraintStart_toStartOf="parent"
             />
     </ConstraintSet>
 </MotionScene>

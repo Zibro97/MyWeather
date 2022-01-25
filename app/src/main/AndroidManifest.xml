@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <!--도시 블록 내의 정밀도의 위치 정보을 제공하도록하는 권한-->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
 
     <application
         android:allowBackup="true"
@@ -29,6 +30,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!--앱 위젯을 제공 해달라는 요청을 받기위해 생성-->
+        <!--meta-data에 등록한 xml/widget_info에 정의된 정보를 바탕으로 날씨 정보 제공하겠다-->
+        <receiver android:name=".appwidget.WeatherWidgetProvider"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info"/>
+        </receiver>
     </application>
 
 </manifest>
