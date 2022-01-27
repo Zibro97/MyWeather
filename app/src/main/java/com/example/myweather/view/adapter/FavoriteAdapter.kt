@@ -7,11 +7,13 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myweather.databinding.ItemFavoriteBinding
 import com.example.myweather.model.Favorite
+import com.example.myweather.viewmodel.WeatherViewModel
 
 class FavoriteAdapter: ListAdapter<Favorite, FavoriteAdapter.ViewHolder>(diffUtil) {
     inner class ViewHolder(private val binding:ItemFavoriteBinding):RecyclerView.ViewHolder(binding.root){
         fun bind(item:Favorite){
-
+            binding.itemTitleTextView.text = item.location
+            binding.countryTextView.text = item.location
         }
     }
 

@@ -1,15 +1,19 @@
 package com.example.myweather.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myweather.model.Favorite
 import com.example.myweather.util.RetrofitClient
 import com.example.myweather.model.WeatherDTO
+import com.example.myweather.util.DatabaseProvider.getAppDatabase
 import kotlinx.coroutines.launch
 
 class WeatherViewModel:ViewModel() {
     private val service = RetrofitClient.weatherService
     val weatherLiveData:MutableLiveData<WeatherDTO> = MutableLiveData()
+    val favoriteLiveData:MutableLiveData<List<Favorite>> = MutableLiveData()
 
     //동작 과정
     //1. view에서 getWeather함수를 호출
@@ -22,6 +26,27 @@ class WeatherViewModel:ViewModel() {
         viewModelScope.launch {
             val jsonArray = service.getWeather(latitude = latitude,longitude = longitude)
             weatherLiveData.value = jsonArray
+        }
+    }
+
+    fun insertFavorite(context:Context,location:String,latitude: Double,longitude: Double){
+        viewModelScope.launch {
+            val favorite = Favorite(id = null,location = location,latitude = latitude,longitude = longitude)
+            getAppDatabase(context).favoriteDao().insertFavorite(favorite)
+        }
+    }
+
+    fun getAllFavorite(context: Context){
+        viewModelScope.launch {
+            val favorite = getAppDatabase(context).favoriteDao().getAll()
+            favoriteLiveData.value = favorite
+        }
+    }
+
+    fun updateCurrentLocation(context: Context,latitude: Double,longitude: Double){
+        viewModelScope.launch {
+            val favorite = Favorite(id = null,location = "나의 위치",latitude = latitude,longitude=longitude)
+            getAppDatabase(context).favoriteDao().updateCurrentLocation(favorite)
         }
     }
 }
