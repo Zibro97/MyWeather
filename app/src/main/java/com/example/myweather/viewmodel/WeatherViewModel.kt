@@ -1,6 +1,7 @@
 package com.example.myweather.viewmodel
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
