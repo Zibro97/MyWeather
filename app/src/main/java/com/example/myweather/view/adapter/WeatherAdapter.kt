@@ -1,23 +1,39 @@
 package com.example.myweather.view.adapter
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.location.Geocoder
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myweather.databinding.ItemWeatherBinding
 import com.example.myweather.model.WeatherDTO
+import com.example.myweather.viewmodel.WeatherViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 
-
+//ViewPager Adapter
 class WeatherAdapter(
-    private val weathers : List<WeatherDTO>
+    private val weathers : List<WeatherDTO>,
+    private val context : Context
 ): RecyclerView.Adapter<WeatherAdapter.ViewHolder>(){
     inner class ViewHolder(private val binding:ItemWeatherBinding):RecyclerView.ViewHolder(binding.root){
         @SuppressLint("SetTextI18n")
         fun bind(weather: WeatherDTO){
+            val hourlyAdapter = HourlyAdapter()
+            val dailyAdapter = DailyAdapter()
             with(binding){
+                //매 시각 날씨 예보 RecyclerView
+                hourlyRv.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
+                hourlyRv.adapter = hourlyAdapter
+                hourlyAdapter.submitList(weather.hourly)
+                //일주일간의 날씨 예보 RecyclerView
+                dailyRv.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
+                dailyRv.adapter = dailyAdapter
+                dailyAdapter.submitList(weather.daily)
+
                 tempTv.text = "${weather.current.temp.roundToInt()}°"
                 weatherDestinationTv.text = weather.current.weather.first().description
                 maxTempTv.text = "최고:${weather.daily.first().temp.maxTemp.roundToInt()}°"

@@ -37,7 +37,7 @@ class WeatherViewModel:ViewModel() {
         }
     }
 
-    fun getAllFavorite(context: Context){
+    fun getAllLocation(context: Context){
         viewModelScope.launch {
             val favorite = getAppDatabase(context).favoriteDao().getAll()
             favoriteLiveData.value = favorite
