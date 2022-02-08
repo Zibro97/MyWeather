@@ -13,10 +13,10 @@ interface FavoriteDao {
     suspend fun getAll():List<Favorite>
     //즐겨찾기한 특정 지역 좌표 가져오는 쿼리
     @Query("SELECT * FROM favorite WHERE id == :id")
-    suspend fun getFavoriteInfo(id : Int) : Favorite
+    suspend fun getLocationInfo(id : Int) : Favorite
     //즐겨찾기 추가하는 쿼리
     @Insert
-    suspend fun insertFavorite(favorite: Favorite)
+    suspend fun insertLocation(favorite: Favorite)
     //즐겨찾기 삭제하는 쿼리
     @Query("DELETE FROM favorite WHERE id == :id")
     suspend fun delete(id : Int)
@@ -25,5 +25,5 @@ interface FavoriteDao {
     suspend fun updateCurrentLocation(favorite:Favorite)
     //컬럼 개수 확인 하는 쿼리
     @Query("SELECT COUNT(*) FROM favorite")
-    suspend fun favoriteCnt() : Int
+    suspend fun locationCnt() : Int
 }

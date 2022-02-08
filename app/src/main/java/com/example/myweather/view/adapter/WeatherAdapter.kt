@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.myweather.R
 import com.example.myweather.databinding.ItemWeatherBinding
+import com.example.myweather.model.Favorite
 import com.example.myweather.model.WeatherDTO
 import com.example.myweather.viewmodel.WeatherViewModel
 import java.text.SimpleDateFormat
@@ -20,15 +21,17 @@ import kotlin.math.roundToInt
 //ViewPager Adapter
 class WeatherAdapter(
     private val weathers : List<WeatherDTO>,
+    private val favorites : List<Favorite>,
     private val context : Context
 ): RecyclerView.Adapter<WeatherAdapter.ViewHolder>(){
     inner class ViewHolder(private val binding:ItemWeatherBinding):RecyclerView.ViewHolder(binding.root){
         @SuppressLint("SetTextI18n")
-        fun bind(weather: WeatherDTO){
+        fun bind(weather: WeatherDTO,favorite:Favorite){
             val hourlyAdapter = HourlyAdapter()
             val dailyAdapter = DailyAdapter()
             with(binding){
                 //매 시각 날씨 예보 RecyclerView
+                cityTv.text = favorite.location
                 hourlyRv.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
                 hourlyRv.adapter = hourlyAdapter
                 hourlyAdapter.submitList(weather.hourly)
@@ -66,7 +69,7 @@ class WeatherAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(weathers[position])
+        holder.bind(weathers[position],favorites[position])
     }
 
     override fun getItemCount(): Int = weathers.size

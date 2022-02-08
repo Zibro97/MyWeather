@@ -15,6 +15,7 @@ class WeatherViewModel:ViewModel() {
     private val service = RetrofitClient.weatherService
     val weatherLiveData:MutableLiveData<WeatherDTO> = MutableLiveData()
     val locationLiveData:MutableLiveData<List<Favorite>> = MutableLiveData()
+    val locationCntLiveData:MutableLiveData<Int> = MutableLiveData()
 
     //동작 과정
     //1. view에서 getWeather함수를 호출
@@ -35,7 +36,7 @@ class WeatherViewModel:ViewModel() {
     fun insertLocation(context:Context,location:String,latitude: Double,longitude: Double){
         viewModelScope.launch {
             val favorite = Favorite(id = null,location = location,latitude = latitude,longitude = longitude)
-            getAppDatabase(context).favoriteDao().insertFavorite(favorite)
+            getAppDatabase(context).favoriteDao().insertLocation(favorite)
         }
     }
 
@@ -52,6 +53,14 @@ class WeatherViewModel:ViewModel() {
         viewModelScope.launch {
             val favorite = Favorite(id = null,location = "나의 위치",latitude = latitude,longitude=longitude)
             getAppDatabase(context).favoriteDao().updateCurrentLocation(favorite)
+        }
+    }
+
+    //db에 저장된 위치정보 개수 반환하는 함수
+    fun getLocationCnt(context:Context){
+        viewModelScope.launch {
+            val cnt = getAppDatabase(context).favoriteDao().locationCnt()
+            locationCntLiveData.value = cnt
         }
     }
 }

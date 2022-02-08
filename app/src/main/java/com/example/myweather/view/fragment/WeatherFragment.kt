@@ -22,6 +22,7 @@ import androidx.navigation.Navigation
 import androidx.viewpager2.widget.ViewPager2
 import com.example.myweather.R
 import com.example.myweather.databinding.FragmentWeatherBinding
+import com.example.myweather.model.Favorite
 import com.example.myweather.model.WeatherDTO
 import com.example.myweather.view.MainActivity
 import com.example.myweather.view.adapter.WeatherAdapter
@@ -66,6 +67,11 @@ class WeatherFragment : Fragment() {
     //navigation Controller
     private lateinit var navController: NavController
 
+    //location 개수
+    private var locationCnt = 0
+    //db location list
+    private var favoriteList = mutableListOf<Favorite>()
+
     //위치 권한
     private val locationPermissionRequest = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -104,12 +110,14 @@ class WeatherFragment : Fragment() {
         navController = Navigation.findNavController(view)
 
         prefs = mActivity.getSharedPreferences("current", Context.MODE_PRIVATE)
+        context?.let { viewModel.getLocationCnt(context = it) }
         requestPermission()
         liveDatas()
     }
     override fun onStop() {
         super.onStop()
         Log.d("TAG", "onStop: ")
+        favoriteList.clear()
         weatherList.clear()
     }
     override fun onDestroy() {
@@ -188,12 +196,12 @@ class WeatherFragment : Fragment() {
     private fun initViews(){
         Log.d("TAG", "initViews: ${weatherList.size}")
         context?.let { context->
-            weatherAdapter = WeatherAdapter(weatherList,context)
+            weatherAdapter = WeatherAdapter(weathers = weatherList,favorites = favoriteList,context = context)
             with(binding){
                 viewPager.adapter = weatherAdapter
                 viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
                 indicatorWeather.setViewPager(viewPager)
-                indicatorWeather.createIndicators(1,0)
+                indicatorWeather.createIndicators(locationCnt,0)
                 viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
                     override fun onPageSelected(position: Int) {
                         super.onPageSelected(position)
@@ -210,7 +218,6 @@ class WeatherFragment : Fragment() {
     }
     //db에 저장된 위치 가져오는 함수
     private fun getLatLngs(){
-        Log.d("TAG", "getLatLngs: ")
         context?.let { context->
             viewModel.getAllLocation(context)
         }
@@ -218,7 +225,7 @@ class WeatherFragment : Fragment() {
     private fun liveDatas(){
         //db에서 지역 가져오는 LiveData
         viewModel.locationLiveData.observe(viewLifecycleOwner,{ favorites->
-            Log.d("TAG", "liveDatas: $favorites")
+            favoriteList= favorites as MutableList<Favorite>
             favorites.forEach{ location->
                 viewModel.getWeather(latitude = location.latitude,longitude = location.longitude)
             }
@@ -230,6 +237,9 @@ class WeatherFragment : Fragment() {
             }
             Log.d("TAG", "liveDatas: $weatherList")
             initViews()
+        })
+        viewModel.locationCntLiveData.observe(viewLifecycleOwner,{ cnt->
+            locationCnt = cnt
         })
     }
     //백그라운드 위치 권한 요청
