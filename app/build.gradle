@@ -77,4 +77,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
     //lifecycleOwnder in a Service
     implementation("androidx.lifecycle:lifecycle-service:2.4.0")
+
+    implementation 'me.relex:circleindicator:2.1.4'
 }

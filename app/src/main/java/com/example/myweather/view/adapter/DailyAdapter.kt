@@ -21,6 +21,7 @@ class DailyAdapter:ListAdapter<DailyWeatherModel,DailyAdapter.ViewHolder>(diffUt
             binding.dailyItemDayTv.text = simpleDataFormat.format(item.dt * 1000L)
             binding.dailyItemMaxTempTv.text = "${item.temp.maxTemp.roundToInt()}°"
             binding.dailyItemMinTempTv.text ="${item.temp.minTemp.roundToInt()}°"
+            binding.dailySeekbar.isEnabled = false
 
             val iconUrl = "http://openweathermap.org/img/wn/${item.weather.first().icon}@2x.png"
             Glide.with(binding.root)

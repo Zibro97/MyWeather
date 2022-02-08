@@ -7,37 +7,42 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.viewpager2.widget.ViewPager2
+import com.example.myweather.R
 import com.example.myweather.databinding.FragmentWeatherBinding
+import com.example.myweather.model.WeatherDTO
 import com.example.myweather.view.MainActivity
 import com.example.myweather.view.adapter.WeatherAdapter
 import com.example.myweather.viewmodel.WeatherViewModel
 import com.google.android.gms.location.*
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.tasks.CancellationTokenSource
-import kotlinx.coroutines.*
 import java.lang.Exception
-import kotlin.coroutines.CoroutineContext
 import kotlin.system.exitProcess
 
 /***
- * 1. 위치 권한 받아오기(FINE ,COARSE ,BACKGROUND)
+ * 1. 위치 권한 받아오기(FINE ,COARSE ,BACKGROUND) 
  * 2. 사용자 현재 위치 받아오기
  * 3. 현재 위치 Room에 저장
  * 4. Room에 저장된 현위치,관심지역 좌표 받아와서 날씨정보 받아오기
  * 5. 날씨 정보 받아와서 ViewPager로 넘김
+ * 6. 하단 circleIndicator
  */
-class WeatherFragment : Fragment(), CoroutineScope {
+class WeatherFragment : Fragment() {
+    //각 위치 별 날씨 정보 리스트
+    private val weatherList = mutableListOf<WeatherDTO>()
     //뷰 바인딩을 위한 바인딩 객체
     private var _binding: FragmentWeatherBinding? = null
     private val binding get() = _binding!!
@@ -52,8 +57,7 @@ class WeatherFragment : Fragment(), CoroutineScope {
     private var fusedLocationClient: FusedLocationProviderClient? = null
     private var cancellationTokenSource: CancellationTokenSource? = null
 
-    //위치 정보를 가지고 주소로 변환하기 위한 Geocoder 라이브러리
-    //private lateinit var geocoder: Geocoder
+    //현재 위치를 갖고있는지 체크하기위한 SharedPreferences
     private lateinit var prefs: SharedPreferences
 
     //Fragment는 Context를 갖지 않으므로 Context를 참조할 변수
@@ -62,19 +66,14 @@ class WeatherFragment : Fragment(), CoroutineScope {
     //navigation Controller
     private lateinit var navController: NavController
 
-    //coroutine
-    private val job: Job = Job()
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
-
     //위치 권한
     private val locationPermissionRequest = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            backgroundPermission()
             when {
                 permissions.getOrDefault(ACCESS_FINE_LOCATION, false) -> {
-                    backgroundPermissionPopup()
                     getLocation()
                 }
                 else -> {
@@ -106,68 +105,13 @@ class WeatherFragment : Fragment(), CoroutineScope {
 
         prefs = mActivity.getSharedPreferences("current", Context.MODE_PRIVATE)
         requestPermission()
-//        initViews()
-//        setBackground()
-//        bindingRecyclerView()
+        liveDatas()
     }
-//    private fun initView(){
-//        prefs = mActivity.getSharedPreferences("current",Context.MODE_PRIVATE)
-//        with(binding){
-//            weatherAdapter = WeatherAdapter(,context = context)
-//            viewPager.adapter = weatherAdapter
-//        }
-//    }
-//
-//    private fun initViews() {
-//        with(binding){
-//            //하단 탭의 즐겨찾기 리스트 버튼 클릭시 이벤트
-//            favoriteListImageButton.setOnClickListener {
-//                navController.navigate(R.id.action_weatherContainer_to_favoriteContainer)
-//            }
-//        }
-//    }
-
-//    //RecyclerView Settings
-//    private fun bindingRecyclerView() {
-//        //Adapter 객체 초기화
-//        hourlyAdapter = HourlyAdapter()
-//        dailyAdapter = DailyAdapter()
-//        //RecyclerView가 어떻게 그려질 것인지 정의
-//        binding.hourlyRv.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
-//        binding.dailyRv.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
-//        //RecyclerView Adapter 연결
-//        binding.hourlyRv.adapter = hourlyAdapter
-//        binding.dailyRv.adapter = dailyAdapter
-//    }
-
-    //    //날씨에 따라 배경 gif를 설정
-//    private fun setBackground(){
-//        //배경 이미지를 띄우고자 Glide 라이브러리 사용
-//        //.asGif() : GIF를 로딩하고자 할때 사용하는 함수
-//        //.with() : View,Fragment 혹은 Activity로 부터 Context 가져오는 함수
-//        //.load() : 이미지를 로드하는 함수. 다양한 방법으로 이미지를 불러올 수 있음(Bitmap,Drawable,String,Uri,File,ByteArray).
-//        //.into() : 이미지를 보여줄 View를 지정하는 합수
-//        //.diskCacheStrategy(): 디스크에 캐싱하지 않으려면 DiskCacheStrategy.NONE 사용
-//        //.fitCenter() : 실제 이미지가 이미지뷰의 사이즈와 다를 때, 이미지와 이미지뷰의 중간을 맞춰서 이미지 크기를 스케일링하는 함수
-//        Glide.with(this)
-//            .asGif()
-//            .fitCenter()
-//            .load(R.drawable.ic_cloudy_background)
-//            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-//            .into(binding.weatherBackground)
-//    }
-    //날씨 받아오는 함수
-//    private fun getWeather(latitude:Double,longitude :Double){
-//        viewModel.getWeather(latitude = latitude,longitude = longitude)
-//        viewModel.weatherLiveData.observe(viewLifecycleOwner, { weather ->
-//            weather?.let {
-//                weatherAdapter = WeatherAdapter(it)
-//                binding.viewPager.adapter = weatherAdapter
-//                //hourlyAdapter.submitList(it.hourly)
-//                //dailyAdapter.submitList(it.daily)
-//            }
-//        })
-//    }
+    override fun onStop() {
+        super.onStop()
+        Log.d("TAG", "onStop: ")
+        weatherList.clear()
+    }
     override fun onDestroy() {
         super.onDestroy()
         cancellationTokenSource?.cancel()
@@ -178,6 +122,7 @@ class WeatherFragment : Fragment(), CoroutineScope {
         _binding = null
     }
 
+    //위치 가져오는 함수
     @SuppressLint("MissingPermission")
     private fun getLocation() {
         cancellationTokenSource = CancellationTokenSource()
@@ -188,34 +133,29 @@ class WeatherFragment : Fragment(), CoroutineScope {
         ).addOnSuccessListener { location ->
             try {
                 context?.let { context ->
-                    if (prefs.getString("current", "no current").isNullOrEmpty()) {
-                        viewModel.insertFavorite(
+                    //sharedPreference 없으면 현재 위치 insert
+                    if (prefs.getString("current", "no current") == "no current") {
+                        viewModel.insertLocation(
                             context = context,
                             location = "나의 위치",
                             latitude = location.latitude,
                             longitude = location.longitude
                         )
                         prefs.edit().putString("current", "나의 위치").apply()
-                    } else {
+                    }
+                    //sharedPreference 있으면 현재위치 update
+                    else {
                         viewModel.updateCurrentLocation(context = context,latitude = location.latitude,longitude = location.longitude)
                     }
+                    getLatLngs()
                 }
-//                getWeather(latitude = location.latitude,longitude = location.longitude)
-//                launch(coroutineContext) {
-//                    getAddress(lat = location.latitude, lng = location.longitude)
-//                }
             } catch (exception: Exception) {
                 //예외 발생시 에러 경고문구 보여주고, 다른 뷰들은 alpha값 0처리
                 binding.errorDescriptionTextView.visibility = View.VISIBLE
                 binding.viewPager.alpha = 0F
-            } finally {
-                //데이터가 불러와진 상태 progressBar의 visible값을 gone,refresh 상태를 false로 변경
-                binding.progressBar.visibility = View.GONE
-                binding.refreshLayout.isRefreshing = false
             }
         }
     }
-
     //위치 권한 요청
     private fun requestPermission() {
         when {
@@ -224,7 +164,6 @@ class WeatherFragment : Fragment(), CoroutineScope {
                     == PackageManager.PERMISSION_GRANTED
                     && ActivityCompat.checkSelfPermission(mActivity, ACCESS_COARSE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED -> {
-                backgroundPermissionPopup()
                 getLocation()
             }
             //사용자가 권한 요청을 명시적으로 거부한 경우 true를 반환
@@ -239,41 +178,64 @@ class WeatherFragment : Fragment(), CoroutineScope {
                     arrayOf(
                         ACCESS_FINE_LOCATION,
                         ACCESS_COARSE_LOCATION,
-                        ACCESS_BACKGROUND_LOCATION
                     )
                 )
             }
         }
     }
-
+    //viewPager 초기화 및 날씨 정보 넘겨주는 함수
+    @SuppressLint("NotifyDataSetChanged")
+    private fun initViews(){
+        Log.d("TAG", "initViews: ${weatherList.size}")
+        context?.let { context->
+            weatherAdapter = WeatherAdapter(weatherList,context)
+            with(binding){
+                viewPager.adapter = weatherAdapter
+                viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+                indicatorWeather.setViewPager(viewPager)
+                indicatorWeather.createIndicators(1,0)
+                viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+                    override fun onPageSelected(position: Int) {
+                        super.onPageSelected(position)
+                        indicatorWeather.animatePageSelected(position)
+                    }
+                })
+                //하단 탭의 즐겨찾기 리스트 버튼 클릭시 이벤트
+                favoriteListImageButton.setOnClickListener {
+                    navController.navigate(R.id.action_weatherContainer_to_favoriteContainer)
+                }
+                progressBar.visibility = View.GONE
+            }
+        }
+    }
+    //db에 저장된 위치 가져오는 함수
     private fun getLatLngs(){
+        Log.d("TAG", "getLatLngs: ")
         context?.let { context->
             viewModel.getAllLocation(context)
         }
     }
-    private fun liveData(){
-        viewModel.favoriteLiveData.observe(viewLifecycleOwner,{ favorites->
+    private fun liveDatas(){
+        //db에서 지역 가져오는 LiveData
+        viewModel.locationLiveData.observe(viewLifecycleOwner,{ favorites->
+            Log.d("TAG", "liveDatas: $favorites")
             favorites.forEach{ location->
+                viewModel.getWeather(latitude = location.latitude,longitude = location.longitude)
             }
         })
+        //db에서 가져온 지역의 날씨 정보를 가져와 리스트에 담음
+        viewModel.weatherLiveData.observe(viewLifecycleOwner,{ weather ->
+            if(!weatherList.contains(weather)){
+                weatherList.add(weather)
+            }
+            Log.d("TAG", "liveDatas: $weatherList")
+            initViews()
+        })
     }
-
-    //지역명을 가져오는 함수
-//    private suspend fun getAddress(lat:Double,lng:Double) = withContext(Dispatchers.IO) {
-//        geocoder = Geocoder(mActivity)
-//        val address = geocoder.getFromLocation(lat,lng,1)
-//        Log.d("TAG", "getAddress: $address")
-//        withContext(Dispatchers.Main){
-//            binding.cityTv.text =
-//                if(address[0].locality.isNullOrEmpty())
-//                    address[0].getAddressLine(0).split(",")[2]
-//                else
-//                    address[0].locality
-//        }
-//    }
     //백그라운드 위치 권한 요청
     //Android 11이상 부터는 위치 권한 항상 허용 옵션이 포함되지 않아서
     //포그라운드 위치권한과 백그라운드 위치 권한을 동시에 요청하면 시스템이 요청을 무시하고 앱에 어떤 권한도 부여하지 않음
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun backgroundPermission() {
         ActivityCompat.requestPermissions(
             mActivity,
@@ -283,17 +245,6 @@ class WeatherFragment : Fragment(), CoroutineScope {
             2
         )
     }
-
-    //백그라운드 위치 권한 묻는 팝업
-    private fun backgroundPermissionPopup() {
-        AlertDialog.Builder(mActivity)
-            .setTitle("위젯 사용 시 백그라운드 위치 권한을 위해 항상 허용으로 설정해주세요.")
-            .setPositiveButton("네") { _, p1 ->
-                backgroundPermission()
-            }
-            .setNegativeButton("아니오") { _, _ -> }
-    }
-
     //교육용 팝업
     private fun showPermissionContextPopup() {
         AlertDialog.Builder(mActivity)
@@ -314,26 +265,4 @@ class WeatherFragment : Fragment(), CoroutineScope {
             .create()
             .show()
     }
-//    @SuppressLint("SetTextI18n")
-//    private fun initViewsText(weather : WeatherDTO){
-//        with(binding){
-//            tempTv.text = "${weather.current.temp.roundToInt()}°"
-//            weatherDestinationTv.text = weather.current.weather.first().description
-//            maxTempTv.text = "최고:${weather.daily.first().temp.maxTemp.roundToInt()}°"
-//            minTempTv.text = "최저:${weather.daily.first().temp.minTemp.roundToInt()}°"
-//            val simpleDataFormat = SimpleDateFormat("HH:mm", Locale.KOREA)
-//            sunriseTimeTextView.text = simpleDataFormat.format(weather.current.sunrise * 1000L)
-//            sunsetTimeTextView.text = "일몰: ${simpleDataFormat.format(weather.current.sunset * 1000L)}"
-//            windTimeTextView.text = "${weather.current.windSpeed.roundToInt()}m/s"
-//            realFeelTempTextView.text = "${weather.current.feelsLike.roundToInt()}°"
-//            realHumidityTextView.text = "${weather.current.humidity}%"
-//            dewPointTextView.text = "현재 이슬점이 ${weather.current.dewPoint.roundToInt()}°입니다."
-//            realVisibilityTextView.text = "${weather.current.visibility/1000}KM"
-//            tempDestinationTv.text = "${weather.current.temp.roundToInt()}°|${weather.current.weather.first().description}"
-//            //realSnowRainTextView.text = "${weather.current.snow}MM"
-//        }
-//        binding.contentsLayout.animate()
-//            .alpha(1.0F)
-//            .start()
-//    }
 }

@@ -7,6 +7,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.example.myweather.R
 import com.example.myweather.databinding.ItemWeatherBinding
 import com.example.myweather.model.WeatherDTO
 import com.example.myweather.viewmodel.WeatherViewModel
@@ -47,6 +50,13 @@ class WeatherAdapter(
                 dewPointTextView.text = "현재 이슬점이 ${weather.current.dewPoint.roundToInt()}°입니다."
                 realVisibilityTextView.text = "${weather.current.visibility/1000}KM"
                 tempDestinationTv.text = "${weather.current.temp.roundToInt()}°|${weather.current.weather.first().description}"
+
+                Glide.with(root)
+                    .asGif()
+                    .fitCenter()
+                    .load(R.drawable.ic_cloudy_background)
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .into(binding.weatherBackground)
             }
         }
     }

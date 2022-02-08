@@ -23,4 +23,7 @@ interface FavoriteDao {
     //현재위치가 등록되어있는지 확인하는 쿼리
     @Update
     suspend fun updateCurrentLocation(favorite:Favorite)
+    //컬럼 개수 확인 하는 쿼리
+    @Query("SELECT COUNT(*) FROM favorite")
+    suspend fun favoriteCnt() : Int
 }
