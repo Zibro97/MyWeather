@@ -1,7 +1,7 @@
-package com.example.myweather.util
+package com.example.myweather.data.api
 
 import com.example.myweather.BuildConfig
-import com.example.myweather.model.WeatherDTO
+import com.example.myweather.model.weather.WeatherDTO
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -11,5 +11,5 @@ interface WeatherService {
     suspend fun getWeather(
         @Query("lat") latitude:Double,
         @Query("lon") longitude:Double,
-    ):WeatherDTO
+    ): WeatherDTO
 }

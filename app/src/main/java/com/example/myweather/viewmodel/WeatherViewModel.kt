@@ -1,17 +1,16 @@
 package com.example.myweather.viewmodel
 
 import android.content.Context
-import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.myweather.model.Favorite
-import com.example.myweather.util.RetrofitClient
-import com.example.myweather.model.WeatherDTO
-import com.example.myweather.util.DatabaseProvider.getAppDatabase
+import com.example.myweather.model.favorite.Favorite
+import com.example.myweather.data.api.RetrofitClient
+import com.example.myweather.model.weather.WeatherDTO
+import com.example.myweather.data.db.DatabaseProvider.getAppDatabase
 import kotlinx.coroutines.launch
 
-class WeatherViewModel:ViewModel() {
+open class WeatherViewModel:ViewModel() {
     private val service = RetrofitClient.weatherService
     val weatherLiveData:MutableLiveData<WeatherDTO> = MutableLiveData()
     val locationLiveData:MutableLiveData<List<Favorite>> = MutableLiveData()
@@ -31,12 +30,11 @@ class WeatherViewModel:ViewModel() {
             weatherLiveData.value = jsonArray
         }
     }
-
     //관심지역 or 현재 위치 저장하기 위한 함수
     fun insertLocation(context:Context,location:String,latitude: Double,longitude: Double){
         viewModelScope.launch {
             val favorite = Favorite(id = null,location = location,latitude = latitude,longitude = longitude)
-            getAppDatabase(context).favoriteDao().insertLocation(favorite)
+            getAppDatabase(context).favoriteDao().insertFavorite(favorite)
         }
     }
 
@@ -52,14 +50,14 @@ class WeatherViewModel:ViewModel() {
     fun updateCurrentLocation(context: Context,latitude: Double,longitude: Double){
         viewModelScope.launch {
             val favorite = Favorite(id = null,location = "나의 위치",latitude = latitude,longitude=longitude)
-            getAppDatabase(context).favoriteDao().updateCurrentLocation(favorite)
+            getAppDatabase(context).favoriteDao().updateCurrentFavorite(favorite)
         }
     }
 
     //db에 저장된 위치정보 개수 반환하는 함수
     fun getLocationCnt(context:Context){
         viewModelScope.launch {
-            val cnt = getAppDatabase(context).favoriteDao().locationCnt()
+            val cnt = getAppDatabase(context).favoriteDao().favoriteCnt()
             locationCntLiveData.value = cnt
         }
     }

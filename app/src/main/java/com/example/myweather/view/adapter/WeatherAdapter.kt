@@ -2,7 +2,6 @@ package com.example.myweather.view.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.location.Geocoder
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,9 +10,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.myweather.R
 import com.example.myweather.databinding.ItemWeatherBinding
-import com.example.myweather.model.Favorite
-import com.example.myweather.model.WeatherDTO
-import com.example.myweather.viewmodel.WeatherViewModel
+import com.example.myweather.model.favorite.Favorite
+import com.example.myweather.model.weather.WeatherDTO
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -26,7 +24,7 @@ class WeatherAdapter(
 ): RecyclerView.Adapter<WeatherAdapter.ViewHolder>(){
     inner class ViewHolder(private val binding:ItemWeatherBinding):RecyclerView.ViewHolder(binding.root){
         @SuppressLint("SetTextI18n")
-        fun bind(weather: WeatherDTO,favorite:Favorite){
+        fun bind(weather: WeatherDTO, favorite: Favorite){
             val hourlyAdapter = HourlyAdapter()
             val dailyAdapter = DailyAdapter()
             with(binding){

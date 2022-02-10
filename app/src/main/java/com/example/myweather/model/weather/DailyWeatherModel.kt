@@ -1,4 +1,4 @@
-package com.example.myweather.model
+package com.example.myweather.model.weather
 
 import com.google.gson.annotations.SerializedName
 
@@ -8,7 +8,7 @@ data class DailyWeatherModel(
     val dt:Int,
     //예측 온도
     @SerializedName("temp")
-    val temp:TemperatureModel,
+    val temp: TemperatureModel,
     //예측 날씨
     @SerializedName("weather")
     val weather : List<WeatherModel>,

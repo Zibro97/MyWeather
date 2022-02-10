@@ -6,11 +6,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myweather.databinding.ItemFavoriteBinding
-import com.example.myweather.model.Favorite
+import com.example.myweather.model.favorite.Favorite
 
 class FavoriteAdapter: ListAdapter<Favorite, FavoriteAdapter.ViewHolder>(diffUtil) {
     inner class ViewHolder(private val binding:ItemFavoriteBinding):RecyclerView.ViewHolder(binding.root){
-        fun bind(item:Favorite){
+        fun bind(item: Favorite){
             binding.itemTitleTextView.text = item.location
             if(item.location != "나의 위치") binding.countryTextView.text = item.location
         }

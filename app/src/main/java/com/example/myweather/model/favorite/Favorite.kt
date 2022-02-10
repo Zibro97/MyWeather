@@ -1,4 +1,4 @@
-package com.example.myweather.model
+package com.example.myweather.model.favorite
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

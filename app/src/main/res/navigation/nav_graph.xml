@@ -10,6 +10,7 @@
         android:label="fragment_weather"
         tools:layout="@layout/fragment_weather"
         >
+        <!--화면 간의 이동-->
         <action
             android:id="@+id/action_weatherContainer_to_favoriteContainer"
             app:destination="@+id/favoriteContainer"

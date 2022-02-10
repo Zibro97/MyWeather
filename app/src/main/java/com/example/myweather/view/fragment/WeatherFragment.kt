@@ -22,8 +22,8 @@ import androidx.navigation.Navigation
 import androidx.viewpager2.widget.ViewPager2
 import com.example.myweather.R
 import com.example.myweather.databinding.FragmentWeatherBinding
-import com.example.myweather.model.Favorite
-import com.example.myweather.model.WeatherDTO
+import com.example.myweather.model.favorite.Favorite
+import com.example.myweather.model.weather.WeatherDTO
 import com.example.myweather.view.MainActivity
 import com.example.myweather.view.adapter.WeatherAdapter
 import com.example.myweather.viewmodel.WeatherViewModel

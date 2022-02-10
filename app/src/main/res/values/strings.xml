@@ -21,4 +21,5 @@
     <string name="to_weather_fragment_button">to_weather_fragment_button</string>
     <string name="to_map_button">to_map_button</string>
     <string name="error_text_view">예기치 못한 문제가 발생했습니다.\n잠시 후 다시 시도해주세요.</string>
+    <string name="search_cancel_button">취소</string>
 </resources>

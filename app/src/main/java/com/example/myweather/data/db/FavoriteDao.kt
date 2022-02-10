@@ -1,10 +1,10 @@
-package com.example.myweather.dao
+package com.example.myweather.data.db
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.example.myweather.model.Favorite
+import com.example.myweather.model.favorite.Favorite
 
 @Dao
 interface FavoriteDao {
@@ -13,17 +13,17 @@ interface FavoriteDao {
     suspend fun getAll():List<Favorite>
     //즐겨찾기한 특정 지역 좌표 가져오는 쿼리
     @Query("SELECT * FROM favorite WHERE id == :id")
-    suspend fun getLocationInfo(id : Int) : Favorite
+    suspend fun getFavoriteInfo(id : Int) : Favorite
     //즐겨찾기 추가하는 쿼리
     @Insert
-    suspend fun insertLocation(favorite: Favorite)
+    suspend fun insertFavorite(favorite: Favorite)
     //즐겨찾기 삭제하는 쿼리
     @Query("DELETE FROM favorite WHERE id == :id")
     suspend fun delete(id : Int)
     //현재위치가 등록되어있는지 확인하는 쿼리
     @Update
-    suspend fun updateCurrentLocation(favorite:Favorite)
+    suspend fun updateCurrentFavorite(favorite: Favorite)
     //컬럼 개수 확인 하는 쿼리
     @Query("SELECT COUNT(*) FROM favorite")
-    suspend fun locationCnt() : Int
+    suspend fun favoriteCnt() : Int
 }

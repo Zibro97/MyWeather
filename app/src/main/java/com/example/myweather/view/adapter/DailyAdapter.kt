@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.myweather.databinding.ItemDailyBinding
-import com.example.myweather.model.DailyWeatherModel
+import com.example.myweather.model.weather.DailyWeatherModel
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt

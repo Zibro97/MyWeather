@@ -20,7 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.example.myweather.R
-import com.example.myweather.util.RetrofitClient
+import com.example.myweather.data.api.RetrofitClient
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.launch
 import java.lang.Exception
@@ -55,7 +55,7 @@ class WeatherWidgetProvider: AppWidgetProvider() {
             )
         }
 
-        //Start_STicky : Default값, 시스템에 의해 서비스가 종료될때, 서비스가 가용한 상태가 되면 recreateService
+        //Start_Sticky : Default값, 시스템에 의해 서비스가 종료될때, 서비스가 가용한 상태가 되면 recreateService
         override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
             //기존에 갱신된 위치정보를 가져옴
             if (ActivityCompat.checkSelfPermission(
