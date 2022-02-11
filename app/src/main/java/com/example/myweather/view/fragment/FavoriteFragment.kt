@@ -9,9 +9,12 @@ import android.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.myweather.R
 import com.example.myweather.databinding.FragmentFavoriteBinding
 import com.example.myweather.view.adapter.FavoriteAdapter
+import com.example.myweather.view.adapter.LocationAdapter
+import com.example.myweather.viewmodel.FavoriteViewModel
 import com.example.myweather.viewmodel.WeatherViewModel
 
 class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
@@ -19,12 +22,13 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
     private var _binding : FragmentFavoriteBinding? = null
     private val binding get() = _binding!!
     //지역 목록 RecyclerView에 바인딩시킬 Adapter
-    private lateinit var adapter : FavoriteAdapter
+    private lateinit var favoriteAdapter : FavoriteAdapter
+    private lateinit var locationAdapter : LocationAdapter
     //viewModel
-    private val viewModel : WeatherViewModel by viewModels()
+    private val viewModel : FavoriteViewModel by viewModels()
 
     //Layout을 inflate하는 곳
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentFavoriteBinding.inflate(inflater,container,false)
         return binding.root
     }
@@ -35,7 +39,7 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
 
         initViews()
         initRecyclerView()
-        getLocations()
+        //getLocations()
         liveData()
     }
     private fun initViews() = with(binding){
@@ -51,6 +55,7 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
         searchCanelButton.setOnClickListener {
             searchView.clearFocus()
         }
+
         //searchview 포커싱 이벤트 옵저빙
         searchView.setOnQueryTextFocusChangeListener(object : View.OnFocusChangeListener{
             override fun onFocusChange(v: View?, hasFocus: Boolean) {
@@ -79,25 +84,37 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
             //글자가 쓰면서 발생하는 이벤트
             override fun onQueryTextChange(newText: String?): Boolean {
                 //Toast.makeText(context,"검색 결과 : $newText",Toast.LENGTH_SHORT).show()
+                newText?:return false
+                viewModel.locationInfo(newText)
                 return true
             }
         })
     }
 
     private fun initRecyclerView() {
-        adapter = FavoriteAdapter()
+        //검색 결과 RecyclerView
+        locationAdapter = LocationAdapter()
+        binding.searchResultRv.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
+        binding.searchResultRv.adapter = locationAdapter
+        //즐겨찾기 목록 RecyclerView
+        favoriteAdapter = FavoriteAdapter()
         binding.favoriteRecyclerView.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
-        binding.favoriteRecyclerView.adapter = adapter
+        binding.favoriteRecyclerView.adapter = favoriteAdapter
     }
 
     private fun getLocations(){
-        context?.let { context->
-            viewModel.getAllLocation(context)
-        }
+        //context?.let { context->
+        //    viewModel.getAllLocation(context)
+        //}
     }
     private fun liveData(){
-        viewModel.locationLiveData.observe(viewLifecycleOwner,{ favorite->
-            adapter.submitList(favorite)
+        //viewModel.locationLiveData.observe(viewLifecycleOwner,{ favorite->
+        //    favoriteAdapter.submitList(favorite)
+        //})
+        viewModel.locationLiveData.observe(viewLifecycleOwner,{ locations->
+            locations.response.result?.let {
+                locationAdapter.submitList(locations.response.result.items)
+            }
         })
     }
 }

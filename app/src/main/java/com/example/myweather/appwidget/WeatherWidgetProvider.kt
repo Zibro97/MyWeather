@@ -82,7 +82,7 @@ class WeatherWidgetProvider: AppWidgetProvider() {
                     lifecycleScope.launch{
                         try {
                             val address = Geocoder(applicationContext).getFromLocation(location.latitude,location.longitude,1)
-                            val weather = RetrofitClient.weatherService.getWeather(latitude = location.latitude,longitude = location.longitude)
+                            val weather = RetrofitClient.weatherService.weatherInfo(latitude = location.latitude,longitude = location.longitude)
                             val updateViews = RemoteViews(packageName,R.layout.widget_weather).apply {
                                 setViewVisibility(R.id.widget_city_text_view, View.VISIBLE)
                                 setViewVisibility(R.id.widget_description_text_view, View.VISIBLE)

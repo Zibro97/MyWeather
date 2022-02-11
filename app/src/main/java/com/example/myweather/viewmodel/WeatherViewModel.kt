@@ -10,7 +10,7 @@ import com.example.myweather.model.weather.WeatherDTO
 import com.example.myweather.data.db.DatabaseProvider.getAppDatabase
 import kotlinx.coroutines.launch
 
-open class WeatherViewModel:ViewModel() {
+class WeatherViewModel:ViewModel() {
     private val service = RetrofitClient.weatherService
     val weatherLiveData:MutableLiveData<WeatherDTO> = MutableLiveData()
     val locationLiveData:MutableLiveData<List<Favorite>> = MutableLiveData()
@@ -26,7 +26,7 @@ open class WeatherViewModel:ViewModel() {
         //CouroutineScope는 하나 이상의 코루틴을 관리
         //launch : 코루틴을 만들고 함수 본문의 실행을 해당하는 디스패처에 전달하는 함수
         viewModelScope.launch {
-            val jsonArray = service.getWeather(latitude = latitude,longitude = longitude)
+            val jsonArray = service.weatherInfo(latitude = latitude,longitude = longitude)
             weatherLiveData.value = jsonArray
         }
     }
