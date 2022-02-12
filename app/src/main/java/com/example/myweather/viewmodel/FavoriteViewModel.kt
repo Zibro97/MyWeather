@@ -8,14 +8,14 @@ import com.example.myweather.model.vworld.Location
 import com.example.myweather.model.vworld.VworldLocation
 import kotlinx.coroutines.launch
 
-class FavoriteViewModel:ViewModel() {
+class FavoriteViewModel:BaseViewModel() {
     private val service = RetrofitClient.favoriteService
-    val locationLiveData : MutableLiveData<VworldLocation> = MutableLiveData()
+    val searchLocateLiveData : MutableLiveData<VworldLocation> = MutableLiveData()
 
     fun locationInfo(keyword:String){
         viewModelScope.launch {
             val jsonArray = service.locationInfo(keyword)
-            locationLiveData.value = jsonArray
+            searchLocateLiveData.value = jsonArray
         }
     }
 
