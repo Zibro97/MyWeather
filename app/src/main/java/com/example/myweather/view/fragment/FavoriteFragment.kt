@@ -1,21 +1,24 @@
 package com.example.myweather.view.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.Adapter
 import android.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.myweather.R
 import com.example.myweather.databinding.FragmentFavoriteBinding
 import com.example.myweather.view.adapter.FavoriteAdapter
 import com.example.myweather.view.adapter.LocationAdapter
 import com.example.myweather.viewmodel.FavoriteViewModel
-import com.example.myweather.viewmodel.WeatherViewModel
 
 class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
 
@@ -39,7 +42,7 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
 
         initViews()
         initRecyclerView()
-        //getLocations()
+        getLocations()
         liveData()
     }
     private fun initViews() = with(binding){
@@ -51,27 +54,32 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
             inf.inflate(R.menu.menu_settings,popup.menu)
             popup.show()
         }
-        //search View 포커스 제거
+        //search View 검색어 초기화,포커스 제거
         searchCanelButton.setOnClickListener {
+            searchView.setQuery("",false)
             searchView.clearFocus()
         }
-
-        //searchview 포커싱 이벤트 옵저빙
+        //searchview 포커싱 이벤트
         searchView.setOnQueryTextFocusChangeListener(object : View.OnFocusChangeListener{
             override fun onFocusChange(v: View?, hasFocus: Boolean) {
                 //searchView에 포커싱에따라 visible 처리
+                favoriteRecyclerView.visibility = VISIBLE
                 if(hasFocus){
-                    settingsImageButton.visibility = View.GONE
-                    toolbarTextView.visibility =View.GONE
-                    searchCanelButton.visibility = View.VISIBLE
-                    searchResultRv.visibility = View.VISIBLE
+                    settingsImageButton.visibility = GONE
+                    toolbarTextView.visibility =GONE
+                    searchCanelButton.visibility = VISIBLE
+                    searchResultRv.visibility = VISIBLE
                     favoriteRecyclerView.alpha = 0.3F
                 }else{
-                    settingsImageButton.visibility = View.VISIBLE
-                    toolbarTextView.visibility =View.VISIBLE
-                    searchCanelButton.visibility = View.GONE
-                    searchResultRv.visibility = View.GONE
+                    settingsImageButton.visibility = VISIBLE
+                    toolbarTextView.visibility = VISIBLE
+                    searchCanelButton.visibility = GONE
+                    searchResultRv.visibility = GONE
+                    searchIcon.visibility = GONE
+                    noResultDescriptionTextView.visibility = GONE
+                    errorDescriptionSearchTextView.visibility=GONE
                     favoriteRecyclerView.alpha = 1.0F
+                    locationAdapter.submitList(listOf())
                 }
             }
         })
@@ -83,10 +91,14 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
 
             //글자가 쓰면서 발생하는 이벤트
             override fun onQueryTextChange(newText: String?): Boolean {
-                //Toast.makeText(context,"검색 결과 : $newText",Toast.LENGTH_SHORT).show()
-                newText?:return false
-                viewModel.locationInfo(newText)
-                return true
+                return if (newText == ""||newText==null){
+                    binding.favoriteRecyclerView.alpha = 0.5F
+                    false
+                }else{
+                    binding.favoriteRecyclerView.alpha = 1.0F
+                    viewModel.locationInfo(newText)
+                    true
+                }
             }
         })
     }
@@ -103,18 +115,43 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
     }
 
     private fun getLocations(){
-        //context?.let { context->
-        //    viewModel.getAllLocation(context)
-        //}
+        context?.let { context->
+            viewModel.getAllLocation(context)
+        }
     }
+    /**
+     * 1. favortieRv는 visible
+     * 2. searchResultRv, ErrorDescriptionTv 는 Gone
+     * 3. searchView에 포커스 되면 favoriteRv는 alpha 0.3, 그 위에 searchResultRv를 visible
+     * 4. 검색을 하기 시작함에 따라, 검색 결과가 있으면 ErrorDescriptionTv Gone ,searchResultRv visible,
+     * 5. 검색 결과가 없으면 ErrorDescriptionTv visible ,searchResultRv gone 처리
+     * */
+    @SuppressLint("NotifyDataSetChanged")
     private fun liveData(){
-        //viewModel.locationLiveData.observe(viewLifecycleOwner,{ favorite->
-        //    favoriteAdapter.submitList(favorite)
-        //})
-        viewModel.locationLiveData.observe(viewLifecycleOwner,{ locations->
-            locations.response.result?.let {
+        //db 즐겨찾기 LiveData
+        viewModel.locationLiveData.observe(viewLifecycleOwner,{ favorite->
+            favoriteAdapter.submitList(favorite)
+        })
+        //검색 결과 LiveData
+        viewModel.searchLocateLiveData.observe(viewLifecycleOwner,{ locations->
+            binding.favoriteRecyclerView.visibility = GONE
+            if(locations.response.result == null){
+                with(binding){
+                    searchIcon.visibility = VISIBLE
+                    noResultDescriptionTextView.visibility = VISIBLE
+                    errorDescriptionSearchTextView.visibility = VISIBLE
+                    searchResultRv.visibility = GONE
+                }
+            }else{
+                with(binding){
+                    searchIcon.visibility = GONE
+                    noResultDescriptionTextView.visibility = GONE
+                    errorDescriptionSearchTextView.visibility = GONE
+                    searchResultRv.visibility = VISIBLE
+                }
                 locationAdapter.submitList(locations.response.result.items)
             }
+            locationAdapter.notifyDataSetChanged()
         })
     }
 }
