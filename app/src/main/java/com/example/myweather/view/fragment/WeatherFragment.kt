@@ -72,6 +72,8 @@ class WeatherFragment : Fragment() {
     //db location list
     private var favoriteList = mutableListOf<Favorite>()
 
+    private var weather:WeatherDTO? = null
+
     //위치 권한
     private val locationPermissionRequest = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -196,7 +198,10 @@ class WeatherFragment : Fragment() {
     private fun initViews(){
         Log.d("TAG", "initViews: ${weatherList.size}")
         context?.let { context->
-            weatherAdapter = WeatherAdapter(weathers = weatherList,favorites = favoriteList,context = context)
+            // TODO: 2022/02/14 adapter listener
+            weatherAdapter = WeatherAdapter(context = context,onPageChangeListener = { favorite ->
+                viewModel.getWeather(latitude = favorite.latitude,longitude = favorite.longitude)
+            })
             with(binding){
                 viewPager.adapter = weatherAdapter
                 viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
@@ -232,6 +237,7 @@ class WeatherFragment : Fragment() {
         })
         //db에서 가져온 지역의 날씨 정보를 가져와 리스트에 담음
         viewModel.weatherLiveData.observe(viewLifecycleOwner,{ weather ->
+            this.weather =weather
             if(!weatherList.contains(weather)){
                 weatherList.add(weather)
             }

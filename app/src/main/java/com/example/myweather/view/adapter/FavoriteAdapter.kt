@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myweather.databinding.ItemFavoriteBinding
 import com.example.myweather.model.favorite.Favorite
 
+//room에 있는 관심 지역 보여주는 RecyclerView
 class FavoriteAdapter: ListAdapter<Favorite, FavoriteAdapter.ViewHolder>(diffUtil) {
     inner class ViewHolder(private val binding:ItemFavoriteBinding):RecyclerView.ViewHolder(binding.root){
         fun bind(item: Favorite){

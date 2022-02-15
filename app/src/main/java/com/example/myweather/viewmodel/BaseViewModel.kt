@@ -36,4 +36,11 @@ open class BaseViewModel : ViewModel() {
             locationLiveData.value = favorite
         }
     }
+    //관심지역 or 현재 위치 저장하기 위한 함수
+    fun insertLocation(context:Context,location:String,latitude: Double,longitude: Double){
+        viewModelScope.launch {
+            val favorite = Favorite(id = null,location = location,latitude = latitude,longitude = longitude)
+            DatabaseProvider.getAppDatabase(context).favoriteDao().insertFavorite(favorite)
+        }
+    }
 }

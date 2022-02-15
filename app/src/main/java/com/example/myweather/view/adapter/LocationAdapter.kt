@@ -11,11 +11,15 @@ import com.example.myweather.databinding.ItemLocationBinding
 import com.example.myweather.model.vworld.Location
 
 //지역 검색 결과 RecyclerView Adapter
-class LocationAdapter:ListAdapter<Location,LocationAdapter.ViewHolder>(diffUtil) {
+class LocationAdapter(
+    val onClickItem : (Location) -> Unit
+):ListAdapter<Location,LocationAdapter.ViewHolder>(diffUtil) {
     inner class ViewHolder(private val binding:ItemLocationBinding):RecyclerView.ViewHolder(binding.root){
-
         fun bind(location:Location){
             binding.locationTextView.text = location.title
+            binding.root.setOnClickListener {
+                onClickItem(location)
+            }
         }
     }
 
@@ -25,9 +29,6 @@ class LocationAdapter:ListAdapter<Location,LocationAdapter.ViewHolder>(diffUtil)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(currentList[position])
-        holder.itemView.setOnClickListener {
-            Log.d("TAG", "onBindViewHolder: ${currentList[position].title}")
-        }
     }
 
     companion object{

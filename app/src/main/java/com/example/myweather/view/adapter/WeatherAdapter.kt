@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -18,21 +20,23 @@ import kotlin.math.roundToInt
 
 //ViewPager Adapter
 class WeatherAdapter(
-    private val weathers : List<WeatherDTO>,
-    private val favorites : List<Favorite>,
-    private val context : Context
-): RecyclerView.Adapter<WeatherAdapter.ViewHolder>(){
+    val context:Context,
+    val onPageChangeListener: (Favorite) -> WeatherDTO
+): ListAdapter<Favorite,WeatherAdapter.ViewHolder>(diffUtil){
     inner class ViewHolder(private val binding:ItemWeatherBinding):RecyclerView.ViewHolder(binding.root){
-        @SuppressLint("SetTextI18n")
-        fun bind(weather: WeatherDTO, favorite: Favorite){
+        @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
+        fun bind(favorite: Favorite){
+            val weather = onPageChangeListener(favorite)
             val hourlyAdapter = HourlyAdapter()
             val dailyAdapter = DailyAdapter()
             with(binding){
                 //매 시각 날씨 예보 RecyclerView
                 cityTv.text = favorite.location
+
                 hourlyRv.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
                 hourlyRv.adapter = hourlyAdapter
                 hourlyAdapter.submitList(weather.hourly)
+
                 //일주일간의 날씨 예보 RecyclerView
                 dailyRv.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
                 dailyRv.adapter = dailyAdapter
@@ -67,8 +71,18 @@ class WeatherAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(weathers[position],favorites[position])
+        holder.bind(currentList[position])
     }
 
-    override fun getItemCount(): Int = weathers.size
+    companion object{
+        val diffUtil = object : DiffUtil.ItemCallback<Favorite>(){
+            override fun areItemsTheSame(oldItem: Favorite, newItem: Favorite): Boolean {
+                TODO("Not yet implemented")
+            }
+
+            override fun areContentsTheSame(oldItem: Favorite, newItem: Favorite): Boolean {
+                TODO("Not yet implemented")
+            }
+        }
+    }
 }

@@ -105,7 +105,11 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
 
     private fun initRecyclerView() {
         //검색 결과 RecyclerView
-        locationAdapter = LocationAdapter()
+        locationAdapter = LocationAdapter(onClickItem = { location ->
+            context?.let { context ->
+                viewModel.insertLocation(context = context,location = location.title,latitude = location.point.y,longitude = location.point.x)
+            }
+        })
         binding.searchResultRv.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
         binding.searchResultRv.adapter = locationAdapter
         //즐겨찾기 목록 RecyclerView
