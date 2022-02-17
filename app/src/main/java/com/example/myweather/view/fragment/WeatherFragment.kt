@@ -114,6 +114,7 @@ class WeatherFragment : Fragment() {
         prefs = mActivity.getSharedPreferences("current", Context.MODE_PRIVATE)
         context?.let { viewModel.getLocationCnt(context = it) }
         requestPermission()
+        initViews()
         liveDatas()
     }
     override fun onStop() {
@@ -196,10 +197,8 @@ class WeatherFragment : Fragment() {
     //viewPager 초기화 및 날씨 정보 넘겨주는 함수
     @SuppressLint("NotifyDataSetChanged")
     private fun initViews(){
-        Log.d("TAG", "initViews: ${weatherList.size}")
         context?.let { context->
-            // TODO: 2022/02/14 adapter listener
-            weatherAdapter = WeatherAdapter(context = context,onPageChangeListener = { favorite ->
+            weatherAdapter = WeatherAdapter(onPageChangeListener = { favorite ->
                 viewModel.getWeather(latitude = favorite.latitude,longitude = favorite.longitude)
             })
             with(binding){
@@ -210,6 +209,7 @@ class WeatherFragment : Fragment() {
                 viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
                     override fun onPageSelected(position: Int) {
                         super.onPageSelected(position)
+                        weatherAdapter.notifyItemChanged(position)
                         indicatorWeather.animatePageSelected(position)
                     }
                 })
@@ -227,22 +227,15 @@ class WeatherFragment : Fragment() {
             viewModel.getAllLocation(context)
         }
     }
+    @SuppressLint("NotifyDataSetChanged")
     private fun liveDatas(){
         //db에서 지역 가져오는 LiveData
         viewModel.locationLiveData.observe(viewLifecycleOwner,{ favorites->
-            favoriteList= favorites as MutableList<Favorite>
-            favorites.forEach{ location->
-                viewModel.getWeather(latitude = location.latitude,longitude = location.longitude)
-            }
+            weatherAdapter.submitList(favorites)
         })
         //db에서 가져온 지역의 날씨 정보를 가져와 리스트에 담음
         viewModel.weatherLiveData.observe(viewLifecycleOwner,{ weather ->
-            this.weather =weather
-            if(!weatherList.contains(weather)){
-                weatherList.add(weather)
-            }
-            Log.d("TAG", "liveDatas: $weatherList")
-            initViews()
+            weatherAdapter.weather = weather
         })
         viewModel.locationCntLiveData.observe(viewLifecycleOwner,{ cnt->
             locationCnt = cnt

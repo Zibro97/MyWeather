@@ -2,6 +2,7 @@ package com.example.myweather.view.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -20,42 +21,42 @@ import kotlin.math.roundToInt
 
 //ViewPager Adapter
 class WeatherAdapter(
-    val context:Context,
-    val onPageChangeListener: (Favorite) -> WeatherDTO
+    val onPageChangeListener: (Favorite) -> Unit
 ): ListAdapter<Favorite,WeatherAdapter.ViewHolder>(diffUtil){
+    var weather : WeatherDTO? = null
     inner class ViewHolder(private val binding:ItemWeatherBinding):RecyclerView.ViewHolder(binding.root){
-        @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
+        private val hourlyAdapter = HourlyAdapter()
+        private val dailyAdapter = DailyAdapter()
+        @SuppressLint("SetTextI18n")
         fun bind(favorite: Favorite){
-            val weather = onPageChangeListener(favorite)
-            val hourlyAdapter = HourlyAdapter()
-            val dailyAdapter = DailyAdapter()
             with(binding){
+
                 //매 시각 날씨 예보 RecyclerView
                 cityTv.text = favorite.location
+                weather ?.let { weather->
+                    hourlyRv.layoutManager = LinearLayoutManager(root.context,LinearLayoutManager.HORIZONTAL,false)
+                    hourlyRv.adapter = hourlyAdapter
+                    hourlyAdapter.submitList(weather.hourly)
 
-                hourlyRv.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
-                hourlyRv.adapter = hourlyAdapter
-                hourlyAdapter.submitList(weather.hourly)
+                    //일주일간의 날씨 예보 RecyclerView
+                    dailyRv.layoutManager = LinearLayoutManager(root.context,LinearLayoutManager.VERTICAL,false)
+                    dailyRv.adapter = dailyAdapter
+                    dailyAdapter.submitList(weather.daily)
 
-                //일주일간의 날씨 예보 RecyclerView
-                dailyRv.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
-                dailyRv.adapter = dailyAdapter
-                dailyAdapter.submitList(weather.daily)
-
-                tempTv.text = "${weather.current.temp.roundToInt()}°"
-                weatherDestinationTv.text = weather.current.weather.first().description
-                maxTempTv.text = "최고:${weather.daily.first().temp.maxTemp.roundToInt()}°"
-                minTempTv.text = "최저:${weather.daily.first().temp.minTemp.roundToInt()}°"
-                val simpleDataFormat = SimpleDateFormat("HH:mm", Locale.KOREA)
-                sunriseTimeTextView.text = simpleDataFormat.format(weather.current.sunrise * 1000L)
-                sunsetTimeTextView.text = "일몰: ${simpleDataFormat.format(weather.current.sunset * 1000L)}"
-                windTimeTextView.text = "${weather.current.windSpeed.roundToInt()}m/s"
-                realFeelTempTextView.text = "${weather.current.feelsLike.roundToInt()}°"
-                realHumidityTextView.text = "${weather.current.humidity}%"
-                dewPointTextView.text = "현재 이슬점이 ${weather.current.dewPoint.roundToInt()}°입니다."
-                realVisibilityTextView.text = "${weather.current.visibility/1000}KM"
-                tempDestinationTv.text = "${weather.current.temp.roundToInt()}°|${weather.current.weather.first().description}"
-
+                    tempTv.text = "${weather.current.temp.roundToInt()}°"
+                    weatherDestinationTv.text = weather.current.weather.first().description
+                    maxTempTv.text = "최고:${weather.daily.first().temp.maxTemp.roundToInt()}°"
+                    minTempTv.text = "최저:${weather.daily.first().temp.minTemp.roundToInt()}°"
+                    val simpleDataFormat = SimpleDateFormat("HH:mm", Locale.KOREA)
+                    sunriseTimeTextView.text = simpleDataFormat.format(weather.current.sunrise * 1000L)
+                    sunsetTimeTextView.text = "일몰: ${simpleDataFormat.format(weather.current.sunset * 1000L)}"
+                    windTimeTextView.text = "${weather.current.windSpeed.roundToInt()}m/s"
+                    realFeelTempTextView.text = "${weather.current.feelsLike.roundToInt()}°"
+                    realHumidityTextView.text = "${weather.current.humidity}%"
+                    dewPointTextView.text = "현재 이슬점이 ${weather.current.dewPoint.roundToInt()}°입니다."
+                    realVisibilityTextView.text = "${weather.current.visibility/1000}KM"
+                    tempDestinationTv.text = "${weather.current.temp.roundToInt()}°|${weather.current.weather.first().description}"
+                }
                 Glide.with(root)
                     .asGif()
                     .fitCenter()
@@ -71,17 +72,18 @@ class WeatherAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        onPageChangeListener(currentList[position])
         holder.bind(currentList[position])
     }
 
     companion object{
         val diffUtil = object : DiffUtil.ItemCallback<Favorite>(){
             override fun areItemsTheSame(oldItem: Favorite, newItem: Favorite): Boolean {
-                TODO("Not yet implemented")
+                return oldItem.id == newItem.id
             }
 
             override fun areContentsTheSame(oldItem: Favorite, newItem: Favorite): Boolean {
-                TODO("Not yet implemented")
+                return oldItem.location == newItem.location
             }
         }
     }
