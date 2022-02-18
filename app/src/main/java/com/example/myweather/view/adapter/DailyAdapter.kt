@@ -22,11 +22,7 @@ class DailyAdapter:ListAdapter<DailyWeatherModel,DailyAdapter.ViewHolder>(diffUt
             binding.dailyItemMaxTempTv.text = "${item.temp.maxTemp.roundToInt()}°"
             binding.dailyItemMinTempTv.text ="${item.temp.minTemp.roundToInt()}°"
             binding.dailySeekbar.isEnabled = false
-
-            val iconUrl = "http://openweathermap.org/img/wn/${item.weather.first().icon}@2x.png"
-            Glide.with(binding.root)
-                .load(iconUrl)
-                .into(binding.dailyItemWeatherIconIv)
+            binding.dailyItemWeatherIconIv.text = item.weather.first().main.emoji
         }
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DailyAdapter.ViewHolder {

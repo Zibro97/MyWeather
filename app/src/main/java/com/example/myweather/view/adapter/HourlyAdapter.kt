@@ -23,11 +23,7 @@ class HourlyAdapter : ListAdapter<HourlyWeatherModel,HourlyAdapter.ViewHolder>(d
                 val simpleDataFormat = SimpleDateFormat("HH시", Locale.KOREA)
                 datetimeHourlyWeather.text =simpleDataFormat.format(hourly.dt * 1000L)
                 tempHourlyWeather.text = "${hourly.temp.roundToInt()}°"
-
-                val iconUrl = "http://openweathermap.org/img/wn/${hourly.weather.first().icon}@2x.png"
-                Glide.with(binding.root)
-                    .load(iconUrl)
-                    .into(iconHourlyWeather)
+                iconHourlyWeather.text = hourly.weather.first().main.emoji
             }
         }
     }

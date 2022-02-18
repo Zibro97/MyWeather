@@ -151,7 +151,6 @@
                         android:textColor="@color/white"
                         android:textSize="15sp"
                         android:textStyle="bold"
-                        app:drawableStartCompat="@drawable/ic_time_24"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -184,7 +183,6 @@
                         android:textColor="@color/white"
                         android:textSize="15sp"
                         android:textStyle="bold"
-                        app:drawableStartCompat="@drawable/ic_daily_weather"
                         app:layout_constraintBottom_toTopOf="@id/daily_rv"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -219,7 +217,6 @@
                         android:text="@string/sunrise_text"
                         android:textSize="15sp"
                         android:textStyle="bold"
-                        app:drawableStartCompat="@drawable/ic_baseline_wb_sunny_24"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -281,7 +278,6 @@
                         android:text="@string/wind_text"
                         android:textSize="15sp"
                         android:textStyle="bold"
-                        app:drawableStartCompat="@drawable/ic_baseline_air_24"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -330,7 +326,6 @@
                         android:text="@string/feel_temp_text"
                         android:textSize="15sp"
                         android:textStyle="bold"
-                        app:drawableStartCompat="@drawable/ic_baseline_temperature_24"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -379,7 +374,6 @@
                         android:text="@string/humidity_text"
                         android:textSize="15sp"
                         android:textStyle="bold"
-                        app:drawableStartCompat="@drawable/ic_baseline_water_drop_24"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -441,7 +435,6 @@
                         android:text="@string/visibility_text"
                         android:textSize="15sp"
                         android:textStyle="bold"
-                        app:drawableStartCompat="@drawable/ic_baseline_remove_red_eye_24"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -487,10 +480,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
-                        android:text="@string/snow_rain_text"
+                        android:text="@string/rain_text"
                         android:textSize="15sp"
                         android:textStyle="bold"
-                        app:drawableStartCompat="@drawable/ic_baseline_severe_cold_24"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 

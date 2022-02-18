@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         />
-    <ImageView
+    <TextView
         android:id="@+id/daily_item_weather_icon_iv"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
@@ -27,7 +27,17 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/daily_item_day_tv"
         app:layout_constraintEnd_toStartOf="@id/daily_item_min_temp_tv"
+        tools:text="☀️"
         />
+    <!--<ImageView
+        android:id="@+id/daily_item_weather_icon_iv"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/daily_item_day_tv"
+        app:layout_constraintEnd_toStartOf="@id/daily_item_min_temp_tv"
+        />-->
     <TextView
         android:id="@+id/daily_item_min_temp_tv"
         android:layout_width="wrap_content"

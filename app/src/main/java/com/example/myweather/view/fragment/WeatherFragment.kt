@@ -69,10 +69,7 @@ class WeatherFragment : Fragment() {
 
     //location 개수
     private var locationCnt = 0
-    //db location list
-    private var favoriteList = mutableListOf<Favorite>()
 
-    private var weather:WeatherDTO? = null
 
     //위치 권한
     private val locationPermissionRequest = registerForActivityResult(
@@ -116,12 +113,6 @@ class WeatherFragment : Fragment() {
         requestPermission()
         initViews()
         liveDatas()
-    }
-    override fun onStop() {
-        super.onStop()
-        Log.d("TAG", "onStop: ")
-        favoriteList.clear()
-        weatherList.clear()
     }
     override fun onDestroy() {
         super.onDestroy()
@@ -197,28 +188,27 @@ class WeatherFragment : Fragment() {
     //viewPager 초기화 및 날씨 정보 넘겨주는 함수
     @SuppressLint("NotifyDataSetChanged")
     private fun initViews(){
-        context?.let { context->
-            weatherAdapter = WeatherAdapter(onPageChangeListener = { favorite ->
-                viewModel.getWeather(latitude = favorite.latitude,longitude = favorite.longitude)
-            })
-            with(binding){
-                viewPager.adapter = weatherAdapter
-                viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
-                indicatorWeather.setViewPager(viewPager)
-                indicatorWeather.createIndicators(locationCnt,0)
-                viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
-                    override fun onPageSelected(position: Int) {
-                        super.onPageSelected(position)
-                        weatherAdapter.notifyItemChanged(position)
-                        indicatorWeather.animatePageSelected(position)
-                    }
-                })
-                //하단 탭의 즐겨찾기 리스트 버튼 클릭시 이벤트
-                favoriteListImageButton.setOnClickListener {
-                    navController.navigate(R.id.action_weatherContainer_to_favoriteContainer)
+        weatherAdapter = WeatherAdapter(onPageChangeListener = { favorite ->
+            viewModel.getWeather(latitude = favorite.latitude,longitude = favorite.longitude)
+        })
+        with(binding){
+            viewPager.adapter = weatherAdapter
+            viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+            viewPager.setCurrentItem(0,true)
+            indicatorWeather.setViewPager(viewPager)
+            indicatorWeather.createIndicators(locationCnt,0)
+            viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    weatherAdapter.notifyItemChanged(position)
+                    indicatorWeather.animatePageSelected(position)
                 }
-                progressBar.visibility = View.GONE
+            })
+            //하단 탭의 즐겨찾기 리스트 버튼 클릭시 이벤트
+            favoriteListImageButton.setOnClickListener {
+                navController.navigate(R.id.action_weatherContainer_to_favoriteContainer)
             }
+            progressBar.visibility = View.GONE
         }
     }
     //db에 저장된 위치 가져오는 함수

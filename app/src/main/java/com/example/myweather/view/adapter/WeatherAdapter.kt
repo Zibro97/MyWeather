@@ -1,8 +1,6 @@
 package com.example.myweather.view.adapter
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -44,7 +42,7 @@ class WeatherAdapter(
                     dailyAdapter.submitList(weather.daily)
 
                     tempTv.text = "${weather.current.temp.roundToInt()}°"
-                    weatherDestinationTv.text = weather.current.weather.first().description
+                    weatherDestinationTv.text = weather.current.weather.first().main.label
                     maxTempTv.text = "최고:${weather.daily.first().temp.maxTemp.roundToInt()}°"
                     minTempTv.text = "최저:${weather.daily.first().temp.minTemp.roundToInt()}°"
                     val simpleDataFormat = SimpleDateFormat("HH:mm", Locale.KOREA)
@@ -55,14 +53,29 @@ class WeatherAdapter(
                     realHumidityTextView.text = "${weather.current.humidity}%"
                     dewPointTextView.text = "현재 이슬점이 ${weather.current.dewPoint.roundToInt()}°입니다."
                     realVisibilityTextView.text = "${weather.current.visibility/1000}KM"
-                    tempDestinationTv.text = "${weather.current.temp.roundToInt()}°|${weather.current.weather.first().description}"
+                    tempDestinationTv.text = "${weather.current.temp.roundToInt()}°|${weather.current.weather.first().main.label}"
+                    when(weather.current.weather.first().main.label){
+                        "눈" -> {
+                            snowRainTextView.text = root.context.resources.getString(R.string.snow_text)
+                            realSnowRainTextView.text =
+                                if(weather.current.snow ==null) "0mm"
+                                else "${weather.current.snow.h}mm"
+                        }
+                        else -> {
+                            snowRainTextView.text = root.context.resources.getString(R.string.rain_text)
+                            realSnowRainTextView.text =
+                                if(weather.current.rain ==null) "0mm"
+                                else "${weather.current.rain.h}mm"
+                        }
+                    }
+
+                    Glide.with(root)
+                        .asGif()
+                        .fitCenter()
+                        .load(weather.current.weather.first().main.background)
+                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                        .into(binding.weatherBackground)
                 }
-                Glide.with(root)
-                    .asGif()
-                    .fitCenter()
-                    .load(R.drawable.ic_cloudy_background)
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .into(binding.weatherBackground)
             }
         }
     }

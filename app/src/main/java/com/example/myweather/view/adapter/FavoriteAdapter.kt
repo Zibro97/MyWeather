@@ -9,9 +9,14 @@ import com.example.myweather.databinding.ItemFavoriteBinding
 import com.example.myweather.model.favorite.Favorite
 
 //room에 있는 관심 지역 보여주는 RecyclerView
-class FavoriteAdapter: ListAdapter<Favorite, FavoriteAdapter.ViewHolder>(diffUtil) {
+class FavoriteAdapter(
+    val onItemClick : (Favorite) -> Unit
+): ListAdapter<Favorite, FavoriteAdapter.ViewHolder>(diffUtil) {
     inner class ViewHolder(private val binding:ItemFavoriteBinding):RecyclerView.ViewHolder(binding.root){
         fun bind(item: Favorite){
+            binding.root.setOnClickListener{
+                onItemClick(item)
+            }
             binding.itemTitleTextView.text = item.location
             if(item.location != "나의 위치") binding.countryTextView.text = item.location
         }

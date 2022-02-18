@@ -20,5 +20,10 @@
         android:id="@+id/favoriteContainer"
         android:name="com.example.myweather.view.fragment.FavoriteFragment"
         android:label="fragment_favorite"
-        tools:layout="@layout/fragment_favorite"/>
+        tools:layout="@layout/fragment_favorite">
+        <action
+            android:id="@+id/action_favoriteContainer_to_weatherContainer"
+            app:destination="@id/weatherContainer"
+            />
+    </fragment>
 </navigation>

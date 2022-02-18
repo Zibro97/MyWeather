@@ -13,6 +13,8 @@ import android.widget.Adapter
 import android.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myweather.R
 import com.example.myweather.databinding.FragmentFavoriteBinding
@@ -29,6 +31,8 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
     private lateinit var locationAdapter : LocationAdapter
     //viewModel
     private val viewModel : FavoriteViewModel by viewModels()
+    //navigation Controller
+    private lateinit var navController: NavController
 
     //Layout을 inflate하는 곳
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -39,6 +43,7 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
     //onCreateView에서 반환된 View객체의 초기값 설정, LiveData옵저빙, Adapter 설정 등등하는 곳
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        navController = Navigation.findNavController(view)
 
         initViews()
         initRecyclerView()
@@ -60,29 +65,26 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
             searchView.clearFocus()
         }
         //searchview 포커싱 이벤트
-        searchView.setOnQueryTextFocusChangeListener(object : View.OnFocusChangeListener{
-            override fun onFocusChange(v: View?, hasFocus: Boolean) {
-                //searchView에 포커싱에따라 visible 처리
-                favoriteRecyclerView.visibility = VISIBLE
-                if(hasFocus){
-                    settingsImageButton.visibility = GONE
-                    toolbarTextView.visibility =GONE
-                    searchCanelButton.visibility = VISIBLE
-                    searchResultRv.visibility = VISIBLE
-                    favoriteRecyclerView.alpha = 0.3F
-                }else{
-                    settingsImageButton.visibility = VISIBLE
-                    toolbarTextView.visibility = VISIBLE
-                    searchCanelButton.visibility = GONE
-                    searchResultRv.visibility = GONE
-                    searchIcon.visibility = GONE
-                    noResultDescriptionTextView.visibility = GONE
-                    errorDescriptionSearchTextView.visibility=GONE
-                    favoriteRecyclerView.alpha = 1.0F
-                    locationAdapter.submitList(listOf())
-                }
+        searchView.setOnQueryTextFocusChangeListener { _, hasFocus -> //searchView에 포커싱에따라 visible 처리
+            favoriteRecyclerView.visibility = VISIBLE
+            if (hasFocus) {
+                settingsImageButton.visibility = GONE
+                toolbarTextView.visibility = GONE
+                searchCanelButton.visibility = VISIBLE
+                searchResultRv.visibility = VISIBLE
+                favoriteRecyclerView.alpha = 0.3F
+            } else {
+                settingsImageButton.visibility = VISIBLE
+                toolbarTextView.visibility = VISIBLE
+                searchCanelButton.visibility = GONE
+                searchResultRv.visibility = GONE
+                searchIcon.visibility = GONE
+                noResultDescriptionTextView.visibility = GONE
+                errorDescriptionSearchTextView.visibility = GONE
+                favoriteRecyclerView.alpha = 1.0F
+                locationAdapter.submitList(listOf())
             }
-        })
+        }
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             //검색 버튼 눌렀을 시 이벤트
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -107,13 +109,19 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
         //검색 결과 RecyclerView
         locationAdapter = LocationAdapter(onClickItem = { location ->
             context?.let { context ->
-                viewModel.insertLocation(context = context,location = location.title,latitude = location.point.y,longitude = location.point.x)
+                var city:String? = null
+                location.title.split(" ").forEach{ s->
+                    if(s.contains("시")) city = s
+                }
+                viewModel.insertLocation(context = context,location = city!!,latitude = location.point.y,longitude = location.point.x)
             }
         })
         binding.searchResultRv.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
         binding.searchResultRv.adapter = locationAdapter
         //즐겨찾기 목록 RecyclerView
-        favoriteAdapter = FavoriteAdapter()
+        favoriteAdapter = FavoriteAdapter(onItemClick = { favorite ->
+            navController.navigate(R.id.action_favoriteContainer_to_weatherContainer)
+        })
         binding.favoriteRecyclerView.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
         binding.favoriteRecyclerView.adapter = favoriteAdapter
     }
