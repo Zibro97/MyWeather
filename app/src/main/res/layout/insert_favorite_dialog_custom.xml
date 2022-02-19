@@ -16,8 +16,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/no_insert_button"
+        android:textColor="@color/gray600"
         tools:text="광명시를 추가하겠습니까?"
-        tools:textColor="@color/black"
         android:padding="30dp"
         />
     <Button

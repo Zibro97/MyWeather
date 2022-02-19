@@ -137,17 +137,6 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
         binding.favoriteRecyclerView.adapter = favoriteAdapter
     }
 
-    private fun showDialog(){
-        context?.run {
-            val dialog = Dialog(this).apply {
-                requestWindowFeature(Window.FEATURE_NO_TITLE)
-                setContentView(R.layout.insert_favorite_dialog_custom)
-            }
-            dialog.show()
-            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        }
-    }
-
     private fun getLocations(){
         context?.let { context->
             viewModel.getAllLocation(context)
@@ -164,7 +153,9 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
     private fun liveData(){
         //db 즐겨찾기 LiveData
         viewModel.locationLiveData.observe(viewLifecycleOwner,{ favorite->
+            Log.d("TAG", "liveData: dg")
             favoriteAdapter.submitList(favorite)
+            favoriteAdapter.notifyDataSetChanged()
         })
         //검색 결과 LiveData
         viewModel.searchLocateLiveData.observe(viewLifecycleOwner,{ locations->

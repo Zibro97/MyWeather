@@ -33,7 +33,7 @@ open class BaseViewModel : ViewModel() {
     fun getAllLocation(context: Context){
         viewModelScope.launch {
             val favorite = DatabaseProvider.getAppDatabase(context).favoriteDao().getAll()
-            locationLiveData.value = favorite
+            locationLiveData.postValue(favorite)
         }
     }
     //관심지역 or 현재 위치 저장하기 위한 함수
