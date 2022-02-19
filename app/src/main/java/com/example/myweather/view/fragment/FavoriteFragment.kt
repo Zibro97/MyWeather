@@ -1,6 +1,9 @@
 package com.example.myweather.view.fragment
 
 import android.annotation.SuppressLint
+import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -9,21 +12,27 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.Adapter
 import android.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph
 import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myweather.R
 import com.example.myweather.databinding.FragmentFavoriteBinding
+import com.example.myweather.databinding.InsertFavoriteDialogCustomBinding
 import com.example.myweather.view.adapter.FavoriteAdapter
 import com.example.myweather.view.adapter.LocationAdapter
 import com.example.myweather.viewmodel.FavoriteViewModel
 
 class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
 
+    //FavoriteFragment 바인딩 객체
     private var _binding : FragmentFavoriteBinding? = null
     private val binding get() = _binding!!
     //지역 목록 RecyclerView에 바인딩시킬 Adapter
@@ -37,6 +46,7 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
     //Layout을 inflate하는 곳
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentFavoriteBinding.inflate(inflater,container,false)
+
         return binding.root
     }
 
@@ -49,6 +59,10 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
         initRecyclerView()
         getLocations()
         liveData()
+    }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
     private fun initViews() = with(binding){
         //우측 상단의 설정 버튼 클릭시 팝업 메뉴 띄우기
@@ -108,12 +122,9 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
     private fun initRecyclerView() {
         //검색 결과 RecyclerView
         locationAdapter = LocationAdapter(onClickItem = { location ->
-            context?.let { context ->
-                var city:String? = null
-                location.title.split(" ").forEach{ s->
-                    if(s.contains("시")) city = s
-                }
-                viewModel.insertLocation(context = context,location = city!!,latitude = location.point.y,longitude = location.point.x)
+            view?.let { view->
+                val action  = FavoriteFragmentDirections.actionFavoriteContainerToConfirmInsertDialog(location)
+                view.findNavController().navigate(action)
             }
         })
         binding.searchResultRv.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
@@ -124,6 +135,17 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
         })
         binding.favoriteRecyclerView.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
         binding.favoriteRecyclerView.adapter = favoriteAdapter
+    }
+
+    private fun showDialog(){
+        context?.run {
+            val dialog = Dialog(this).apply {
+                requestWindowFeature(Window.FEATURE_NO_TITLE)
+                setContentView(R.layout.insert_favorite_dialog_custom)
+            }
+            dialog.show()
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        }
     }
 
     private fun getLocations(){

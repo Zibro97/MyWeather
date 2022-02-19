@@ -1,16 +1,21 @@
 <resources>
     <string name="app_name">My Weather</string>
     <!-- TODO: Remove or change this placeholder text -->
+    <!-- favorite fragment -->
     <string name="favorite">날씨</string>
-    <string name="hourly_weather_textview">🕑시간별 일기예보</string>
-    <string name="daily_weather_textview">🗓일주일간 일기예보</string>
     <string name="toolbar_text">날씨</string>
-    <string name="setting_button">setting</string>
+
+    <!-- item favorite -->
     <string name="item_background_image_view">item_background_image</string>
-    <string name="description_hourly_icon">날씨 icon</string>
-    <string name="decription_fragment_backgournd_image_view">fragment_backgournd_image_view</string>
+
+    <!-- settings -->
+    <string name="setting_button">setting</string>
     <string name="edit_list_popup_menu">목록 편집</string>
     <string name="notification_popup_menu">알림</string>
+
+    <!-- weather fragment -->
+    <string name="hourly_weather_textview">🕑시간별 일기예보</string>
+    <string name="daily_weather_textview">🗓일주일간 일기예보</string>
     <string name="sunrise_text">☀️일출</string>
     <string name="wind_text">💭바람</string>
     <string name="feel_temp_text">🌡체감 온도</string>
@@ -18,10 +23,16 @@
     <string name="visibility_text">👀가시거리</string>
     <string name="snow_text">🌨적설량</string>
     <string name="rain_text">🌧강우량</string>
+    <string name="decription_fragment_backgournd_image_view">fragment_backgournd_image_view</string>
+
     <string name="to_favorite_fragment_button">to_favorite_fragment_button</string>
     <string name="to_weather_fragment_button">to_weather_fragment_button</string>
     <string name="to_map_button">to_map_button</string>
     <string name="error_text_view">예기치 못한 문제가 발생했습니다.😭\n잠시 후 다시 시도해주세요.</string>
     <string name="search_cancel_button">취소</string>
     <string name="search_error_description_text_view">해당 검색에 대한 결과가 없습니다.😭</string>
+
+    <!--  dialog string  -->
+    <string name="dialog_no_button_text">아니오</string>
+    <string name="dialog_yes_button_text">네</string>
 </resources>

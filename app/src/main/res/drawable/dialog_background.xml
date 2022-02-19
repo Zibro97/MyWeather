@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--배경색-->
+    <solid android:color="@color/white"/>
+    <!-- 테투리 -->
+    <stroke
+        android:color="@color/white" android:width="2dp"
+        />
+    <!-- 모서리 -->
+    <corners android:radius="15dp"/>
+</shape>

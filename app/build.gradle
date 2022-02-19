@@ -2,6 +2,8 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
+    id("androidx.navigation.safeargs.kotlin")
+    id 'kotlin-parcelize'
 }
 //Properties를 선언하고 local.properties에 새로 등록된 api_key값을 load하여
 //BuildConfig에 저장
