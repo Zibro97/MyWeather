@@ -6,15 +6,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.example.myweather.common.util.ItemDiffUtil
 import com.example.myweather.databinding.ItemHourlyBinding
 import com.example.myweather.model.weather.HourlyWeatherModel
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 
-class HourlyAdapter : ListAdapter<HourlyWeatherModel,HourlyAdapter.ViewHolder>(diffUtil) {
+class HourlyAdapter : ListAdapter<HourlyWeatherModel,HourlyAdapter.ViewHolder>(ItemDiffUtil.getInstance().getDiffUtil(HourlyWeatherModel::class.java)) {
     inner class ViewHolder(private val binding: ItemHourlyBinding) : RecyclerView.ViewHolder(binding.root){
         //날씨 데이터 바인딩
         @SuppressLint("SetTextI18n")
@@ -33,17 +32,16 @@ class HourlyAdapter : ListAdapter<HourlyWeatherModel,HourlyAdapter.ViewHolder>(d
     override fun onBindViewHolder(holder: HourlyAdapter.ViewHolder, position: Int) {
         holder.bind(currentList[position])
     }
-    companion object{
-        private val diffUtil = object : DiffUtil.ItemCallback<HourlyWeatherModel>(){
-            //이미 있는 Item인지 체크
-            override fun areItemsTheSame(oldItem: HourlyWeatherModel, newItem: HourlyWeatherModel): Boolean {
-                return oldItem == newItem
-            }
-            //같은 내용의 Item이 있는지 체크
-            override fun areContentsTheSame(oldItem: HourlyWeatherModel, newItem: HourlyWeatherModel): Boolean {
-                return oldItem == newItem
-            }
-
-        }
-    }
+//    companion object{
+//        private val diffUtil = object : DiffUtil.ItemCallback<HourlyWeatherModel>(){
+//            //이미 있는 Item인지 체크
+//            override fun areItemsTheSame(oldItem: HourlyWeatherModel, newItem: HourlyWeatherModel): Boolean {
+//                return oldItem == newItem
+//            }
+//            //같은 내용의 Item이 있는지 체크
+//            override fun areContentsTheSame(oldItem: HourlyWeatherModel, newItem: HourlyWeatherModel): Boolean {
+//                return oldItem == newItem
+//            }
+//        }
+//    }
 }

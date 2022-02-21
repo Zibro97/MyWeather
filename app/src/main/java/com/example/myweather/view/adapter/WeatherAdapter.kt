@@ -10,8 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.myweather.R
+import com.example.myweather.common.util.ItemDiffUtil
 import com.example.myweather.databinding.ItemWeatherBinding
 import com.example.myweather.model.favorite.Favorite
+import com.example.myweather.model.weather.HourlyWeatherModel
 import com.example.myweather.model.weather.WeatherDTO
 import java.text.SimpleDateFormat
 import java.util.*
@@ -20,7 +22,9 @@ import kotlin.math.roundToInt
 //ViewPager Adapter
 class WeatherAdapter(
     val onPageChangeListener: (Favorite) -> Unit
-): ListAdapter<Favorite,WeatherAdapter.ViewHolder>(diffUtil){
+): ListAdapter<Favorite,WeatherAdapter.ViewHolder>(
+    ItemDiffUtil.getInstance().getDiffUtil(
+        Favorite::class.java)){
     var weather : WeatherDTO? = null
     inner class ViewHolder(private val binding:ItemWeatherBinding):RecyclerView.ViewHolder(binding.root){
         private val hourlyAdapter = HourlyAdapter()
@@ -89,15 +93,15 @@ class WeatherAdapter(
         holder.bind(currentList[position])
     }
 
-    companion object{
-        val diffUtil = object : DiffUtil.ItemCallback<Favorite>(){
-            override fun areItemsTheSame(oldItem: Favorite, newItem: Favorite): Boolean {
-                return oldItem.id == newItem.id
-            }
-
-            override fun areContentsTheSame(oldItem: Favorite, newItem: Favorite): Boolean {
-                return oldItem.location == newItem.location
-            }
-        }
-    }
+//    companion object{
+//        val diffUtil = object : DiffUtil.ItemCallback<Favorite>(){
+//            override fun areItemsTheSame(oldItem: Favorite, newItem: Favorite): Boolean {
+//                return oldItem.id == newItem.id
+//            }
+//
+//            override fun areContentsTheSame(oldItem: Favorite, newItem: Favorite): Boolean {
+//                return oldItem.location == newItem.location
+//            }
+//        }
+//    }
 }

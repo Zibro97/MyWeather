@@ -1,19 +1,18 @@
 package com.example.myweather.view.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.myweather.common.util.ItemDiffUtil
 import com.example.myweather.databinding.ItemLocationBinding
 import com.example.myweather.model.vworld.Location
 
 //지역 검색 결과 RecyclerView Adapter
 class LocationAdapter(
     val onClickItem : (Location) -> Unit
-):ListAdapter<Location,LocationAdapter.ViewHolder>(diffUtil) {
+):ListAdapter<Location,LocationAdapter.ViewHolder>(ItemDiffUtil.getInstance().getDiffUtil(Location::class.java)) {
     inner class ViewHolder(private val binding:ItemLocationBinding):RecyclerView.ViewHolder(binding.root){
         fun bind(location:Location){
             binding.locationTextView.text = location.title
@@ -31,15 +30,15 @@ class LocationAdapter(
         holder.bind(currentList[position])
     }
 
-    companion object{
-        private val diffUtil = object : DiffUtil.ItemCallback<Location>(){
-            override fun areItemsTheSame(oldItem: Location, newItem: Location): Boolean {
-                return oldItem.id == newItem.id
-            }
-            override fun areContentsTheSame(oldItem: Location, newItem: Location): Boolean {
-                return oldItem.title == newItem.title
-            }
-
-        }
-    }
+//    companion object{
+//        private val diffUtil = object : DiffUtil.ItemCallback<Location>(){
+//            override fun areItemsTheSame(oldItem: Location, newItem: Location): Boolean {
+//                return oldItem.id == newItem.id
+//            }
+//            override fun areContentsTheSame(oldItem: Location, newItem: Location): Boolean {
+//                return oldItem.title == newItem.title
+//            }
+//
+//        }
+//    }
 }
