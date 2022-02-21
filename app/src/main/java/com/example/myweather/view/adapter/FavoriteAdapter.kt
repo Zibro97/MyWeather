@@ -1,5 +1,6 @@
 package com.example.myweather.view.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -10,12 +11,17 @@ import com.example.myweather.model.favorite.Favorite
 
 //room에 있는 관심 지역 보여주는 RecyclerView
 class FavoriteAdapter(
-    val onItemClick : (Favorite) -> Unit
+    val onItemClick : (Favorite) -> Unit,
+    val onRemoveClick : (Favorite) -> Unit
 ): ListAdapter<Favorite, FavoriteAdapter.ViewHolder>(diffUtil) {
     inner class ViewHolder(private val binding:ItemFavoriteBinding):RecyclerView.ViewHolder(binding.root){
-        fun bind(item: Favorite){
+        fun bind(item: Favorite,position: Int){
             binding.root.setOnClickListener{
                 onItemClick(item)
+            }
+            binding.itemRemove.setOnClickListener{
+                onRemoveClick(item)
+                notifyItemRemoved(position)
             }
             binding.itemTitleTextView.text = item.location
             if(item.location != "나의 위치") binding.countryTextView.text = item.location
@@ -27,7 +33,8 @@ class FavoriteAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(currentList[position])
+        holder.bind(currentList[position],position)
+
     }
 
     companion object{

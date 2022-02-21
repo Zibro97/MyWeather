@@ -35,4 +35,5 @@
     <!--  dialog string  -->
     <string name="dialog_no_button_text">아니오</string>
     <string name="dialog_yes_button_text">네</string>
+    <string name="remove">삭제</string>
 </resources>

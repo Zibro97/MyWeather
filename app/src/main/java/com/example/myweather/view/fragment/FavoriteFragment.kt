@@ -22,10 +22,13 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraph
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.myweather.R
 import com.example.myweather.databinding.FragmentFavoriteBinding
 import com.example.myweather.databinding.InsertFavoriteDialogCustomBinding
+import com.example.myweather.util.SwipeHelperCallback
 import com.example.myweather.view.adapter.FavoriteAdapter
 import com.example.myweather.view.adapter.LocationAdapter
 import com.example.myweather.viewmodel.FavoriteViewModel
@@ -33,19 +36,26 @@ import com.example.myweather.viewmodel.FavoriteViewModel
 class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
 
     //FavoriteFragment 바인딩 객체
-    private var _binding : FragmentFavoriteBinding? = null
+    private var _binding: FragmentFavoriteBinding? = null
     private val binding get() = _binding!!
+
     //지역 목록 RecyclerView에 바인딩시킬 Adapter
-    private lateinit var favoriteAdapter : FavoriteAdapter
-    private lateinit var locationAdapter : LocationAdapter
+    private lateinit var favoriteAdapter: FavoriteAdapter
+    private lateinit var locationAdapter: LocationAdapter
+
     //viewModel
-    private val viewModel : FavoriteViewModel by viewModels()
+    private val viewModel: FavoriteViewModel by viewModels()
+
     //navigation Controller
     private lateinit var navController: NavController
 
     //Layout을 inflate하는 곳
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentFavoriteBinding.inflate(inflater,container,false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
 
         return binding.root
     }
@@ -60,22 +70,24 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
         getLocations()
         liveData()
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-    private fun initViews() = with(binding){
+
+    private fun initViews() = with(binding) {
         //우측 상단의 설정 버튼 클릭시 팝업 메뉴 띄우기
-        settingsImageButton.setOnClickListener{
-            val popup = PopupMenu(context,binding.settingsImageButton)
+        settingsImageButton.setOnClickListener {
+            val popup = PopupMenu(context, binding.settingsImageButton)
 
             val inf = popup.menuInflater
-            inf.inflate(R.menu.menu_settings,popup.menu)
+            inf.inflate(R.menu.menu_settings, popup.menu)
             popup.show()
         }
         //search View 검색어 초기화,포커스 제거
         searchCanelButton.setOnClickListener {
-            searchView.setQuery("",false)
+            searchView.setQuery("", false)
             searchView.clearFocus()
         }
         //searchview 포커싱 이벤트
@@ -107,10 +119,10 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
 
             //글자가 쓰면서 발생하는 이벤트
             override fun onQueryTextChange(newText: String?): Boolean {
-                return if (newText == ""||newText==null){
+                return if (newText == "" || newText == null) {
                     binding.favoriteRecyclerView.alpha = 0.5F
                     false
-                }else{
+                } else {
                     binding.favoriteRecyclerView.alpha = 1.0F
                     viewModel.locationInfo(newText)
                     true
@@ -122,53 +134,65 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
     private fun initRecyclerView() {
         //검색 결과 RecyclerView
         locationAdapter = LocationAdapter(onClickItem = { location ->
-            view?.let { view->
-                val action  = FavoriteFragmentDirections.actionFavoriteContainerToConfirmInsertDialog(location)
+            view?.let { view ->
+                val action =
+                    FavoriteFragmentDirections.actionFavoriteContainerToConfirmInsertDialog(location)
                 view.findNavController().navigate(action)
             }
         })
-        binding.searchResultRv.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
+        binding.searchResultRv.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.searchResultRv.adapter = locationAdapter
         //즐겨찾기 목록 RecyclerView
         favoriteAdapter = FavoriteAdapter(onItemClick = { favorite ->
             navController.navigate(R.id.action_favoriteContainer_to_weatherContainer)
-        })
-        binding.favoriteRecyclerView.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
+        },   onRemoveClick = {favorite ->
+            context?.let { context->
+                viewModel.removeFavorite(context,favorite.id!!)
+            }
+        }
+        )
+        binding.favoriteRecyclerView.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.favoriteRecyclerView.adapter = favoriteAdapter
+
+        val swipeHelperCallback = SwipeHelperCallback().apply {
+            setClamp(resources.displayMetrics.widthPixels.toFloat()/4)
+        }
+        ItemTouchHelper(swipeHelperCallback).attachToRecyclerView(binding.favoriteRecyclerView)
+        binding.favoriteRecyclerView.setOnTouchListener { _,_ ->
+            swipeHelperCallback.removePreviousClamp(binding.favoriteRecyclerView)
+            false
+        }
     }
 
-    private fun getLocations(){
-        context?.let { context->
+    //즐겨찾기 해둔 지역 정보 가져오는 함수
+    private fun getLocations() {
+        context?.let { context ->
             viewModel.getAllLocation(context)
         }
     }
-    /**
-     * 1. favortieRv는 visible
-     * 2. searchResultRv, ErrorDescriptionTv 는 Gone
-     * 3. searchView에 포커스 되면 favoriteRv는 alpha 0.3, 그 위에 searchResultRv를 visible
-     * 4. 검색을 하기 시작함에 따라, 검색 결과가 있으면 ErrorDescriptionTv Gone ,searchResultRv visible,
-     * 5. 검색 결과가 없으면 ErrorDescriptionTv visible ,searchResultRv gone 처리
-     * */
+    //LiveData
     @SuppressLint("NotifyDataSetChanged")
-    private fun liveData(){
+    private fun liveData() {
         //db 즐겨찾기 LiveData
-        viewModel.locationLiveData.observe(viewLifecycleOwner,{ favorite->
+        viewModel.locationLiveData.observe(viewLifecycleOwner, { favorite ->
             Log.d("TAG", "liveData: dg")
             favoriteAdapter.submitList(favorite)
             favoriteAdapter.notifyDataSetChanged()
         })
         //검색 결과 LiveData
-        viewModel.searchLocateLiveData.observe(viewLifecycleOwner,{ locations->
+        viewModel.searchLocateLiveData.observe(viewLifecycleOwner, { locations ->
             binding.favoriteRecyclerView.visibility = GONE
-            if(locations.response.result == null){
-                with(binding){
+            if (locations.response.result == null) {
+                with(binding) {
                     searchIcon.visibility = VISIBLE
                     noResultDescriptionTextView.visibility = VISIBLE
                     errorDescriptionSearchTextView.visibility = VISIBLE
                     searchResultRv.visibility = GONE
                 }
-            }else{
-                with(binding){
+            } else {
+                with(binding) {
                     searchIcon.visibility = GONE
                     noResultDescriptionTextView.visibility = GONE
                     errorDescriptionSearchTextView.visibility = GONE

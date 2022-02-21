@@ -35,15 +35,14 @@ class CustomDialog : DialogFragment() {
 
         with(binding){
             val location = args.location
-            binding.confirmInsertText.text = "${location.title}을(를) 추가하시겠습니까?"
+            var city:String? = null
+            location.title.split(" ").forEach{ s->
+                if(s.contains("시")||s.contains("군")) city = s
+            }
+            binding.confirmInsertText.text = "${city}을(를) 추가하시겠습니까?"
             //네 버튼
             insertButton.setOnClickListener {
-                var city:String? = null
-                location.title.split(" ").forEach{ s->
-                    if(s.contains("시")||s.contains("군")) city = s
-                }
                 viewModel.insertLocation(context = root.context,location = city!!,latitude = location.point.y,longitude = location.point.x)
-                viewModel.getAllLocation(context = root.context)
                 dismiss()
             }
             //아니오 버튼

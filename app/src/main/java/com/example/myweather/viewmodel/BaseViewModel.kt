@@ -41,6 +41,7 @@ open class BaseViewModel : ViewModel() {
         viewModelScope.launch {
             val favorite = Favorite(id = null,location = location,latitude = latitude,longitude = longitude)
             DatabaseProvider.getAppDatabase(context).favoriteDao().insertFavorite(favorite)
+            getAllLocation(context)
         }
     }
 }

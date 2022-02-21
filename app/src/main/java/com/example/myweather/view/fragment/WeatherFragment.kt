@@ -34,7 +34,7 @@ import java.lang.Exception
 import kotlin.system.exitProcess
 
 /***
- * 1. 위치 권한 받아오기(FINE ,COARSE ,BACKGROUND) 
+ * 1. 위치 권한 받아오기(FINE ,COARSE ,BACKGROUND)
  * 2. 사용자 현재 위치 받아오기
  * 3. 현재 위치 Room에 저장
  * 4. Room에 저장된 현위치,관심지역 좌표 받아와서 날씨정보 받아오기
@@ -44,6 +44,7 @@ import kotlin.system.exitProcess
 class WeatherFragment : Fragment() {
     //각 위치 별 날씨 정보 리스트
     private val weatherList = mutableListOf<WeatherDTO>()
+
     //뷰 바인딩을 위한 바인딩 객체
     private var _binding: FragmentWeatherBinding? = null
     private val binding get() = _binding!!
@@ -114,6 +115,12 @@ class WeatherFragment : Fragment() {
         initViews()
         liveDatas()
     }
+
+    override fun onResume() {
+        super.onResume()
+        weatherAdapter.notifyDataSetChanged()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         cancellationTokenSource?.cancel()
@@ -147,7 +154,11 @@ class WeatherFragment : Fragment() {
                     }
                     //sharedPreference 있으면 현재위치 update
                     else {
-                        viewModel.updateCurrentLocation(context = context,latitude = location.latitude,longitude = location.longitude)
+                        viewModel.updateCurrentLocation(
+                            context = context,
+                            latitude = location.latitude,
+                            longitude = location.longitude
+                        )
                     }
                     getLatLngs()
                 }
@@ -158,6 +169,7 @@ class WeatherFragment : Fragment() {
             }
         }
     }
+
     //위치 권한 요청
     private fun requestPermission() {
         when {
@@ -185,19 +197,20 @@ class WeatherFragment : Fragment() {
             }
         }
     }
+
     //viewPager 초기화 및 날씨 정보 넘겨주는 함수
     @SuppressLint("NotifyDataSetChanged")
-    private fun initViews(){
+    private fun initViews() {
         weatherAdapter = WeatherAdapter(onPageChangeListener = { favorite ->
-            viewModel.getWeather(latitude = favorite.latitude,longitude = favorite.longitude)
+            viewModel.getWeather(latitude = favorite.latitude, longitude = favorite.longitude)
         })
-        with(binding){
+        with(binding) {
             viewPager.adapter = weatherAdapter
             viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
-            viewPager.setCurrentItem(0,true)
+            viewPager.setCurrentItem(0, true)
             indicatorWeather.setViewPager(viewPager)
-            indicatorWeather.createIndicators(locationCnt,0)
-            viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+            indicatorWeather.createIndicators(locationCnt, 0)
+            viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
                     weatherAdapter.notifyItemChanged(position)
@@ -211,26 +224,29 @@ class WeatherFragment : Fragment() {
             progressBar.visibility = View.GONE
         }
     }
+
     //db에 저장된 위치 가져오는 함수
-    private fun getLatLngs(){
-        context?.let { context->
+    private fun getLatLngs() {
+        context?.let { context ->
             viewModel.getAllLocation(context)
         }
     }
+
     @SuppressLint("NotifyDataSetChanged")
-    private fun liveDatas(){
+    private fun liveDatas() {
         //db에서 지역 가져오는 LiveData
-        viewModel.locationLiveData.observe(viewLifecycleOwner,{ favorites->
+        viewModel.locationLiveData.observe(viewLifecycleOwner, { favorites ->
             weatherAdapter.submitList(favorites)
         })
         //db에서 가져온 지역의 날씨 정보를 가져와 리스트에 담음
-        viewModel.weatherLiveData.observe(viewLifecycleOwner,{ weather ->
+        viewModel.weatherLiveData.observe(viewLifecycleOwner, { weather ->
             weatherAdapter.weather = weather
         })
-        viewModel.locationCntLiveData.observe(viewLifecycleOwner,{ cnt->
+        viewModel.locationCntLiveData.observe(viewLifecycleOwner, { cnt ->
             locationCnt = cnt
         })
     }
+
     //백그라운드 위치 권한 요청
     //Android 11이상 부터는 위치 권한 항상 허용 옵션이 포함되지 않아서
     //포그라운드 위치권한과 백그라운드 위치 권한을 동시에 요청하면 시스템이 요청을 무시하고 앱에 어떤 권한도 부여하지 않음
@@ -244,6 +260,7 @@ class WeatherFragment : Fragment() {
             2
         )
     }
+
     //교육용 팝업
     private fun showPermissionContextPopup() {
         AlertDialog.Builder(mActivity)

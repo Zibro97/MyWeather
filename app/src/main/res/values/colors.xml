@@ -9,6 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
     <color name="transparent_10">#26000000</color>
+    <color name="red">#B71C1C</color>
 
     <!--gray-->
     <color name="gray_97">#b9b9c3</color>
