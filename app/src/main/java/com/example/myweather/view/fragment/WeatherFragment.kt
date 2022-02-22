@@ -42,9 +42,6 @@ import kotlin.system.exitProcess
  * 6. 하단 circleIndicator
  */
 class WeatherFragment : Fragment() {
-    //각 위치 별 날씨 정보 리스트
-    private val weatherList = mutableListOf<WeatherDTO>()
-
     //뷰 바인딩을 위한 바인딩 객체
     private var _binding: FragmentWeatherBinding? = null
     private val binding get() = _binding!!
@@ -116,8 +113,10 @@ class WeatherFragment : Fragment() {
         liveDatas()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onResume() {
         super.onResume()
+        getLocation()
         weatherAdapter.notifyDataSetChanged()
     }
 

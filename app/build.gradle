@@ -81,5 +81,6 @@ dependencies {
     //lifecycleOwnder in a Service
     implementation("androidx.lifecycle:lifecycle-service:2.4.0")
 
+    //cirecleindicator
     implementation 'me.relex:circleindicator:2.1.4'
 }

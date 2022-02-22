@@ -1,9 +1,6 @@
 package com.example.myweather.view.fragment
 
 import android.annotation.SuppressLint
-import android.app.Dialog
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -12,22 +9,16 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.view.Window
-import android.widget.Adapter
 import android.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
-import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
-import androidx.navigation.NavGraph
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.myweather.R
 import com.example.myweather.databinding.FragmentFavoriteBinding
-import com.example.myweather.databinding.InsertFavoriteDialogCustomBinding
 import com.example.myweather.util.SwipeHelperCallback
 import com.example.myweather.view.adapter.FavoriteAdapter
 import com.example.myweather.view.adapter.LocationAdapter
@@ -131,6 +122,7 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
         })
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun initRecyclerView() {
         //검색 결과 RecyclerView
         locationAdapter = LocationAdapter(onClickItem = { location ->
@@ -144,26 +136,20 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.searchResultRv.adapter = locationAdapter
         //즐겨찾기 목록 RecyclerView
-        favoriteAdapter = FavoriteAdapter(onItemClick = { favorite ->
-            navController.navigate(R.id.action_favoriteContainer_to_weatherContainer)
-        },   onRemoveClick = {favorite ->
-            context?.let { context->
-                viewModel.removeFavorite(context,favorite.id!!)
+        favoriteAdapter = FavoriteAdapter(
+            onItemClick = { favorite ->
+                navController.navigate(R.id.action_favoriteContainer_to_weatherContainer)
+            },
+            weatherOfItem = { favorite ->
+                viewModel.getWeather(latitude = favorite.latitude,longitude = favorite.longitude)
             }
-        }
         )
         binding.favoriteRecyclerView.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.favoriteRecyclerView.adapter = favoriteAdapter
 
-        val swipeHelperCallback = SwipeHelperCallback().apply {
-            setClamp(resources.displayMetrics.widthPixels.toFloat()/4)
-        }
+        val swipeHelperCallback = SwipeHelperCallback()
         ItemTouchHelper(swipeHelperCallback).attachToRecyclerView(binding.favoriteRecyclerView)
-        binding.favoriteRecyclerView.setOnTouchListener { _,_ ->
-            swipeHelperCallback.removePreviousClamp(binding.favoriteRecyclerView)
-            false
-        }
     }
 
     //즐겨찾기 해둔 지역 정보 가져오는 함수
@@ -201,6 +187,9 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
                 locationAdapter.submitList(locations.response.result.items)
             }
             locationAdapter.notifyDataSetChanged()
+        })
+        viewModel.weatherLiveData.observe(viewLifecycleOwner,{ weather->
+            favoriteAdapter.weather = weather
         })
     }
 }

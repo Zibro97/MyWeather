@@ -1,30 +1,53 @@
 package com.example.myweather.view.adapter
 
-import android.util.Log
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.myweather.databinding.ItemFavoriteBinding
 import com.example.myweather.model.favorite.Favorite
+import com.example.myweather.model.weather.WeatherDTO
+import java.text.SimpleDateFormat
+import kotlin.math.roundToInt
 
 //room에 있는 관심 지역 보여주는 RecyclerView
 class FavoriteAdapter(
     val onItemClick : (Favorite) -> Unit,
-    val onRemoveClick : (Favorite) -> Unit
+    val weatherOfItem : (Favorite) -> Unit
 ): ListAdapter<Favorite, FavoriteAdapter.ViewHolder>(diffUtil) {
+    var weather : WeatherDTO? = null
     inner class ViewHolder(private val binding:ItemFavoriteBinding):RecyclerView.ViewHolder(binding.root){
-        fun bind(item: Favorite,position: Int){
-            binding.root.setOnClickListener{
+        @SuppressLint("SimpleDateFormat", "SetTextI18n")
+        fun bind(item: Favorite) = with(binding){
+            val currentTime = SimpleDateFormat("HH:mm")
+            root.setOnClickListener{
                 onItemClick(item)
             }
-            binding.itemRemove.setOnClickListener{
-                onRemoveClick(item)
-                notifyItemRemoved(position)
+            itemTitleTextView.text = item.location
+            weather?.let { weather->
+                descriptionTextView.text = weather.current.weather.first().description
+                currentTempTextView.text = "${weather.current.temp.roundToInt()}°"
+                maxMinTempTextView.text ="최고:${weather.daily.first().temp.maxTemp.roundToInt()}° 최저:${weather.daily.first().temp.minTemp.roundToInt()}°"
+
+                Glide.with(root)
+                    .asGif()
+                    .fitCenter()
+                    .load(weather.current.weather.first().main.background)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .into(itemBackgroundImageView)
             }
-            binding.itemTitleTextView.text = item.location
-            if(item.location != "나의 위치") binding.countryTextView.text = item.location
+            when(item.location){
+                "나의 위치" -> {
+                    countryTextView.text = "광명시"
+                }
+                else -> {
+                    countryTextView.text = currentTime.format(System.currentTimeMillis())
+                }
+            }
         }
     }
 
@@ -33,8 +56,8 @@ class FavoriteAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(currentList[position],position)
-
+        weatherOfItem(currentList[position])
+        holder.bind(currentList[position])
     }
 
     companion object{
