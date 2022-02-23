@@ -1,9 +1,6 @@
 package com.example.myweather.data.db
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import com.example.myweather.model.favorite.Favorite
 
 @Dao
@@ -18,8 +15,8 @@ interface FavoriteDao {
     @Insert
     suspend fun insertFavorite(favorite: Favorite)
     //즐겨찾기 삭제하는 쿼리
-    @Query("DELETE FROM favorite WHERE id == :id")
-    suspend fun delete(id : Int)
+    @Delete
+    suspend fun delete(favorite: Favorite)
     //현재위치가 등록되어있는지 확인하는 쿼리
     @Update
     suspend fun updateCurrentFavorite(favorite: Favorite)

@@ -35,7 +35,7 @@ class FavoriteAdapter(
 
                 Glide.with(root)
                     .asGif()
-                    .fitCenter()
+                    .centerCrop()
                     .load(weather.current.weather.first().main.background)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .into(itemBackgroundImageView)

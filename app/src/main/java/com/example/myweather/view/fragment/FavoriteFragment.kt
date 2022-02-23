@@ -1,6 +1,7 @@
 package com.example.myweather.view.fragment
 
 import android.annotation.SuppressLint
+import android.graphics.Canvas
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -10,6 +11,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
@@ -17,9 +19,12 @@ import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.myweather.R
 import com.example.myweather.databinding.FragmentFavoriteBinding
-import com.example.myweather.util.SwipeHelperCallback
+import com.example.myweather.model.favorite.Favorite
+import com.example.myweather.util.SwipeController
+import com.example.myweather.util.SwipeControllerActions
 import com.example.myweather.view.adapter.FavoriteAdapter
 import com.example.myweather.view.adapter.LocationAdapter
 import com.example.myweather.viewmodel.FavoriteViewModel
@@ -39,6 +44,9 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
 
     //navigation Controller
     private lateinit var navController: NavController
+
+    //Swipe Controller
+    private var swipeController :SwipeController? = null
 
     //Layout을 inflate하는 곳
     override fun onCreateView(
@@ -147,9 +155,21 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
         binding.favoriteRecyclerView.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.favoriteRecyclerView.adapter = favoriteAdapter
-
-        val swipeHelperCallback = SwipeHelperCallback()
-        ItemTouchHelper(swipeHelperCallback).attachToRecyclerView(binding.favoriteRecyclerView)
+        swipeController = SwipeController(object : SwipeControllerActions(){
+            override fun onRightClicked(position: Int) {
+                context?.let { context->
+                    viewModel.removeFavorite(context, favoriteAdapter.currentList[position])
+                    favoriteAdapter.notifyItemRemoved(position)
+                    favoriteAdapter.notifyItemRangeChanged(position,favoriteAdapter.itemCount)
+                }
+            }
+        })
+        ItemTouchHelper(swipeController!!).attachToRecyclerView(binding.favoriteRecyclerView)
+        binding.favoriteRecyclerView.addItemDecoration(object : RecyclerView.ItemDecoration(){
+            override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+                swipeController!!.onDraw(c)
+            }
+        })
     }
 
     //즐겨찾기 해둔 지역 정보 가져오는 함수
@@ -163,7 +183,7 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
     private fun liveData() {
         //db 즐겨찾기 LiveData
         viewModel.locationLiveData.observe(viewLifecycleOwner, { favorite ->
-            Log.d("TAG", "liveData: dg")
+            Log.d("TAG", "liveData: gdsag")
             favoriteAdapter.submitList(favorite)
             favoriteAdapter.notifyDataSetChanged()
         })

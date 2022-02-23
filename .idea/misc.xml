@@ -11,10 +11,12 @@
         <entry key="app/src/main/res/drawable/dialog_background.xml" value="0.21203703703703702" />
         <entry key="app/src/main/res/drawable/ic_background_search_view.xml" value="0.4046875" />
         <entry key="app/src/main/res/drawable/ic_baseline_air_24.xml" value="0.37407407407407406" />
+        <entry key="app/src/main/res/drawable/ic_baseline_close_24.xml" value="0.378974358974359" />
         <entry key="app/src/main/res/drawable/ic_baseline_cloud_queue_24.xml" value="0.37407407407407406" />
         <entry key="app/src/main/res/drawable/ic_baseline_more_horiz_24.xml" value="0.4046875" />
         <entry key="app/src/main/res/drawable/ic_baseline_panorama_fish_eye_24.xml" value="0.4046875" />
         <entry key="app/src/main/res/drawable/ic_baseline_remove_red_eye_24.xml" value="0.37407407407407406" />
+        <entry key="app/src/main/res/drawable/ic_baseline_report_gmailerrorred_24.xml" value="0.3861538461538462" />
         <entry key="app/src/main/res/drawable/ic_baseline_severe_cold_24.xml" value="0.37407407407407406" />
         <entry key="app/src/main/res/drawable/ic_baseline_waves_24.xml" value="0.37407407407407406" />
         <entry key="app/src/main/res/drawable/ic_baseline_wb_sunny_24.xml" value="0.37407407407407406" />
