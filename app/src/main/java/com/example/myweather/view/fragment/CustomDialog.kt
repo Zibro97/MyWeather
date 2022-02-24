@@ -20,6 +20,7 @@ class CustomDialog : DialogFragment() {
     private val args:CustomDialogArgs by navArgs()
     private val viewModel: FavoriteViewModel by viewModels()
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -39,10 +40,10 @@ class CustomDialog : DialogFragment() {
             location.title.split(" ").forEach{ s->
                 if(s.contains("시")||s.contains("군")) city = s
             }
-            binding.confirmInsertText.text = "${city}을(를) 추가하시겠습니까?"
+            confirmInsertText.text = "${city}을(를) 추가하시겠습니까?"
             //네 버튼
             insertButton.setOnClickListener {
-                viewModel.insertLocation(context = root.context,location = city!!,latitude = location.point.y,longitude = location.point.x)
+                viewModel.insertLocation(root.context,location.title,location.point.y,location.point.x)
                 dismiss()
             }
             //아니오 버튼

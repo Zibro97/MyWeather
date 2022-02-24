@@ -11,18 +11,17 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myweather.R
 import com.example.myweather.databinding.FragmentFavoriteBinding
-import com.example.myweather.model.favorite.Favorite
+import com.example.myweather.databinding.InsertFavoriteDialogCustomBinding
 import com.example.myweather.util.SwipeController
 import com.example.myweather.util.SwipeControllerActions
 import com.example.myweather.view.adapter.FavoriteAdapter
@@ -130,14 +129,26 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
         })
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint("ClickableViewAccessibility", "SetTextI18n")
     private fun initRecyclerView() {
         //검색 결과 RecyclerView
         locationAdapter = LocationAdapter(onClickItem = { location ->
-            view?.let { view ->
-                val action =
-                    FavoriteFragmentDirections.actionFavoriteContainerToConfirmInsertDialog(location)
-                view.findNavController().navigate(action)
+            context?.let { context->
+                val binding = InsertFavoriteDialogCustomBinding.inflate(layoutInflater)
+                val dialog = AlertDialog.Builder(context)
+                    .setView(binding.root)
+                    .create()
+                var city:String? = null
+                location.title.split(" ").forEach{ s->
+                    if(s.contains("시")||s.contains("군")) city = s
+                }
+
+                binding.confirmInsertText.text = "${city}를 추가하시겠습니까?"
+                binding.insertButton.setOnClickListener {
+                    viewModel.insertLocation(context,city!!,location.point.y,location.point.x)
+                    dialog.dismiss()
+                }
+                dialog.show()
             }
         })
         binding.searchResultRv.layoutManager =

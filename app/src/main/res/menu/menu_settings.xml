@@ -3,27 +3,24 @@
     <item
         android:id="@+id/edit_list"
         android:title="@string/edit_list_popup_menu"
-        android:icon="@drawable/ic_baseline_edit_24"
         />
     <item
         android:id="@+id/notification"
         android:title="@string/notification_popup_menu"
-        android:icon="@drawable/ic_baseline_notifications_24"
         />
     <group>
         <item
-            android:id="@+id/Celsius"
-            android:title="섭씨"
+            android:id="@+id/celsius"
+            android:title="@string/celsius"
             />
         <item
             android:id="@+id/fahrenheit"
-            android:title="화씨"
+            android:title="@string/fagrenheit_text"
             />
     </group>
     <item
         android:id="@+id/report"
-        android:title="문제 리포트"
-        android:icon="@drawable/ic_baseline_report_gmailerrorred_24"
+        android:title="@string/error_report_text"
         />
 
 </menu>
