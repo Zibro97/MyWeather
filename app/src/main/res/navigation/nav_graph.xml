@@ -24,6 +24,8 @@
         <action
             android:id="@+id/action_favoriteContainer_to_weatherContainer"
             app:destination="@id/weatherContainer"
+            app:popUpTo="@+id/weatherContainer"
+            app:popUpToInclusive="true"
             />
         <action
             android:id="@+id/action_favoriteContainer_to_confirm_insert_dialog"

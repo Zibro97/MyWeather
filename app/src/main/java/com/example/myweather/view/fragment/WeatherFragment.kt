@@ -31,6 +31,7 @@ import com.google.android.gms.location.*
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.tasks.CancellationTokenSource
 import java.lang.Exception
+import kotlin.math.log
 import kotlin.system.exitProcess
 
 /***
@@ -122,6 +123,7 @@ class WeatherFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+        //위치 요청을 취소
         cancellationTokenSource?.cancel()
     }
 
@@ -133,6 +135,7 @@ class WeatherFragment : Fragment() {
     //위치 가져오는 함수
     @SuppressLint("MissingPermission")
     private fun getLocation() {
+        //록액티비티가 요청을 취소할 수 있도록하는 토큰
         cancellationTokenSource = CancellationTokenSource()
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(mActivity)
         fusedLocationClient!!.getCurrentLocation(
@@ -220,7 +223,6 @@ class WeatherFragment : Fragment() {
             favoriteListImageButton.setOnClickListener {
                 navController.navigate(R.id.action_weatherContainer_to_favoriteContainer)
             }
-            progressBar.visibility = View.GONE
         }
     }
 
@@ -240,6 +242,7 @@ class WeatherFragment : Fragment() {
         //db에서 가져온 지역의 날씨 정보를 가져와 리스트에 담음
         viewModel.weatherLiveData.observe(viewLifecycleOwner, { weather ->
             weatherAdapter.weather = weather
+            binding.progressBar.visibility = View.GONE
         })
         viewModel.locationCntLiveData.observe(viewLifecycleOwner, { cnt ->
             locationCnt = cnt

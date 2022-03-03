@@ -36,7 +36,6 @@ class WeatherWidgetProvider: AppWidgetProvider() {
         appWidgetIds: IntArray?
     ) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
-
         //서비스 시작
         ContextCompat.startForegroundService(
             context!!,
@@ -95,7 +94,7 @@ class WeatherWidgetProvider: AppWidgetProvider() {
 
                                 setTextViewText(R.id.widget_city_text_view, address[0].locality)
                                 setTextViewText(R.id.widget_temp_text_view,"$currentTemp°")
-                                setTextViewText(R.id.widget_description_text_view,"$descriptionWeather")
+                                setTextViewText(R.id.widget_description_text_view,descriptionWeather)
                                 setTextViewText(R.id.widget_max_min_text_view,"최고:$maxTemp° 최저:$minTemp°")
                             }
                             updateWidget(updateViews)
