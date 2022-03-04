@@ -85,8 +85,7 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
         }
         //search View 검색어 초기화,포커스 제거
         searchCanelButton.setOnClickListener {
-            searchView.setQuery("", false)
-            searchView.clearFocus()
+            clearSearchView()
         }
         //searchview 포커싱 이벤트
         searchView.setOnQueryTextFocusChangeListener { _, hasFocus -> //searchView에 포커싱에따라 visible 처리
@@ -134,19 +133,20 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
         //검색 결과 RecyclerView
         locationAdapter = LocationAdapter(onClickItem = { location ->
             context?.let { context->
-                val binding = InsertFavoriteDialogCustomBinding.inflate(layoutInflater)
+                val dialogCustomBinding = InsertFavoriteDialogCustomBinding.inflate(layoutInflater)
                 val dialog = AlertDialog.Builder(context)
-                    .setView(binding.root)
+                    .setView(dialogCustomBinding.root)
                     .create()
                 var city:String? = null
                 location.title.split(" ").forEach{ s->
                     if(s.contains("시")||s.contains("군")) city = s
                 }
 
-                binding.confirmInsertText.text = "${city}를 추가하시겠습니까?"
-                binding.insertButton.setOnClickListener {
+                dialogCustomBinding.confirmInsertText.text = "${city}를 추가하시겠습니까?"
+                dialogCustomBinding.insertButton.setOnClickListener {
                     viewModel.insertLocation(context,city!!,location.point.y,location.point.x)
                     dialog.dismiss()
+                    clearSearchView()
                 }
                 dialog.show()
             }
@@ -156,7 +156,7 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
         binding.searchResultRv.adapter = locationAdapter
         //즐겨찾기 목록 RecyclerView
         favoriteAdapter = FavoriteAdapter(
-            onItemClick = { favorite ->
+            onItemClick = { _ ->
                 navController.navigate(R.id.action_favoriteContainer_to_weatherContainer)
             },
             weatherOfItem = { favorite ->
@@ -222,5 +222,9 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
         viewModel.weatherLiveData.observe(viewLifecycleOwner,{ weather->
             favoriteAdapter.weather = weather
         })
+    }
+    private fun clearSearchView()= with(binding){
+        searchView.setQuery("", false)
+        searchView.clearFocus()
     }
 }

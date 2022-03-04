@@ -9,11 +9,8 @@ import android.view.MotionEvent
 import androidx.recyclerview.widget.ItemTouchHelper.*
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.ItemTouchHelper.ACTION_STATE_SWIPE
-
-enum class ButtonState{
-    GONE,
-    RIGHT_VISIBLE
-}
+import com.example.myweather.model.state.ButtonState
+import kotlin.math.min
 
 internal class SwipeController(buttonsActions: SwipeControllerActions?) : Callback() {
     private var swipeBack = false
@@ -60,7 +57,7 @@ internal class SwipeController(buttonsActions: SwipeControllerActions?) : Callba
         if (actionState == ACTION_STATE_SWIPE) {
             if (buttonShowedState !== ButtonState.GONE) {
                 if (buttonShowedState === ButtonState.RIGHT_VISIBLE) dX =
-                    Math.min(dX, -buttonWidth)
+                    min(dX, -buttonWidth)
                 super.onChildDraw(
                     c,
                     recyclerView,
@@ -98,7 +95,7 @@ internal class SwipeController(buttonsActions: SwipeControllerActions?) : Callba
         actionState: Int,
         isCurrentlyActive: Boolean
     ) {
-        recyclerView.setOnTouchListener { v, event ->
+        recyclerView.setOnTouchListener { _, event ->
             swipeBack =
                 event.action == MotionEvent.ACTION_CANCEL || event.action == MotionEvent.ACTION_UP
             if (swipeBack) {
@@ -109,7 +106,6 @@ internal class SwipeController(buttonsActions: SwipeControllerActions?) : Callba
                         c,
                         recyclerView,
                         viewHolder,
-                        dX,
                         dY,
                         actionState,
                         isCurrentlyActive
@@ -126,18 +122,16 @@ internal class SwipeController(buttonsActions: SwipeControllerActions?) : Callba
         c: Canvas,
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder,
-        dX: Float,
         dY: Float,
         actionState: Int,
         isCurrentlyActive: Boolean
     ) {
-        recyclerView.setOnTouchListener { v, event ->
+        recyclerView.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
                 setTouchUpListener(
                     c,
                     recyclerView,
                     viewHolder,
-                    dX,
                     dY,
                     actionState,
                     isCurrentlyActive
@@ -152,12 +146,11 @@ internal class SwipeController(buttonsActions: SwipeControllerActions?) : Callba
         c: Canvas,
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder,
-        dX: Float,
         dY: Float,
         actionState: Int,
         isCurrentlyActive: Boolean
     ) {
-        recyclerView.setOnTouchListener { v, event ->
+        recyclerView.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_UP) {
                 super@SwipeController.onChildDraw(
                     c,
@@ -168,7 +161,7 @@ internal class SwipeController(buttonsActions: SwipeControllerActions?) : Callba
                     actionState,
                     isCurrentlyActive
                 )
-                recyclerView.setOnTouchListener { v, event -> false }
+                recyclerView.setOnTouchListener { _, _ -> false }
                 setItemsClickable(recyclerView, true)
                 swipeBack = false
                 if (buttonsActions != null && buttonInstance != null && buttonInstance!!.contains(
@@ -202,17 +195,17 @@ internal class SwipeController(buttonsActions: SwipeControllerActions?) : Callba
         )
         p.color = Color.RED
         c.drawRoundRect(rightButton, corners, corners, p)
-        drawText("삭제", c, rightButton, p)
+        drawText( c, rightButton, p)
         buttonInstance = rightButton
     }
     //버튼 text
-    private fun drawText(text: String, c: Canvas, button: RectF, p: Paint) {
+    private fun drawText(c: Canvas, button: RectF, p: Paint) {
         val textSize = 50f
         p.color = Color.WHITE
         p.isAntiAlias = true
         p.textSize = textSize
-        val textWidth = p.measureText(text)
-        c.drawText(text, button.centerX() - textWidth / 2, button.centerY() + textSize / 2, p)
+        val textWidth = p.measureText("삭제")
+        c.drawText("삭", button.centerX() - textWidth / 2, button.centerY() + textSize / 2, p)
     }
     //버튼 그리는 함수
     fun onDraw(c: Canvas) {

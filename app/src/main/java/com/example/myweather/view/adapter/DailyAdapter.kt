@@ -6,15 +6,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.example.myweather.common.util.ItemDiffUtil
 import com.example.myweather.databinding.ItemDailyBinding
 import com.example.myweather.model.weather.DailyWeatherModel
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 
-class DailyAdapter:ListAdapter<DailyWeatherModel,DailyAdapter.ViewHolder>(ItemDiffUtil.getInstance().getDiffUtil(DailyWeatherModel::class.java)) {
+class DailyAdapter:ListAdapter<DailyWeatherModel,DailyAdapter.ViewHolder>(diffUtil) {
     inner class ViewHolder(private val binding: ItemDailyBinding):RecyclerView.ViewHolder(binding.root){
         @SuppressLint("SetTextI18n")
         fun bind(item : DailyWeatherModel){
@@ -33,15 +31,15 @@ class DailyAdapter:ListAdapter<DailyWeatherModel,DailyAdapter.ViewHolder>(ItemDi
     override fun onBindViewHolder(holder: DailyAdapter.ViewHolder, position: Int) {
         holder.bind(currentList[position])
     }
-//    companion object{
-//        private val diffUtil = object : DiffUtil.ItemCallback<DailyWeatherModel>(){
-//            override fun areItemsTheSame(oldItem: DailyWeatherModel, newItem: DailyWeatherModel): Boolean {
-//                return oldItem==newItem
-//            }
-//
-//            override fun areContentsTheSame(oldItem: DailyWeatherModel, newItem: DailyWeatherModel): Boolean {
-//                return oldItem == newItem
-//            }
-//        }
-//    }
+    companion object{
+        private val diffUtil = object : DiffUtil.ItemCallback<DailyWeatherModel>(){
+            override fun areItemsTheSame(oldItem: DailyWeatherModel, newItem: DailyWeatherModel): Boolean {
+                return oldItem==newItem
+            }
+
+            override fun areContentsTheSame(oldItem: DailyWeatherModel, newItem: DailyWeatherModel): Boolean {
+                return oldItem == newItem
+            }
+        }
+    }
 }

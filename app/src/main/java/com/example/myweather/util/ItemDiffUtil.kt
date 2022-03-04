@@ -1,4 +1,4 @@
-package com.example.myweather.common.util
+package com.example.myweather.util
 
 import android.util.Log
 import androidx.recyclerview.widget.DiffUtil
