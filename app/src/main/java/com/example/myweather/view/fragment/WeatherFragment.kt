@@ -7,7 +7,6 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -194,12 +193,8 @@ class WeatherFragment : Fragment() {
     }
 
     //viewPager 초기화 및 날씨 정보 넘겨주는 함수
-    @SuppressLint("NotifyDataSetChanged")
     private fun initViews() = with(binding){
-        Log.d("TAG", "initViews: $")
-        weatherAdapter = WeatherAdapter(onPageChangeListener = { favorite ->
-            viewModel.getWeather(latitude = favorite.latitude, longitude = favorite.longitude)
-        })
+        weatherAdapter = WeatherAdapter()
         viewPager.adapter = weatherAdapter
         viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         viewPager.setCurrentItem(0, true)
@@ -207,7 +202,8 @@ class WeatherFragment : Fragment() {
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                weatherAdapter.notifyItemChanged(position)
+                viewModel.getWeather(latitude = weatherAdapter.currentList[position].latitude, longitude = weatherAdapter.currentList[position].longitude)
+
                 indicatorWeather.animatePageSelected(position)
             }
         })
@@ -233,6 +229,7 @@ class WeatherFragment : Fragment() {
         //db에서 가져온 지역의 날씨 정보를 가져와 리스트에 담음
         weatherLiveData.observe(viewLifecycleOwner, { weather ->
             weatherAdapter.weather = weather
+            weatherAdapter.notifyDataSetChanged()
             binding.progressBar.visibility = View.GONE
             binding.bottomNavigationView.visibility = View.VISIBLE
         })

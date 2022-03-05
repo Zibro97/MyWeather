@@ -1,7 +1,6 @@
 package com.example.myweather.view.adapter
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -19,54 +18,49 @@ import java.util.*
 import kotlin.math.roundToInt
 
 //ViewPager Adapter
-class WeatherAdapter(
-    val onPageChangeListener: (Favorite) -> Unit
-): ListAdapter<Favorite,WeatherAdapter.ViewHolder>(diffUtil){
+class WeatherAdapter: ListAdapter<Favorite,WeatherAdapter.ViewHolder>(diffUtil){
     var weather : WeatherDTO? = null
     private val hourlyAdapter = HourlyAdapter()
     private val dailyAdapter = DailyAdapter()
     inner class ViewHolder(private val binding:ItemWeatherBinding):RecyclerView.ViewHolder(binding.root){
         @SuppressLint("SetTextI18n")
         fun bind(favorite: Favorite)= with(binding){
-            Log.e("TAG", "bind: ${hourlyRv.adapter}")
+            //매 시각 날씨 예보 RecyclerView
+            cityTv.text = favorite.location
+            hourlyRv.layoutManager = LinearLayoutManager(root.context,LinearLayoutManager.HORIZONTAL,false)
+            hourlyRv.adapter = hourlyAdapter
+            dailyRv.layoutManager = LinearLayoutManager(root.context,LinearLayoutManager.VERTICAL,false)
+            dailyRv.adapter = dailyAdapter
 
-                //매 시각 날씨 예보 RecyclerView
-                cityTv.text = favorite.location
-                weather ?.let { weather->
-                    hourlyRv.layoutManager = LinearLayoutManager(root.context,LinearLayoutManager.HORIZONTAL,false)
-                    hourlyRv.adapter = hourlyAdapter
-                    hourlyAdapter.submitList(weather.hourly)
-
-                    //일주일간의 날씨 예보 RecyclerView
-                    dailyRv.layoutManager = LinearLayoutManager(root.context,LinearLayoutManager.VERTICAL,false)
-                    dailyRv.adapter = dailyAdapter
-                    dailyAdapter.submitList(weather.daily)
-
-                    tempTv.text = "${weather.current.temp.roundToInt()}°"
-                    weatherDestinationTv.text = weather.current.weather.first().main.label
-                    maxTempTv.text = "최고:${weather.daily.first().temp.maxTemp.roundToInt()}°"
-                    minTempTv.text = "최저:${weather.daily.first().temp.minTemp.roundToInt()}°"
-                    val simpleDataFormat = SimpleDateFormat("HH:mm", Locale.KOREA)
-                    sunriseTimeTextView.text = simpleDataFormat.format(weather.current.sunrise * 1000L)
-                    sunsetTimeTextView.text = "일몰: ${simpleDataFormat.format(weather.current.sunset * 1000L)}"
-                    windTimeTextView.text = "${weather.current.windSpeed.roundToInt()}m/s"
-                    realFeelTempTextView.text = "${weather.current.feelsLike.roundToInt()}°"
-                    realHumidityTextView.text = "${weather.current.humidity}%"
-                    dewPointTextView.text = "현재 이슬점이 ${weather.current.dewPoint.roundToInt()}°입니다."
-                    realVisibilityTextView.text = "${weather.current.visibility/1000}KM"
-                    tempDestinationTv.text = "${weather.current.temp.roundToInt()}°|${weather.current.weather.first().main.label}"
-                    when(weather.current.weather.first().main.label){
-                        "눈" -> {
-                            snowRainTextView.text = root.context.resources.getString(R.string.snow_text)
-                            realSnowRainTextView.text =
-                                if(weather.current.snow ==null) "0mm"
-                                else "${weather.current.snow.h}mm"
-                        }
-                        else -> {
-                            snowRainTextView.text = root.context.resources.getString(R.string.rain_text)
-                            realSnowRainTextView.text =
-                                if(weather.current.rain ==null) "0mm"
-                                else "${weather.current.rain.h}mm"
+            weather ?.let { weather->
+                hourlyAdapter.submitList(weather.hourly)
+                //일주일간의 날씨 예보 RecyclerView
+                dailyAdapter.submitList(weather.daily)
+                tempTv.text = "${weather.current.temp.roundToInt()}°"
+                weatherDestinationTv.text = weather.current.weather.first().main.label
+                maxTempTv.text = "최고:${weather.daily.first().temp.maxTemp.roundToInt()}°"
+                minTempTv.text = "최저:${weather.daily.first().temp.minTemp.roundToInt()}°"
+                val simpleDataFormat = SimpleDateFormat("HH:mm", Locale.KOREA)
+                sunriseTimeTextView.text = simpleDataFormat.format(weather.current.sunrise * 1000L)
+                sunsetTimeTextView.text = "일몰: ${simpleDataFormat.format(weather.current.sunset * 1000L)}"
+                windTimeTextView.text = "${weather.current.windSpeed.roundToInt()}m/s"
+                realFeelTempTextView.text = "${weather.current.feelsLike.roundToInt()}°"
+                realHumidityTextView.text = "${weather.current.humidity}%"
+                dewPointTextView.text = "현재 이슬점이 ${weather.current.dewPoint.roundToInt()}°입니다."
+                realVisibilityTextView.text = "${weather.current.visibility/1000}KM"
+                tempDestinationTv.text = "${weather.current.temp.roundToInt()}°|${weather.current.weather.first().main.label}"
+                when(weather.current.weather.first().main.label){
+                    "눈" -> {
+                        snowRainTextView.text = root.context.resources.getString(R.string.snow_text)
+                        realSnowRainTextView.text =
+                            if(weather.current.snow ==null) "0mm"
+                            else "${weather.current.snow.h}mm"
+                    }
+                    else -> {
+                        snowRainTextView.text = root.context.resources.getString(R.string.rain_text)
+                        realSnowRainTextView.text =
+                            if(weather.current.rain ==null) "0mm"
+                            else "${weather.current.rain.h}mm"
                         }
                     }
 
@@ -85,7 +79,6 @@ class WeatherAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        onPageChangeListener(currentList[position])
         holder.bind(currentList[position])
     }
 

@@ -38,7 +38,7 @@ class DailyAdapter:ListAdapter<DailyWeatherModel,DailyAdapter.ViewHolder>(diffUt
             }
 
             override fun areContentsTheSame(oldItem: DailyWeatherModel, newItem: DailyWeatherModel): Boolean {
-                return oldItem == newItem
+                return oldItem.temp == newItem.temp ||oldItem.weather ==newItem.weather
             }
         }
     }
