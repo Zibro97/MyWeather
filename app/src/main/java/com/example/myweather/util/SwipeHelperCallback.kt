@@ -205,7 +205,7 @@ internal class SwipeController(buttonsActions: SwipeControllerActions?) : Callba
         p.isAntiAlias = true
         p.textSize = textSize
         val textWidth = p.measureText("삭제")
-        c.drawText("삭", button.centerX() - textWidth / 2, button.centerY() + textSize / 2, p)
+        c.drawText("삭제", button.centerX() - textWidth / 2, button.centerY() + textSize / 2, p)
     }
     //버튼 그리는 함수
     fun onDraw(c: Canvas) {
