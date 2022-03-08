@@ -13,14 +13,6 @@ import kotlinx.coroutines.launch
 class WeatherViewModel:BaseViewModel() {
     val locationCntLiveData:MutableLiveData<Int> = MutableLiveData()
 
-    //현재 위치 정보 수정하는 함수
-    fun updateCurrentLocation(context: Context,latitude: Double,longitude: Double){
-        viewModelScope.launch {
-            val favorite = Favorite(id = null,location = "나의 위치",latitude = latitude,longitude=longitude)
-            getAppDatabase(context).favoriteDao().updateCurrentFavorite(favorite)
-        }
-    }
-
     //db에 저장된 위치정보 개수 반환하는 함수
     fun getLocationCnt(context:Context){
         viewModelScope.launch {

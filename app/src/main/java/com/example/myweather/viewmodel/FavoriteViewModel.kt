@@ -29,5 +29,4 @@ class FavoriteViewModel : BaseViewModel() {
             getAllLocation(context)
         }
     }
-
 }

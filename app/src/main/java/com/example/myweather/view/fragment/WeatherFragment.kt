@@ -7,6 +7,7 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -224,14 +225,16 @@ class WeatherFragment : Fragment() {
     private fun liveDatas() = with(viewModel) {
         //db에서 지역 가져오는 LiveData
         locationLiveData.observe(viewLifecycleOwner, { favorites ->
+            Log.d("TAG", "liveDatas: gd")
             weatherAdapter.submitList(favorites)
         })
         //db에서 가져온 지역의 날씨 정보를 가져와 리스트에 담음
         weatherLiveData.observe(viewLifecycleOwner, { weather ->
+            Log.d("TAG", "liveDatas: ew")
             weatherAdapter.weather = weather
             weatherAdapter.notifyDataSetChanged()
-            binding.progressBar.visibility = View.GONE
-            binding.bottomNavigationView.visibility = View.VISIBLE
+            //binding.progressBar.visibility = View.GONE
+            //binding.bottomNavigationView.visibility = View.VISIBLE
         })
         locationCntLiveData.observe(viewLifecycleOwner, { cnt ->
             binding.indicatorWeather.createIndicators(cnt, 0)

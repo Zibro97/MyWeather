@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.myweather.data.api.RetrofitClient
 import com.example.myweather.data.db.DatabaseProvider
 import com.example.myweather.model.favorite.Favorite
+import com.example.myweather.model.favoriteweather.FavoriteWeatherModel
 import com.example.myweather.model.weather.WeatherDTO
 import kotlinx.coroutines.launch
 
@@ -14,6 +15,7 @@ open class BaseViewModel : ViewModel() {
     private val service = RetrofitClient.weatherService
     val weatherLiveData:MutableLiveData<WeatherDTO> = MutableLiveData()
     val locationLiveData: MutableLiveData<List<Favorite>> = MutableLiveData()
+    val locationsLiveData : MutableLiveData<List<FavoriteWeatherModel>> = MutableLiveData()
 
     //동작 과정
     //1. view에서 getWeather함수를 호출
@@ -39,9 +41,24 @@ open class BaseViewModel : ViewModel() {
     //관심지역 or 현재 위치 저장하기 위한 함수
     fun insertLocation(context:Context,location:String,latitude: Double,longitude: Double){
         viewModelScope.launch {
-            val favorite = Favorite(id = null,location = location,latitude = latitude,longitude = longitude)
+            val appId = service.getLocationId(latitude = latitude,longitude = longitude)
+            val favorite = Favorite(id = appId.id,location = location,latitude = latitude,longitude = longitude)
             DatabaseProvider.getAppDatabase(context).favoriteDao().insertFavorite(favorite)
-            getAllLocation(context)
+        }
+    }
+    //현재 위치 정보 수정하는 함수
+    fun updateCurrentLocation(context: Context,latitude: Double,longitude: Double){
+        viewModelScope.launch {
+            val appId = service.getLocationId(latitude = latitude,longitude = longitude)
+            val favorite = Favorite(id = appId.id,location = "나의 위치",latitude = latitude,longitude=longitude)
+            DatabaseProvider.getAppDatabase(context).favoriteDao().updateCurrentFavorite(favorite)
+        }
+    }
+    //관심지역들 날씨 정보 가져오는 함수
+    fun locations(id:String){
+        viewModelScope.launch {
+            val jsonArray = service.locations(id)
+            locationsLiveData.value = jsonArray
         }
     }
 }

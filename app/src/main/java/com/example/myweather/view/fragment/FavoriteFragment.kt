@@ -11,6 +11,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
@@ -28,7 +29,12 @@ import com.example.myweather.view.adapter.FavoriteAdapter
 import com.example.myweather.view.adapter.LocationAdapter
 import com.example.myweather.viewmodel.FavoriteViewModel
 
-class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
+/***
+ * 관심지역 추가
+ * 1. 검색한 관심지역 추가 시 weather api로 해당 지역의 id 요청
+ * 2. 지역의 id, 좌표, 지역명 room에 저장
+*/
+class FavoriteFragment : Fragment() {
 
     //FavoriteFragment 바인딩 객체
     private var _binding: FragmentFavoriteBinding? = null
@@ -45,7 +51,10 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
     private lateinit var navController: NavController
 
     //Swipe Controller
-    private var swipeController :SwipeController? = null
+    private var swipeController : SwipeController? = null
+
+    //location id list
+    private var idList : String? = null
 
     //Layout을 inflate하는 곳
     override fun onCreateView(
@@ -63,9 +72,9 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
 
+        getLocations()
         initViews()
         initRecyclerView()
-        getLocations()
         liveData()
     }
 
@@ -128,10 +137,12 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
         })
     }
 
-    @SuppressLint("ClickableViewAccessibility", "SetTextI18n")
-    private fun initRecyclerView() {
+    @SuppressLint("SetTextI18n")
+    private fun initRecyclerView() = with(binding){
         //검색 결과 RecyclerView
         locationAdapter = LocationAdapter(onClickItem = { location ->
+            //item 클릭 시 customDialog 띄워 해당 도시 관심지역으로 추가할 것인지 묻고
+            //추가 버튼 클릭시 관심지역 목록에 띄우기
             context?.let { context->
                 val dialogCustomBinding = InsertFavoriteDialogCustomBinding.inflate(layoutInflater)
                 val dialog = AlertDialog.Builder(context)
@@ -144,6 +155,8 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
 
                 dialogCustomBinding.confirmInsertText.text = "${city}를 추가하시겠습니까?"
                 dialogCustomBinding.insertButton.setOnClickListener {
+                    binding.favoriteRecyclerView.visibility = GONE
+                    binding.progressBar.visibility = VISIBLE
                     viewModel.insertLocation(context,city!!,location.point.y,location.point.x)
                     dialog.dismiss()
                     clearSearchView()
@@ -151,32 +164,30 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
                 dialog.show()
             }
         })
-        binding.searchResultRv.layoutManager =
+        searchResultRv.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        binding.searchResultRv.adapter = locationAdapter
+        searchResultRv.adapter = locationAdapter
         //즐겨찾기 목록 RecyclerView
         favoriteAdapter = FavoriteAdapter(
             onItemClick = { _ ->
                 navController.navigate(R.id.action_favoriteContainer_to_weatherContainer)
-            },
-            weatherOfItem = { favorite ->
-                viewModel.getWeather(latitude = favorite.latitude,longitude = favorite.longitude)
             }
         )
-        binding.favoriteRecyclerView.layoutManager =
+        favoriteRecyclerView.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        binding.favoriteRecyclerView.adapter = favoriteAdapter
+        favoriteRecyclerView.adapter = favoriteAdapter
         swipeController = SwipeController(object : SwipeControllerActions(){
             override fun onRightClicked(position: Int) {
-                context?.let { context->
-                    viewModel.removeFavorite(context, favoriteAdapter.currentList[position])
-                    favoriteAdapter.notifyItemRemoved(position)
-                    favoriteAdapter.notifyItemRangeChanged(position,favoriteAdapter.itemCount)
+                when(position){
+                    0-> Toast.makeText(context,"나의 위치는 삭제하실 수 없습니다.",Toast.LENGTH_SHORT).show()
+                    else -> context?.let { context->
+                        viewModel.removeFavorite(context, favoriteAdapter.currentList[position])
+                    }
                 }
             }
         })
-        ItemTouchHelper(swipeController!!).attachToRecyclerView(binding.favoriteRecyclerView)
-        binding.favoriteRecyclerView.addItemDecoration(object : RecyclerView.ItemDecoration(){
+        ItemTouchHelper(swipeController!!).attachToRecyclerView(favoriteRecyclerView)
+        favoriteRecyclerView.addItemDecoration(object : RecyclerView.ItemDecoration(){
             override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
                 swipeController!!.onDraw(c)
             }
@@ -191,15 +202,13 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
     }
     //LiveData
     @SuppressLint("NotifyDataSetChanged")
-    private fun liveData() {
+    private fun liveData() = with(viewModel) {
         //db 즐겨찾기 LiveData
-        viewModel.locationLiveData.observe(viewLifecycleOwner, { favorite ->
-            Log.d("TAG", "liveData: gdsag")
+        locationLiveData.observe(viewLifecycleOwner, { favorite ->
             favoriteAdapter.submitList(favorite)
-            favoriteAdapter.notifyDataSetChanged()
         })
         //검색 결과 LiveData
-        viewModel.searchLocateLiveData.observe(viewLifecycleOwner, { locations ->
+        searchLocateLiveData.observe(viewLifecycleOwner, { locations ->
             binding.favoriteRecyclerView.visibility = GONE
             if (locations.response.result == null) {
                 with(binding) {
@@ -217,10 +226,11 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
                 }
                 locationAdapter.submitList(locations.response.result.items)
             }
-            locationAdapter.notifyDataSetChanged()
         })
-        viewModel.weatherLiveData.observe(viewLifecycleOwner,{ weather->
-            favoriteAdapter.weather = weather
+        weatherLiveData.observe(viewLifecycleOwner,{ weather->
+            favoriteAdapter.weatherList.add(weather)
+            binding.progressBar.visibility = GONE
+            binding.favoriteRecyclerView.visibility = VISIBLE
         })
     }
     private fun clearSearchView()= with(binding){

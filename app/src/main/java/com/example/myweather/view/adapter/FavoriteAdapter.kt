@@ -17,12 +17,11 @@ import kotlin.math.roundToInt
 //room에 있는 관심 지역 보여주는 RecyclerView
 class FavoriteAdapter(
     val onItemClick : (Favorite) -> Unit,
-    val weatherOfItem : (Favorite) -> Unit
 ): ListAdapter<Favorite, FavoriteAdapter.ViewHolder>(diffUtil) {
-    var weather : WeatherDTO? = null
+    var weatherList : MutableList<WeatherDTO?> = mutableListOf()
     inner class ViewHolder(private val binding:ItemFavoriteBinding):RecyclerView.ViewHolder(binding.root){
         @SuppressLint("SimpleDateFormat", "SetTextI18n")
-        fun bind(item: Favorite) = with(binding){
+        fun bind(item: Favorite,weather:WeatherDTO?) = with(binding){
             val currentTime = SimpleDateFormat("HH:mm")
             root.setOnClickListener{
                 onItemClick(item)
@@ -56,8 +55,7 @@ class FavoriteAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        weatherOfItem(currentList[position])
-        holder.bind(currentList[position])
+        holder.bind(currentList[position],weatherList[position])
     }
 
     companion object{
