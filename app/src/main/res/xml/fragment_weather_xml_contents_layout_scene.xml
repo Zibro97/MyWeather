@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="1dp"
             motion:layout_constraintHorizontal_chainStyle="packed"
-            motion:layout_constraintTop_toBottomOf="@+id/weather_destination_tv"
+            motion:layout_constraintTop_toBottomOf="@+id/weather_description_tv"
             motion:layout_constraintStart_toStartOf="parent"
             android:visibility="gone"
             />
@@ -46,7 +46,7 @@
             motion:layout_constraintStart_toEndOf="@id/max_temp_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            motion:layout_constraintTop_toBottomOf="@id/weather_destination_tv"
+            motion:layout_constraintTop_toBottomOf="@id/weather_description_tv"
             android:layout_marginStart="1dp"
             android:visibility="gone"
             />
@@ -56,11 +56,11 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             motion:layout_constraintBottom_toBottomOf="parent"
-            motion:layout_constraintTop_toBottomOf="@id/temp_destination_tv"
+            motion:layout_constraintTop_toBottomOf="@id/temp_description_tv"
             motion:layout_constraintStart_toStartOf="parent"
             />
         <Constraint
-            android:id="@+id/weather_destination_tv"
+            android:id="@+id/weather_description_tv"
             motion:layout_constraintEnd_toEndOf="parent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -78,7 +78,7 @@
             android:visibility="gone"
             />
         <Constraint
-            android:id="@+id/temp_destination_tv"
+            android:id="@+id/temp_description_tv"
             motion:layout_constraintEnd_toEndOf="parent"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
