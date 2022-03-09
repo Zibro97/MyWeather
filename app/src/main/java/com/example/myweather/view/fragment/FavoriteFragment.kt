@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myweather.R
 import com.example.myweather.databinding.FragmentFavoriteBinding
 import com.example.myweather.databinding.InsertFavoriteDialogCustomBinding
+import com.example.myweather.model.weather.WeatherDTO
 import com.example.myweather.util.SwipeController
 import com.example.myweather.util.SwipeControllerActions
 import com.example.myweather.view.adapter.FavoriteAdapter
@@ -55,6 +56,7 @@ class FavoriteFragment : Fragment() {
 
     //location id list
     private var idList : String? = null
+    private var weatherList : MutableList<WeatherDTO?> = mutableListOf()
 
     //Layout을 inflate하는 곳
     override fun onCreateView(
@@ -173,6 +175,7 @@ class FavoriteFragment : Fragment() {
                 navController.navigate(R.id.action_favoriteContainer_to_weatherContainer)
             }
         )
+        favoriteAdapter.weatherList = weatherList
         favoriteRecyclerView.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         favoriteRecyclerView.adapter = favoriteAdapter
@@ -206,6 +209,9 @@ class FavoriteFragment : Fragment() {
         //db 즐겨찾기 LiveData
         locationLiveData.observe(viewLifecycleOwner, { favorite ->
             favoriteAdapter.submitList(favorite)
+            favorite.forEach {
+                getWeather(latitude = it.latitude,longitude = it.longitude)
+            }
         })
         //검색 결과 LiveData
         searchLocateLiveData.observe(viewLifecycleOwner, { locations ->
@@ -228,7 +234,7 @@ class FavoriteFragment : Fragment() {
             }
         })
         weatherLiveData.observe(viewLifecycleOwner,{ weather->
-            favoriteAdapter.weatherList.add(weather)
+            weatherList.add(weather)
             binding.progressBar.visibility = GONE
             binding.favoriteRecyclerView.visibility = VISIBLE
         })

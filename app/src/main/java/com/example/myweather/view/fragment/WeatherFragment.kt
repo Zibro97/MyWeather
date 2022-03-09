@@ -233,8 +233,8 @@ class WeatherFragment : Fragment() {
             Log.d("TAG", "liveDatas: ew")
             weatherAdapter.weather = weather
             weatherAdapter.notifyDataSetChanged()
-            //binding.progressBar.visibility = View.GONE
-            //binding.bottomNavigationView.visibility = View.VISIBLE
+            binding.progressBar.visibility = View.GONE
+            binding.bottomNavigationView.visibility = View.VISIBLE
         })
         locationCntLiveData.observe(viewLifecycleOwner, { cnt ->
             binding.indicatorWeather.createIndicators(cnt, 0)

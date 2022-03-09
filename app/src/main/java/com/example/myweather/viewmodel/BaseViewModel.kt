@@ -1,6 +1,7 @@
 package com.example.myweather.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +9,7 @@ import com.example.myweather.data.api.RetrofitClient
 import com.example.myweather.data.db.DatabaseProvider
 import com.example.myweather.model.favorite.Favorite
 import com.example.myweather.model.favoriteweather.FavoriteWeatherModel
+import com.example.myweather.model.favoriteweather.LocationIdModel
 import com.example.myweather.model.weather.WeatherDTO
 import kotlinx.coroutines.launch
 
@@ -41,19 +43,20 @@ open class BaseViewModel : ViewModel() {
     //관심지역 or 현재 위치 저장하기 위한 함수
     fun insertLocation(context:Context,location:String,latitude: Double,longitude: Double){
         viewModelScope.launch {
-            val appId = service.getLocationId(latitude = latitude,longitude = longitude)
-            val favorite = Favorite(id = appId.id,location = location,latitude = latitude,longitude = longitude)
+            val locationId = service.getLocationId(latitude = latitude,longitude = longitude).id
+            val favorite = Favorite(id = null,locationId = locationId,location = location,latitude = latitude,longitude = longitude)
             DatabaseProvider.getAppDatabase(context).favoriteDao().insertFavorite(favorite)
         }
     }
     //현재 위치 정보 수정하는 함수
     fun updateCurrentLocation(context: Context,latitude: Double,longitude: Double){
         viewModelScope.launch {
-            val appId = service.getLocationId(latitude = latitude,longitude = longitude)
-            val favorite = Favorite(id = appId.id,location = "나의 위치",latitude = latitude,longitude=longitude)
+            val locationId = service.getLocationId(latitude = latitude,longitude = longitude).id
+            val favorite = Favorite(id = null,locationId = locationId,location = "나의 위치",latitude = latitude,longitude=longitude)
             DatabaseProvider.getAppDatabase(context).favoriteDao().updateCurrentFavorite(favorite)
         }
     }
+
     //관심지역들 날씨 정보 가져오는 함수
     fun locations(id:String){
         viewModelScope.launch {
