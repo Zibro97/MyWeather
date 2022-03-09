@@ -24,8 +24,8 @@ interface WeatherService {
     ) : LocationIdModel
 
     //multiple locations weather api
-    @GET("/data/2.5/weather?&units=metric&appid=${BuildConfig.OPEN_WEATHER_API_KEY}")
+    @GET("/data/2.5/group?&units=metric&appid=${BuildConfig.OPEN_WEATHER_API_KEY}")
     suspend fun locations(
-        @Query("id") appId : String
-    ) : List<FavoriteWeatherModel>
+        @Query("id",encoded = true) appId : String?
+    ) : FavoriteWeatherModel
 }

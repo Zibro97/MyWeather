@@ -40,6 +40,7 @@ import kotlin.system.exitProcess
  * 6. 하단 circleIndicator
  */
 class WeatherFragment : Fragment() {
+    // TODO: 2022/03/10 화면 스크롤 시 날씨 정보 ScrollView 부분이 사라지는 현상 발견 
     //뷰 바인딩을 위한 바인딩 객체
     private var _binding: FragmentWeatherBinding? = null
     private val binding get() = _binding!!
@@ -225,14 +226,13 @@ class WeatherFragment : Fragment() {
     private fun liveDatas() = with(viewModel) {
         //db에서 지역 가져오는 LiveData
         locationLiveData.observe(viewLifecycleOwner, { favorites ->
-            Log.d("TAG", "liveDatas: gd")
             weatherAdapter.submitList(favorites)
         })
         //db에서 가져온 지역의 날씨 정보를 가져와 리스트에 담음
         weatherLiveData.observe(viewLifecycleOwner, { weather ->
-            Log.d("TAG", "liveDatas: ew")
             weatherAdapter.weather = weather
-            weatherAdapter.notifyDataSetChanged()
+            //weatherAdapter.notifyDataSetChanged()
+            Log.d("TAG", "liveDatas: ${binding.bottomNavigationView.visibility}")
             binding.progressBar.visibility = View.GONE
             binding.bottomNavigationView.visibility = View.VISIBLE
         })

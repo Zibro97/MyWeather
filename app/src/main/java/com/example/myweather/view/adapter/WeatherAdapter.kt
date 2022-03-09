@@ -37,7 +37,7 @@ class WeatherAdapter: ListAdapter<Favorite,WeatherAdapter.ViewHolder>(diffUtil){
                 //일주일간의 날씨 예보 RecyclerView
                 dailyAdapter.submitList(weather.daily)
                 tempTv.text = "${weather.current.temp.roundToInt()}°"
-                weatherDestinationTv.text = weather.current.weather.first().main.label
+                weatherDescriptionTv.text = weather.current.weather.first().main.label
                 maxTempTv.text = "최고:${weather.daily.first().temp.maxTemp.roundToInt()}°"
                 minTempTv.text = "최저:${weather.daily.first().temp.minTemp.roundToInt()}°"
                 val simpleDataFormat = SimpleDateFormat("HH:mm", Locale.KOREA)
@@ -48,7 +48,7 @@ class WeatherAdapter: ListAdapter<Favorite,WeatherAdapter.ViewHolder>(diffUtil){
                 realHumidityTextView.text = "${weather.current.humidity}%"
                 dewPointTextView.text = "현재 이슬점이 ${weather.current.dewPoint.roundToInt()}°입니다."
                 realVisibilityTextView.text = "${weather.current.visibility/1000}KM"
-                tempDestinationTv.text = "${weather.current.temp.roundToInt()}°|${weather.current.weather.first().main.label}"
+                tempDescriptionTv.text = "${weather.current.temp.roundToInt()}°|${weather.current.weather.first().main.label}"
                 when(weather.current.weather.first().main.label){
                     "눈" -> {
                         snowRainTextView.text = root.context.resources.getString(R.string.snow_text)

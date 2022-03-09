@@ -56,7 +56,7 @@
             tools:text="-7°" />
 
         <TextView
-            android:id="@+id/temp_destination_tv"
+            android:id="@+id/temp_description_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
@@ -70,7 +70,7 @@
             tools:visibility="visible" />
 
         <TextView
-            android:id="@+id/weather_destination_tv"
+            android:id="@+id/weather_description_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
@@ -91,7 +91,7 @@
             app:layout_constraintEnd_toStartOf="@id/min_temp_tv"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/weather_destination_tv"
+            app:layout_constraintTop_toBottomOf="@id/weather_description_tv"
             tools:text="최고:2°" />
 
         <TextView
@@ -103,7 +103,7 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/max_temp_tv"
-            app:layout_constraintTop_toBottomOf="@id/weather_destination_tv"
+            app:layout_constraintTop_toBottomOf="@id/weather_description_tv"
             tools:text="최저:-8°" />
 
         <androidx.core.widget.NestedScrollView

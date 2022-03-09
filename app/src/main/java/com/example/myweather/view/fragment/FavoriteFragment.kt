@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myweather.R
 import com.example.myweather.databinding.FragmentFavoriteBinding
 import com.example.myweather.databinding.InsertFavoriteDialogCustomBinding
+import com.example.myweather.model.favorite.Favorite
 import com.example.myweather.model.weather.WeatherDTO
 import com.example.myweather.util.SwipeController
 import com.example.myweather.util.SwipeControllerActions
@@ -55,7 +56,6 @@ class FavoriteFragment : Fragment() {
     private var swipeController : SwipeController? = null
 
     //location id list
-    private var idList : String? = null
     private var weatherList : MutableList<WeatherDTO?> = mutableListOf()
 
     //Layout을 inflate하는 곳
@@ -157,8 +157,6 @@ class FavoriteFragment : Fragment() {
 
                 dialogCustomBinding.confirmInsertText.text = "${city}를 추가하시겠습니까?"
                 dialogCustomBinding.insertButton.setOnClickListener {
-                    binding.favoriteRecyclerView.visibility = GONE
-                    binding.progressBar.visibility = VISIBLE
                     viewModel.insertLocation(context,city!!,location.point.y,location.point.x)
                     dialog.dismiss()
                     clearSearchView()
@@ -175,7 +173,6 @@ class FavoriteFragment : Fragment() {
                 navController.navigate(R.id.action_favoriteContainer_to_weatherContainer)
             }
         )
-        favoriteAdapter.weatherList = weatherList
         favoriteRecyclerView.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         favoriteRecyclerView.adapter = favoriteAdapter
@@ -209,8 +206,9 @@ class FavoriteFragment : Fragment() {
         //db 즐겨찾기 LiveData
         locationLiveData.observe(viewLifecycleOwner, { favorite ->
             favoriteAdapter.submitList(favorite)
-            favorite.forEach {
-                getWeather(latitude = it.latitude,longitude = it.longitude)
+            getLocationIdList(favorite)?.let {
+                Log.d("TAG", "liveData: $it")
+                viewModel.locations(it)
             }
         })
         //검색 결과 LiveData
@@ -238,9 +236,23 @@ class FavoriteFragment : Fragment() {
             binding.progressBar.visibility = GONE
             binding.favoriteRecyclerView.visibility = VISIBLE
         })
+        locationsLiveData.observe(viewLifecycleOwner, { weatherList ->
+            favoriteAdapter.weatherList = weatherList.favoriteList
+            binding.progressBar.visibility = GONE
+            binding.favoriteRecyclerView.visibility = VISIBLE
+        })
     }
     private fun clearSearchView()= with(binding){
         searchView.setQuery("", false)
         searchView.clearFocus()
+    }
+    //관심 지역 id들을 ,,,로 만들어서 파라미터로 넘기기 위한 함수
+    private fun getLocationIdList(ids : List<Favorite>) : String? {
+        var locationIdList = ""
+        ids.forEach {
+            locationIdList += ",${it.locationId}"
+        }
+        locationIdList = locationIdList.removePrefix(",")
+        return locationIdList
     }
 }

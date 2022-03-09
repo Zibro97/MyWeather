@@ -1,7 +1,6 @@
 package com.example.myweather.viewmodel
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,7 +8,6 @@ import com.example.myweather.data.api.RetrofitClient
 import com.example.myweather.data.db.DatabaseProvider
 import com.example.myweather.model.favorite.Favorite
 import com.example.myweather.model.favoriteweather.FavoriteWeatherModel
-import com.example.myweather.model.favoriteweather.LocationIdModel
 import com.example.myweather.model.weather.WeatherDTO
 import kotlinx.coroutines.launch
 
@@ -17,7 +15,7 @@ open class BaseViewModel : ViewModel() {
     private val service = RetrofitClient.weatherService
     val weatherLiveData:MutableLiveData<WeatherDTO> = MutableLiveData()
     val locationLiveData: MutableLiveData<List<Favorite>> = MutableLiveData()
-    val locationsLiveData : MutableLiveData<List<FavoriteWeatherModel>> = MutableLiveData()
+    val locationsLiveData : MutableLiveData<FavoriteWeatherModel> = MutableLiveData()
 
     //동작 과정
     //1. view에서 getWeather함수를 호출
