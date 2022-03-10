@@ -1,14 +1,11 @@
 package com.example.myweather.viewmodel
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myweather.data.api.RetrofitClient
 import com.example.myweather.data.db.DatabaseProvider
 import com.example.myweather.model.favorite.Favorite
-import com.example.myweather.model.vworld.Location
 import com.example.myweather.model.vworld.VworldLocation
 import kotlinx.coroutines.launch
 

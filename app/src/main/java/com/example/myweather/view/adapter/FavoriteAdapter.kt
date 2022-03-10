@@ -11,8 +11,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.myweather.databinding.ItemFavoriteBinding
 import com.example.myweather.model.favorite.Favorite
 import com.example.myweather.model.favoriteweather.FavoriteWeatherInfo
-import com.example.myweather.model.favoriteweather.FavoriteWeatherModel
-import com.example.myweather.model.weather.WeatherDTO
 import java.text.SimpleDateFormat
 import kotlin.math.roundToInt
 

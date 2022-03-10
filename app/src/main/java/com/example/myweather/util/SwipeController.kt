@@ -19,6 +19,7 @@ internal class SwipeController(buttonsActions: SwipeControllerActions?) : Callba
     private var currentItemViewHolder: RecyclerView.ViewHolder? = null
     private var buttonsActions: SwipeControllerActions? = null
 
+    //ItemTouchHelper에게 RecyclerView가 처리해야 하는 작업의 종류를 알려주는 메서드 ex) 왼쪽과 오른쪽으로 스와이프
     override fun getMovementFlags(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder
@@ -26,6 +27,7 @@ internal class SwipeController(buttonsActions: SwipeControllerActions?) : Callba
         return makeMovementFlags(0, LEFT)
     }
 
+    //사용자가 드래그한다면 ItemTouchHelper가 호출하는 메서드, RecyclerView adapter에서 아이템을 이전위치에서 새로운 위치로 이동해야하고, adapter에서 notifyitemMoved를 호출
     override fun onMove(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder,
@@ -34,8 +36,11 @@ internal class SwipeController(buttonsActions: SwipeControllerActions?) : Callba
         return false
     }
 
+    //View가 스와이프되면 ItemTouchHelper는 범위를 벗어날 때 까지 VIew를 애니메이션화한 다음 이 메서드를 호출
+    //여기서 Adapter를 업데이트 해야하고 관련된 Adapter의 notify 이벤트를 호출해야함
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
 
+    //swipe 시 아이템이 사라지는 것을 차단
     override fun convertToAbsoluteDirection(flags: Int, layoutDirection: Int): Int {
         if (swipeBack) {
             swipeBack = buttonShowedState !== ButtonState.GONE
@@ -44,6 +49,7 @@ internal class SwipeController(buttonsActions: SwipeControllerActions?) : Callba
         return super.convertToAbsoluteDirection(flags, layoutDirection)
     }
 
+    //버튼 그리는 함수
     override fun onChildDraw(
         c: Canvas,
         recyclerView: RecyclerView,
@@ -85,6 +91,7 @@ internal class SwipeController(buttonsActions: SwipeControllerActions?) : Callba
         currentItemViewHolder = viewHolder
     }
 
+    //사용자가 item을 왼쪽 또는 오른쪽으로 스와이프한 정도를 확인. 충분하다면 버튼을 표시하도록 상태를 변경
     @SuppressLint("ClickableViewAccessibility")
     private fun setTouchListener(
         c: Canvas,

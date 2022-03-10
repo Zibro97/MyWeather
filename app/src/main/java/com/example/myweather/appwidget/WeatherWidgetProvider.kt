@@ -27,6 +27,7 @@ import java.lang.Exception
 import kotlin.math.roundToInt
 
 //BroadCastReceiver
+//appWidgetProvider : 위젯 요청을 수신해서 실제로 위젯을 제공하는 클래스
 class WeatherWidgetProvider: AppWidgetProvider() {
 
     //위치정보를 가져와 날씨 정보를 업데이트하기 위한 메서드
@@ -44,6 +45,9 @@ class WeatherWidgetProvider: AppWidgetProvider() {
     }
 
     //Service 정의
+    //Service를 사용한 이유 : AppWidgetProvider가 BroadcastReceiver이므로 비동기로 위치정보를 가져와 네트워크 통신을 할때까지 기다려 주지 않음. 시스템에 의해 프로세스가 언제든지 종료가 될 수 있음
+    //원하는 위치를 가져오고 네트워크 통신을 사용하려면 onUpdate에서 Service를 통해 도중에 Cancel되지 않게 작업을 해야함
+    //LifecycleService : LifecycleCoroutine을 사용하기 위해 LifecycleService 사용
     class UpdateWidgetService : LifecycleService(){
         override fun onCreate() {
             super.onCreate()
@@ -110,7 +114,6 @@ class WeatherWidgetProvider: AppWidgetProvider() {
 
         override fun onDestroy() {
             super.onDestroy()
-            //notification 지
             stopForeground(true)
         }
 
