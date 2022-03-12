@@ -211,6 +211,9 @@ class WeatherFragment : Fragment() {
         favoriteListImageButton.setOnClickListener {
             navController.navigate(R.id.action_weatherContainer_to_favoriteContainer)
         }
+        weatherMapImageButton.setOnClickListener {
+            navController.navigate(R.id.action_weatherContainer_to_mapContainer)
+        }
     }
 
     //db에 저장된 위치 가져오는 함수

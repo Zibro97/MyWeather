@@ -15,6 +15,10 @@
             android:id="@+id/action_weatherContainer_to_favoriteContainer"
             app:destination="@+id/favoriteContainer"
             />
+        <action
+            android:id="@+id/action_weatherContainer_to_mapContainer"
+            app:destination="@+id/mapContainer"
+            />
     </fragment>
     <fragment
         android:id="@+id/favoriteContainer"
@@ -31,9 +35,15 @@
             android:id="@+id/action_favoriteContainer_to_confirm_insert_dialog"
             app:destination="@id/confirm_insert_dialog" />
     </fragment>
+    <fragment
+        android:id="@+id/mapContainer"
+        android:name="com.example.myweather.view.fragment.MapFragment"
+        android:label="fragment_map"
+        tools:layout="@layout/fragment_map">
+
+    </fragment>
     <dialog
         android:id="@+id/confirm_insert_dialog"
-        android:name="com.example.myweather.view.fragment.CustomDialog"
         android:label="custom_dialog"
         tools:layout="@layout/insert_favorite_dialog_custom"
         >

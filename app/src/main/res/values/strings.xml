@@ -39,4 +39,6 @@
     <string name="error_report_text">문제 리포트</string>
     <string name="fagrenheit_text">화씨</string>
     <string name="celsius">섭씨</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -22,6 +22,8 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String","OPEN_WEATHER_API_KEY", properties['open_weather_api_key']
         buildConfigField "String","VWORLD_SEARCH_ADDRESS_API_KEY", properties['VWORLD_SEARCH_ADDRESS_API_KEY']
+        buildConfigField "String","GOOGLE_API_KEY", properties['GOOGLE_API_KEY']
+        manifestPlaceholders = [GOOGLE_API_KEY : properties['GOOGLE_API_KEY']]
     }
     //뷰바인딩
     viewBinding {
@@ -57,6 +59,7 @@ dependencies {
     implementation("androidx.room:room-ktx:2.4.0")
     //gms
     implementation 'com.google.android.gms:play-services-location:19.0.1'
+    implementation 'com.google.android.gms:play-services-maps:18.0.2'
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
