@@ -22,8 +22,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String","OPEN_WEATHER_API_KEY", properties['open_weather_api_key']
         buildConfigField "String","VWORLD_SEARCH_ADDRESS_API_KEY", properties['VWORLD_SEARCH_ADDRESS_API_KEY']
-        buildConfigField "String","GOOGLE_API_KEY", properties['GOOGLE_API_KEY']
-        manifestPlaceholders = [GOOGLE_API_KEY : properties['GOOGLE_API_KEY']]
+        manifestPlaceholders = [GOOGLE_API_KEY : properties.getProperty('GOOGLE_API_KEY')]
     }
     //뷰바인딩
     viewBinding {
