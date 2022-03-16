@@ -1,28 +1,26 @@
 package com.example.myweather.view.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.myweather.BuildConfig
 import com.example.myweather.R
-import com.example.myweather.databinding.FragmentMapBinding
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.lang.AssertionError
 import java.net.MalformedURLException
 import java.net.URL
-import java.util.*
 
 //날씨를 지도로 표현해 보여주는 Fragment
 class MapFragment : Fragment(),OnMapReadyCallback {
-
-    private var _binding : FragmentMapBinding? = null
-    private val binding get() = _binding!!
 
     private lateinit var mapView : MapView
 
@@ -37,23 +35,21 @@ class MapFragment : Fragment(),OnMapReadyCallback {
         return rootView
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
     override fun onMapReady(map: GoogleMap) {
         val point = LatLng( 37.414655, 126.879974)
         map.addMarker(MarkerOptions().position(point).title("여기"))
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(point,11f))
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(point,12f))
+        map.mapType = GoogleMap.MAP_TYPE_NONE
 
-        val tileProvider = object : UrlTileProvider(256,256){
+        val tileProvider : TileProvider = object : UrlTileProvider(256,256){
+            @Synchronized
             override fun getTileUrl(x: Int, y: Int, zoom: Int): URL? {
-                val s = String.format(Locale.KOREA,"http://tile.openweathermap.org/map/precipitation/%d/%d/%d.png?appid={${BuildConfig.OPEN_WEATHER_API_KEY}}",zoom,x,y)
+                val s = String.format("http://tile.openweathermap.org/map/temp_new/%d/%d/%d.png?appid={${BuildConfig.OPEN_WEATHER_API_KEY}}",zoom,y,x)
 
-                if(!checkTileExists(x,y,zoom)) return null
-                try {
-                    return URL(s)
+                return if(!checkTileExists(x,y,zoom)){
+                    null
+                }else try{
+                    URL(s)
                 }catch (e:MalformedURLException){
                     throw AssertionError(e)
                 }
@@ -65,7 +61,7 @@ class MapFragment : Fragment(),OnMapReadyCallback {
                 return !(zoom<minZoom || zoom>maxZoom)
             }
         }
-        map.addTileOverlay(TileOverlayOptions().tileProvider(tileProvider))
+        val tileOverlay :TileOverlay = map.addTileOverlay(TileOverlayOptions().tileProvider(tileProvider))!!
     }
 
     override fun onStart() {
