@@ -6,6 +6,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".view.fragment.MapFragment">
 
+    <!--Activity에서는 fragment로 구현해야 하지만
+        Fragment에서는 MapView를 사용해야함
+    -->
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapFragment"
         android:layout_width="0dp"
@@ -14,7 +17,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:name="com.google.android.gms.maps.MapFragment"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

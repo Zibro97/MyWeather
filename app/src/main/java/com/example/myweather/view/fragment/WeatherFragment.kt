@@ -128,7 +128,7 @@ class WeatherFragment : Fragment() {
     //위치 가져오는 함수
     @SuppressLint("MissingPermission")
     private fun getLocation() {
-        //록액티비티가 요청을 취소할 수 있도록하는 토큰
+        //액티비티가 요청을 취소할 수 있도록하는 토큰
         cancellationTokenSource = CancellationTokenSource()
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(mActivity)
         fusedLocationClient!!.getCurrentLocation(
