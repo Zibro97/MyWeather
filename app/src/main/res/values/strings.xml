@@ -41,4 +41,6 @@
     <string name="celsius">섭씨</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="map_legend_textview">온도</string>
+    <string name="temp_lange_textview">55\n30\n20\n10\n0\n-20\n-40</string>
 </resources>

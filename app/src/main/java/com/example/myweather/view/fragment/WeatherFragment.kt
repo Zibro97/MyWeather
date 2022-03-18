@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -61,6 +62,9 @@ class WeatherFragment : Fragment() {
 
     //navigation Controller
     private lateinit var navController: NavController
+
+    //현위치 좌표
+    private lateinit var currentLocation : Location
 
     //위치 권한
     private val locationPermissionRequest = registerForActivityResult(
@@ -136,6 +140,7 @@ class WeatherFragment : Fragment() {
             cancellationTokenSource!!.token
         ).addOnSuccessListener { location ->
             try {
+                currentLocation = location
                 context?.let { context ->
                     //sharedPreference 없으면 현재 위치 insert
                     if (prefs.getString("current", "no current") == "no current") {
@@ -212,7 +217,8 @@ class WeatherFragment : Fragment() {
             navController.navigate(R.id.action_weatherContainer_to_favoriteContainer)
         }
         weatherMapImageButton.setOnClickListener {
-            navController.navigate(R.id.action_weatherContainer_to_mapContainer)
+            val action = WeatherFragmentDirections.actionWeatherContainerToMapContainer(currentLocation)
+            navController.navigate(action)
         }
     }
 

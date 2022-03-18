@@ -6,18 +6,67 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".view.fragment.MapFragment">
 
-    <!--Activity에서는 fragment로 구현해야 하지만
-        Fragment에서는 MapView를 사용해야함
-    -->
-    <com.google.android.gms.maps.MapView
-        android:id="@+id/mapFragment"
+    <FrameLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:name="com.google.android.gms.maps.MapFragment"
-        />
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
+        <!--Activity에서는 fragment로 구현해야 하지만
+            Fragment에서는 MapView를 사용해야함
+        -->
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/mapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/ic_cardview_background"
+            >
+            <TextView
+                android:id="@+id/temp_title_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/map_legend_textview"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="25sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+            <ImageView
+                android:id="@+id/temp_image"
+                android:layout_width="3dp"
+                android:layout_height="150dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/temp_legend"
+                app:layout_constraintTop_toBottomOf="@id/temp_title_textview"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:src="@drawable/background_temp"
+                android:scaleType="fitXY"
+                android:layout_marginStart="5dp"
+                />
+            <TextView
+                android:id="@+id/temp_legend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/temp_lange_textview"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="@color/white"
+                app:layout_constraintTop_toTopOf="@id/temp_image"
+                app:layout_constraintStart_toEndOf="@id/temp_image"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/temp_image"
+                />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

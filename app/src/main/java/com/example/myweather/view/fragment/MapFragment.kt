@@ -1,10 +1,12 @@
 package com.example.myweather.view.fragment
 
+import android.location.Location
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.navArgs
 import com.example.myweather.BuildConfig
 import com.example.myweather.R
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -19,14 +21,16 @@ import java.util.*
 
 /***
  * TODO
- * 1. 기본 지도 띄우기
- * 2. 기본 지도 위에 기온 layer 올리기
- * 3. 기온 범례 올리기 (keyword : legend)
+ * 1. 기본 지도 띄우기 o
+ * 2. 기본 지도 위에 기온 layer 올리기 o
+ * 3. 기온 범례 올리기 (keyword : legend) o
+ * 4. 현재위치 받아와서 지도 카메라 현위치로 옮기기
 * */
 //날씨를 지도로 표현해 보여주는 Fragment
 class MapFragment : Fragment(),OnMapReadyCallback {
 
     private lateinit var mapView : MapView
+    private val args : MapFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,7 +45,7 @@ class MapFragment : Fragment(),OnMapReadyCallback {
 
     //지도 객체를 사용할 수 있을 때 자동으로 호출되는 함수
     override fun onMapReady(map: GoogleMap) {
-        val point = LatLng( 37.414655, 126.879974)
+        val point = LatLng( args.location.latitude, args.location.longitude)
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(point,12f))
 
         //이미지를 제공하는 URL을 통해서 Tile을 구현하는 부분
