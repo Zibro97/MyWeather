@@ -1,6 +1,5 @@
 package com.example.myweather.view.fragment
 
-import android.location.Location
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -20,7 +19,6 @@ import java.net.URL
 import java.util.*
 
 /***
- * TODO
  * 1. 기본 지도 띄우기 o
  * 2. 기본 지도 위에 기온 layer 올리기 o
  * 3. 기온 범례 올리기 (keyword : legend) o
@@ -50,6 +48,7 @@ class MapFragment : Fragment(),OnMapReadyCallback {
 
         //이미지를 제공하는 URL을 통해서 Tile을 구현하는 부분
         val tileProvider : TileProvider = object :UrlTileProvider(256,256){
+            // @Synchronized: 메서드가 정의된 인스턴스의 모니터를 통해 여러 스레드에 의해 메서드가 동시에 실행되지 않도록 보호
             @Synchronized
             //사용자가 보고있는 부분에 사용할 타일 이미지를 가리키는 URL을 반환
             override fun getTileUrl(x: Int, y: Int, zoom: Int): URL? {

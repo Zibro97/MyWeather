@@ -1,7 +1,6 @@
 package com.example.myweather.data.api
 
 import com.example.myweather.BuildConfig
-import com.example.myweather.model.vworld.Location
 import com.example.myweather.model.vworld.VworldLocation
 import retrofit2.http.GET
 import retrofit2.http.Query

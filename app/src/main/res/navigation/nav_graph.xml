@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/weatherContainer">
+    <!--지역별 날씨 상세 정보 보여주는 Fragment-->
     <fragment
         android:id="@+id/weatherContainer"
         android:name="com.example.myweather.view.fragment.WeatherFragment"
@@ -20,6 +21,7 @@
             app:destination="@+id/mapContainer"
             />
     </fragment>
+    <!--관심지역 보여주는 Fragment-->
     <fragment
         android:id="@+id/favoriteContainer"
         android:name="com.example.myweather.view.fragment.FavoriteFragment"
@@ -32,6 +34,7 @@
             app:popUpToInclusive="true"
             />
     </fragment>
+    <!--기온 보여주는 지도 Fragment-->
     <fragment
         android:id="@+id/mapContainer"
         android:name="com.example.myweather.view.fragment.MapFragment"

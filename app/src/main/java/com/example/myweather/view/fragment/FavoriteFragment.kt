@@ -10,7 +10,6 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
@@ -35,6 +34,9 @@ import com.example.myweather.viewmodel.FavoriteViewModel
  * 관심지역 추가
  * 1. 검색한 관심지역 추가 시 weather api로 해당 지역의 id 요청
  * 2. 지역의 id, 좌표, 지역명 room에 저장
+ * 관심지역 RecyclerView
+ * 1. Room에 저장된 지역들의 id들을 가져와 문자열로 변환
+ * 2. 변환한 문자열을 가지고 지역들 날씨정보 가져옴
 */
 class FavoriteFragment : Fragment() {
 
@@ -86,14 +88,6 @@ class FavoriteFragment : Fragment() {
     }
 
     private fun initViews() = with(binding) {
-        //우측 상단의 설정 버튼 클릭시 팝업 메뉴 띄우기
-        settingsImageButton.setOnClickListener {
-            val popup = PopupMenu(context, binding.settingsImageButton)
-
-            val inf = popup.menuInflater
-            inf.inflate(R.menu.menu_settings, popup.menu)
-            popup.show()
-        }
         //search View 검색어 초기화,포커스 제거
         searchCanelButton.setOnClickListener {
             clearSearchView()
@@ -102,13 +96,11 @@ class FavoriteFragment : Fragment() {
         searchView.setOnQueryTextFocusChangeListener { _, hasFocus -> //searchView에 포커싱에따라 visible 처리
             favoriteRecyclerView.visibility = VISIBLE
             if (hasFocus) {
-                settingsImageButton.visibility = GONE
                 toolbarTextView.visibility = GONE
                 searchCanelButton.visibility = VISIBLE
                 searchResultRv.visibility = VISIBLE
                 favoriteRecyclerView.alpha = 0.3F
             } else {
-                settingsImageButton.visibility = VISIBLE
                 toolbarTextView.visibility = VISIBLE
                 searchCanelButton.visibility = GONE
                 searchResultRv.visibility = GONE
@@ -242,6 +234,7 @@ class FavoriteFragment : Fragment() {
             binding.favoriteRecyclerView.visibility = VISIBLE
         })
     }
+    //검색창 clear하고 focus 날리기
     private fun clearSearchView()= with(binding){
         searchView.setQuery("", false)
         searchView.clearFocus()
