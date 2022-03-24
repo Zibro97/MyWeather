@@ -13,7 +13,7 @@ interface FavoriteDao {
     suspend fun getFavoriteInfo(id : Int) : Favorite
     //즐겨찾기 추가하는 쿼리
     @Insert
-    suspend fun insertFavorite(favorite: Favorite)
+    suspend fun insertFavorite(favorite: Favorite) : Long
     //즐겨찾기 삭제하는 쿼리
     @Delete
     suspend fun delete(favorite: Favorite)

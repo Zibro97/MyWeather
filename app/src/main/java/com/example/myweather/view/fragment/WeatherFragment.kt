@@ -104,17 +104,14 @@ class WeatherFragment : Fragment() {
         navController = Navigation.findNavController(view)
 
         prefs = mActivity.getSharedPreferences("current", Context.MODE_PRIVATE)
-        context?.let { viewModel.getLocationCnt(context = it) }
         requestPermission()
         initViews()
         liveDatas()
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     override fun onResume() {
         super.onResume()
         getLocation()
-        weatherAdapter.notifyDataSetChanged()
     }
 
     override fun onDestroy() {
@@ -199,17 +196,14 @@ class WeatherFragment : Fragment() {
 
     //viewPager 초기화 및 날씨 정보 넘겨주는 함수
     private fun initViews() = with(binding){
-        weatherAdapter = WeatherAdapter()
+        if(::weatherAdapter.isInitialized.not()){
+            weatherAdapter = WeatherAdapter()
+        }
         viewPager.adapter = weatherAdapter
-        viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
-        viewPager.setCurrentItem(0, true)
-        indicatorWeather.setViewPager(viewPager)
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 viewModel.getWeather(latitude = weatherAdapter.currentList[position].latitude, longitude = weatherAdapter.currentList[position].longitude)
-
-                indicatorWeather.animatePageSelected(position)
             }
         })
         //하단 탭의 즐겨찾기 리스트 버튼 클릭시 이벤트
@@ -234,6 +228,7 @@ class WeatherFragment : Fragment() {
         //db에서 지역 가져오는 LiveData
         locationLiveData.observe(viewLifecycleOwner, { favorites ->
             weatherAdapter.submitList(favorites)
+            binding.indicatorWeather.setViewPager(binding.viewPager)
         })
         //db에서 가져온 지역의 날씨 정보를 가져와 리스트에 담음
         weatherLiveData.observe(viewLifecycleOwner, { weather ->
@@ -241,9 +236,6 @@ class WeatherFragment : Fragment() {
             weatherAdapter.notifyDataSetChanged()
             binding.progressBar.visibility = View.GONE
             binding.bottomNavigationView.visibility = View.VISIBLE
-        })
-        locationCntLiveData.observe(viewLifecycleOwner, { cnt ->
-            binding.indicatorWeather.createIndicators(cnt, 0)
         })
     }
 

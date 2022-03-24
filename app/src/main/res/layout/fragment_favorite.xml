@@ -16,6 +16,7 @@
         app:layout_constraintTop_toTopOf="@id/favorite_recycler_view"
         app:layout_constraintBottom_toBottomOf="@id/favorite_recycler_view"
         android:indeterminateTint="@color/white"
+        android:visibility="visible"
         />
 
     <TextView

@@ -23,7 +23,6 @@ import com.example.myweather.R
 import com.example.myweather.databinding.FragmentFavoriteBinding
 import com.example.myweather.databinding.InsertFavoriteDialogCustomBinding
 import com.example.myweather.model.favorite.Favorite
-import com.example.myweather.model.weather.WeatherDTO
 import com.example.myweather.util.SwipeController
 import com.example.myweather.util.SwipeControllerActions
 import com.example.myweather.view.adapter.FavoriteAdapter
@@ -56,9 +55,6 @@ class FavoriteFragment : Fragment() {
 
     //Swipe Controller
     private var swipeController : SwipeController? = null
-
-    //location id list
-    private var weatherList : MutableList<WeatherDTO?> = mutableListOf()
 
     //Layout을 inflate하는 곳
     override fun onCreateView(
@@ -198,10 +194,7 @@ class FavoriteFragment : Fragment() {
         //db 즐겨찾기 LiveData
         locationLiveData.observe(viewLifecycleOwner, { favorite ->
             favoriteAdapter.submitList(favorite)
-            getLocationIdList(favorite)?.let {
-                Log.d("TAG", "liveData: $it")
-                viewModel.locations(it)
-            }
+            viewModel.locations(getLocationIdList(favorite))
         })
         //검색 결과 LiveData
         searchLocateLiveData.observe(viewLifecycleOwner, { locations ->
@@ -223,11 +216,6 @@ class FavoriteFragment : Fragment() {
                 locationAdapter.submitList(locations.response.result.items)
             }
         })
-        weatherLiveData.observe(viewLifecycleOwner,{ weather->
-            weatherList.add(weather)
-            binding.progressBar.visibility = GONE
-            binding.favoriteRecyclerView.visibility = VISIBLE
-        })
         locationsLiveData.observe(viewLifecycleOwner, { weatherList ->
             favoriteAdapter.weatherList = weatherList.favoriteList
             binding.progressBar.visibility = GONE
@@ -240,7 +228,7 @@ class FavoriteFragment : Fragment() {
         searchView.clearFocus()
     }
     //관심 지역 id들을 ,,,로 만들어서 파라미터로 넘기기 위한 함수
-    private fun getLocationIdList(ids : List<Favorite>) : String? {
+    private fun getLocationIdList(ids : List<Favorite>) : String {
         var locationIdList = ""
         ids.forEach {
             locationIdList += ",${it.locationId}"

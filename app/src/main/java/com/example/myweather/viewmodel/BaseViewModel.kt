@@ -41,9 +41,10 @@ open class BaseViewModel : ViewModel() {
     //관심지역 or 현재 위치 저장하기 위한 함수
     fun insertLocation(context:Context,location:String,latitude: Double,longitude: Double){
         viewModelScope.launch {
-            val locationId = service.getLocationId(latitude = latitude,longitude = longitude).id
+            val locationId = service.getLocationId(latitude = latitude, longitude = longitude).id
             val favorite = Favorite(id = null,locationId = locationId,location = location,latitude = latitude,longitude = longitude)
             DatabaseProvider.getAppDatabase(context).favoriteDao().insertFavorite(favorite)
+            getAllLocation(context)
         }
     }
     //현재 위치 정보 수정하는 함수

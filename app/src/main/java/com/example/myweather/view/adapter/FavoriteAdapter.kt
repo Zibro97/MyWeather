@@ -57,12 +57,13 @@ class FavoriteAdapter(
     }
 
     companion object{
+        private val TAG = "FAVORITEADAPTER"
         private val diffUtil = object : DiffUtil.ItemCallback<Favorite>() {
             override fun areItemsTheSame(oldItem: Favorite, newItem: Favorite): Boolean {
-                return oldItem.id == newItem.id
+                return oldItem.location == newItem.location
             }
             override fun areContentsTheSame(oldItem: Favorite, newItem: Favorite): Boolean {
-                return oldItem == newItem
+                return oldItem.id == newItem.id
             }
         }
     }
