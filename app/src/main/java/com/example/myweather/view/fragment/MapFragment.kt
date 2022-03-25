@@ -1,13 +1,16 @@
 package com.example.myweather.view.fragment
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.myweather.BuildConfig
 import com.example.myweather.R
+import com.example.myweather.databinding.FragmentMapBinding
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -17,6 +20,21 @@ import java.lang.AssertionError
 import java.net.MalformedURLException
 import java.net.URL
 import java.util.*
+import android.graphics.Rect
+
+import android.graphics.Color
+
+import android.graphics.Paint
+
+import android.graphics.Canvas
+
+import android.graphics.BitmapFactory
+
+import android.content.res.Resources
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import com.example.myweather.util.MarkerInfoWindowAdapter
+
 
 /***
  * 1. 기본 지도 띄우기 o
@@ -27,24 +45,55 @@ import java.util.*
 //날씨를 지도로 표현해 보여주는 Fragment
 class MapFragment : Fragment(),OnMapReadyCallback {
 
+    private var _binding : FragmentMapBinding? = null
+    private val binding get() = _binding!!
     private lateinit var mapView : MapView
     private val args : MapFragmentArgs by navArgs()
+    private lateinit var googleMap : GoogleMap
+    private lateinit var navController:NavController
+    companion object{
+        //map위에 올라갈 tile api url
+        private const val MAP_URL_FORMAT = "https://tile.openweathermap.org/map/temp_new/%d/%d/%d.png?appid=${BuildConfig.OPEN_WEATHER_API_KEY}"
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(R.layout.fragment_map,container,false)
-        mapView = rootView.findViewById(R.id.mapFragment) as MapView
+        _binding = FragmentMapBinding.inflate(inflater,container,false)
+        mapView = binding.mapFragment as MapView
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
-        return rootView
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        navController = Navigation.findNavController(view)
+
+        initViews()
+    }
+    private fun initViews() = with(binding){
+        completeButton.setOnClickListener {
+            navController.popBackStack()
+        }
+        currentPositionButton.setOnClickListener {
+            val position = LatLng(args.location.latitude,args.location.longitude)
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position,12f))
+        }
+        favoriteButton.setOnClickListener {
+            navController.navigate(R.id.action_mapContainer_to_favoriteContainer)
+        }
+        layerPopupButton.setOnClickListener {
+        }
     }
 
     //지도 객체를 사용할 수 있을 때 자동으로 호출되는 함수
     override fun onMapReady(map: GoogleMap) {
+        googleMap = map
         val point = LatLng( args.location.latitude, args.location.longitude)
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(point,12f))
+
 
         //이미지를 제공하는 URL을 통해서 Tile을 구현하는 부분
         val tileProvider : TileProvider = object :UrlTileProvider(256,256){
@@ -64,11 +113,6 @@ class MapFragment : Fragment(),OnMapReadyCallback {
         }
         //TileOverlay : 기본 지도 위에 표시되는 이미지 컬렉션
         map.addTileOverlay(TileOverlayOptions().tileProvider(tileProvider))!!
-    }
-
-    companion object{
-        //map위에 올라갈 tile api url
-        private const val MAP_URL_FORMAT = "https://tile.openweathermap.org/map/temp_new/%d/%d/%d.png?appid=${BuildConfig.OPEN_WEATHER_API_KEY}"
     }
 
     override fun onStart() {
@@ -99,5 +143,10 @@ class MapFragment : Fragment(),OnMapReadyCallback {
     override fun onDestroy() {
         super.onDestroy()
         mapView.onDestroy()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

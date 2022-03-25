@@ -40,7 +40,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:background="@drawable/ic_background_search_view"
+        android:background="@drawable/background_search_view"
         app:iconifiedByDefault="false"
         app:layout_constraintEnd_toStartOf="@id/search_canel_button"
         app:layout_constraintStart_toStartOf="parent"

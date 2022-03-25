@@ -22,25 +22,25 @@ enum class WeatherGrade(
     SNOW("눈","❄️",R.drawable.ic_snow_background),
 
     @SerializedName("Mist")
-    MIST("안개","🌫",R.drawable.ic_fog_background),
+    MIST("안개","🌫",R.drawable.fog_background),
 
     @SerializedName("Smoke")
-    SMOKE("연기","😷",R.drawable.ic_fog_background),
+    SMOKE("연기","😷",R.drawable.fog_background),
 
     @SerializedName("Haze")
-    Haze("안개","🌫",R.drawable.ic_fog_background),
+    Haze("안개","🌫",R.drawable.fog_background),
 
     @SerializedName("Dust")
-    DUST("미세먼지","😷",R.drawable.ic_fog_background),
+    DUST("미세먼지","😷",R.drawable.fog_background),
 
     @SerializedName("Fog")
-    FOG("안개","🌫",R.drawable.ic_fog_background),
+    FOG("안개","🌫",R.drawable.fog_background),
 
     @SerializedName("Sand")
-    SAND("미세먼지","😷",R.drawable.ic_fog_background),
+    SAND("미세먼지","😷",R.drawable.fog_background),
 
     @SerializedName("Ash")
-    ASH("화산재","😷",R.drawable.ic_fog_background),
+    ASH("화산재","😷",R.drawable.fog_background),
 
     @SerializedName("Squall")
     SQUALL("돌풍","🌪",R.drawable.ic_tornado_background),

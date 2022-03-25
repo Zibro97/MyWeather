@@ -4,7 +4,9 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../layout/custom_preview.xml" value="0.30648148148148147" />
+        <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.3861538461538462" />
         <entry key="app/src/main/res/drawable/background_bottom_navigation.xml" value="0.11296296296296296" />
+        <entry key="app/src/main/res/drawable/background_temp_marker.xml" value="0.3861538461538462" />
         <entry key="app/src/main/res/drawable/btm_navigation_color.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/daily_seek_background.xml" value="0.3787037037037037" />
         <entry key="app/src/main/res/drawable/daily_seek_thumb.xml" value="0.3787037037037037" />
@@ -16,15 +18,19 @@
         <entry key="app/src/main/res/drawable/ic_baseline_edit_24.xml" value="0.37037037037037035" />
         <entry key="app/src/main/res/drawable/ic_baseline_more_horiz_24.xml" value="0.4046875" />
         <entry key="app/src/main/res/drawable/ic_baseline_panorama_fish_eye_24.xml" value="0.4046875" />
+        <entry key="app/src/main/res/drawable/ic_baseline_refresh_24.xml" value="0.3861538461538462" />
         <entry key="app/src/main/res/drawable/ic_baseline_remove_red_eye_24.xml" value="0.37407407407407406" />
         <entry key="app/src/main/res/drawable/ic_baseline_report_gmailerrorred_24.xml" value="0.3861538461538462" />
+        <entry key="app/src/main/res/drawable/ic_baseline_search_icon.xml" value="0.3861538461538462" />
         <entry key="app/src/main/res/drawable/ic_baseline_severe_cold_24.xml" value="0.37407407407407406" />
         <entry key="app/src/main/res/drawable/ic_baseline_waves_24.xml" value="0.37407407407407406" />
         <entry key="app/src/main/res/drawable/ic_baseline_wb_sunny_24.xml" value="0.37407407407407406" />
         <entry key="app/src/main/res/drawable/ic_cardview_background.xml" value="0.23697916666666666" />
         <entry key="app/src/main/res/drawable/ic_compass.xml" value="0.23796296296296296" />
+        <entry key="app/src/main/res/drawable/ic_current_weather.xml" value="0.3861538461538462" />
         <entry key="app/src/main/res/drawable/ic_daily_weather.xml" value="0.30648148148148147" />
         <entry key="app/src/main/res/drawable/ic_favorite_list.xml" value="0.2515625" />
+        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.3861538461538462" />
         <entry key="app/src/main/res/drawable/ic_main_background.xml" value="0.37037037037037035" />
         <entry key="app/src/main/res/drawable/ic_map_24.xml" value="0.24166666666666667" />
         <entry key="app/src/main/res/drawable/ic_settings_icon.xml" value="0.4046875" />
@@ -44,6 +50,7 @@
         <entry key="app/src/main/res/layout/item_hourly.xml" value="0.18" />
         <entry key="app/src/main/res/layout/item_location.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/layout/item_weather.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/marker_custom.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/layout/menu_item.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/layout/widget_weather.xml" value="0.3509963768115942" />
         <entry key="app/src/main/res/menu/menu_item.xml" value="0.37604166666666666" />

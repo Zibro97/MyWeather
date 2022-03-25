@@ -126,7 +126,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
-                    android:background="@drawable/ic_cardview_background"
+                    android:background="@drawable/cardview_background"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -170,7 +170,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
-                    android:background="@drawable/ic_cardview_background"
+                    android:background="@drawable/cardview_background"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/hourly_layout">
@@ -205,7 +205,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="3dp"
-                    android:background="@drawable/ic_cardview_background"
+                    android:background="@drawable/cardview_background"
                     app:layout_constraintEnd_toStartOf="@id/wind_layout"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/daily_layout">
@@ -264,7 +264,7 @@
                     android:layout_marginStart="3dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
-                    android:background="@drawable/ic_cardview_background"
+                    android:background="@drawable/cardview_background"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/sunrise_layout"
                     app:layout_constraintTop_toBottomOf="@id/daily_layout">
@@ -312,7 +312,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="3dp"
-                    android:background="@drawable/ic_cardview_background"
+                    android:background="@drawable/cardview_background"
                     app:layout_constraintEnd_toStartOf="@id/humidity_layout"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/sunrise_layout">
@@ -360,7 +360,7 @@
                     android:layout_marginStart="3dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
-                    android:background="@drawable/ic_cardview_background"
+                    android:background="@drawable/cardview_background"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/feel_temp_layout"
                     app:layout_constraintTop_toBottomOf="@id/wind_layout">
@@ -421,7 +421,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="3dp"
-                    android:background="@drawable/ic_cardview_background"
+                    android:background="@drawable/cardview_background"
                     app:layout_constraintEnd_toStartOf="@id/snow_rain_layout"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/feel_temp_layout">
@@ -469,7 +469,7 @@
                     android:layout_marginStart="3dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
-                    android:background="@drawable/ic_cardview_background"
+                    android:background="@drawable/cardview_background"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/visibility_layout"
                     android:layout_marginBottom="16dp"

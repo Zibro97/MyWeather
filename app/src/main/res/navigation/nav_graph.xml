@@ -40,6 +40,12 @@
         android:name="com.example.myweather.view.fragment.MapFragment"
         android:label="fragment_map"
         tools:layout="@layout/fragment_map">
+        <action
+            android:id="@+id/action_mapContainer_to_favoriteContainer"
+            app:destination="@+id/favoriteContainer"
+            app:popUpTo="@id/weatherContainer"
+            app:popUpToInclusive="true"
+            />
         <argument
             android:name="location"
             app:argType="android.location.Location"

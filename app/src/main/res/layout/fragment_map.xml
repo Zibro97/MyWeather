@@ -23,49 +23,95 @@
             android:layout_height="match_parent"
             />
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="wrap_content"
-            android:layout_height="200dp"
-            android:layout_marginStart="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_marginTop="30dp"
-            android:background="@drawable/ic_cardview_background"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             >
-            <TextView
-                android:id="@+id/temp_title_textview"
+            <Button
+                android:id="@+id/complete_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/map_legend_textview"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:text="@string/complete"
                 android:textColor="@color/white"
                 android:textStyle="bold"
-                android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="parent"
+                android:backgroundTint="@color/gray700"
+                />
+            <ImageButton
+                android:id="@+id/current_position_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/favorite_button"
+                android:src="@drawable/ic_current_weather"
                 />
-            <ImageView
-                android:id="@+id/temp_image"
-                android:layout_width="3dp"
-                android:layout_height="150dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/temp_legend"
-                app:layout_constraintTop_toBottomOf="@id/temp_title_textview"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:src="@drawable/background_temp"
-                android:scaleType="fitXY"
-                android:layout_marginStart="5dp"
-                />
-            <TextView
-                android:id="@+id/temp_legend"
+            <ImageButton
+                android:id="@+id/favorite_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/temp_lange_textview"
-                android:textStyle="bold"
-                android:textSize="18sp"
-                android:textColor="@color/white"
-                app:layout_constraintTop_toTopOf="@id/temp_image"
-                app:layout_constraintStart_toEndOf="@id/temp_image"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="@id/temp_image"
+                app:layout_constraintTop_toBottomOf="@id/current_position_button"
+                android:src="@drawable/ic_favorite_list"
                 />
+            <ImageButton
+                android:id="@+id/layer_popup_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/favorite_button"
+                android:src="@drawable/ic_layers"
+                />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="200dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/complete_button"
+                android:background="@drawable/cardview_background"
+                android:layout_marginTop="8dp"
+                android:padding="6dp"
+                >
+                <TextView
+                    android:id="@+id/temp_title_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/map_legend_textview"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
+                <ImageView
+                    android:id="@+id/temp_image"
+                    android:layout_width="3dp"
+                    android:layout_height="150dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/temp_legend"
+                    app:layout_constraintTop_toBottomOf="@id/temp_title_textview"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:src="@drawable/background_temp"
+                    android:scaleType="fitXY"
+                    android:layout_marginStart="5dp"
+                    android:contentDescription="@string/temp_image" />
+                <TextView
+                    android:id="@+id/temp_legend"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/temp_lange_textview"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:textColor="@color/white"
+                    app:layout_constraintTop_toTopOf="@id/temp_image"
+                    app:layout_constraintStart_toEndOf="@id/temp_image"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/temp_image"
+                    />
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
 

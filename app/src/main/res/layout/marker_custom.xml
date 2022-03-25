@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/background_temp_marker"
+    android:padding="8dp"
+    android:gravity="center_horizontal">
+    <TextView
+        android:id="@+id/temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="8°"
+        android:textSize="15sp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        />
+</LinearLayout>

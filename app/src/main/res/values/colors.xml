@@ -23,6 +23,7 @@
     <color name="blue_center">#37aafa</color>
     <color name="blue_left">#1496fa</color>
     <color name="blue_right">#4bbefa</color>
+    <color name="temp_marker_color">#64ffff</color>
 
 
 </resources>
