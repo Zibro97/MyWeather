@@ -1,15 +1,13 @@
 package com.example.myweather.view.fragment
 
-import android.graphics.Bitmap
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.myweather.BuildConfig
-import com.example.myweather.R
 import com.example.myweather.databinding.FragmentMapBinding
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -20,20 +18,11 @@ import java.lang.AssertionError
 import java.net.MalformedURLException
 import java.net.URL
 import java.util.*
-import android.graphics.Rect
 
-import android.graphics.Color
-
-import android.graphics.Paint
-
-import android.graphics.Canvas
-
-import android.graphics.BitmapFactory
-
-import android.content.res.Resources
+import android.widget.PopupMenu
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import com.example.myweather.util.MarkerInfoWindowAdapter
+import com.example.myweather.R
 
 
 /***
@@ -44,22 +33,33 @@ import com.example.myweather.util.MarkerInfoWindowAdapter
 * */
 //날씨를 지도로 표현해 보여주는 Fragment
 class MapFragment : Fragment(),OnMapReadyCallback {
-
+    //바인딩 객체
     private var _binding : FragmentMapBinding? = null
     private val binding get() = _binding!!
+
+    //MapView 객체
     private lateinit var mapView : MapView
+
+    //WeatherFragment에서 MapFragment로 이동 시 넘겨 받을 인자
     private val args : MapFragmentArgs by navArgs()
+
+    //GoogleMap 객체
     private lateinit var googleMap : GoogleMap
+
+    //NavController 객체
     private lateinit var navController:NavController
+
     companion object{
+        //layer
+        private var layer = "temp_new"
         //map위에 올라갈 tile api url
-        private const val MAP_URL_FORMAT = "https://tile.openweathermap.org/map/temp_new/%d/%d/%d.png?appid=${BuildConfig.OPEN_WEATHER_API_KEY}"
+        private const val MAP_URL_FORMAT = "https://tile.openweathermap.org/map/%s/%d/%d/%d.png?appid=${BuildConfig.OPEN_WEATHER_API_KEY}"
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentMapBinding.inflate(inflater,container,false)
         mapView = binding.mapFragment as MapView
         mapView.onCreate(savedInstanceState)
@@ -74,17 +74,45 @@ class MapFragment : Fragment(),OnMapReadyCallback {
         initViews()
     }
     private fun initViews() = with(binding){
+        //'완료'버튼 클릭 이벤트
         completeButton.setOnClickListener {
+            //navigation stack에서 pop해버리기
             navController.popBackStack()
         }
+        //현위치 버튼 클릭 이벤트
         currentPositionButton.setOnClickListener {
+            //현위치로 지도 카메라 이동
             val position = LatLng(args.location.latitude,args.location.longitude)
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position,12f))
         }
+        //관심지역 버튼 클릭 이벤트
         favoriteButton.setOnClickListener {
+            //관심지역Fragment로 이동
             navController.navigate(R.id.action_mapContainer_to_favoriteContainer)
         }
+        //layer버튼 클릭시 이벤트(팝업메뉴)
         layerPopupButton.setOnClickListener {
+            val popup = PopupMenu(context, layerPopupButton).apply {
+                menuInflater.inflate(R.menu.menu_layers,menu)
+                setOnMenuItemClickListener {
+                    layer = when(it.itemId){
+                        R.id.rain_layer -> {
+                            tempLegendLayout.visibility = View.GONE
+                            "precipitation_new"
+                        }
+                        R.id.cloud_layer -> {
+                            tempLegendLayout.visibility = View.GONE
+                            "clouds_new"
+                        }
+                        else -> {
+                            tempLegendLayout.visibility = View.VISIBLE
+                            "temp_new"
+                        }
+                    }
+                    false
+                }
+            }
+            popup.show()
         }
     }
 
@@ -101,13 +129,14 @@ class MapFragment : Fragment(),OnMapReadyCallback {
             @Synchronized
             //사용자가 보고있는 부분에 사용할 타일 이미지를 가리키는 URL을 반환
             override fun getTileUrl(x: Int, y: Int, zoom: Int): URL? {
-                val s = String.format(Locale.US, MAP_URL_FORMAT,zoom,x,y)
+                val s = String.format(Locale.US, MAP_URL_FORMAT,layer,zoom,x,y)
                 var url:URL? = null
                 url = try {
                     URL(s)
                 }catch (e:MalformedURLException){
                     throw AssertionError(e)
                 }
+                Log.d("TAG", "getTileUrl: $layer $s")
                 return url
             }
         }

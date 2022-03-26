@@ -13,6 +13,11 @@
     <string name="edit_list_popup_menu">목록 편집</string>
     <string name="notification_popup_menu">알림</string>
 
+    <!--popupmenu settings-->
+    <string name="popup_layers_temp">기온</string>
+    <string name="popup_layers_rain">강수량</string>
+    <string name="popup_layers_cloud">구름</string>
+
     <!-- weather fragment -->
     <string name="hourly_weather_textview">🕑시간별 일기예보</string>
     <string name="daily_weather_textview">🗓일주일간 일기예보</string>
