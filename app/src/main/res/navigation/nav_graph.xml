@@ -20,6 +20,11 @@
             android:id="@+id/action_weatherContainer_to_mapContainer"
             app:destination="@+id/mapContainer"
             />
+        <argument
+            android:name="page"
+            app:argType="integer"
+            android:defaultValue="0"
+            />
     </fragment>
     <!--관심지역 보여주는 Fragment-->
     <fragment

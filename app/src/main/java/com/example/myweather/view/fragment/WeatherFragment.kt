@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -17,8 +18,10 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavArgs
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.example.myweather.R
 import com.example.myweather.databinding.FragmentWeatherBinding
@@ -66,6 +69,8 @@ class WeatherFragment : Fragment() {
     //현위치 좌표
     private lateinit var currentLocation : Location
 
+    //WeatherFragment에서 MapFragment로 이동 시 넘겨 받을 인자
+    private val args : WeatherFragmentArgs by navArgs()
     //위치 권한
     private val locationPermissionRequest = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -214,6 +219,10 @@ class WeatherFragment : Fragment() {
             val action = WeatherFragmentDirections.actionWeatherContainerToMapContainer(currentLocation)
             navController.navigate(action)
         }
+        indicatorWeather.setOnClickListener {
+            if(viewPager.currentItem == weatherAdapter.itemCount-1) viewPager.currentItem = 0
+            else viewPager.currentItem++
+        }
     }
 
     //db에 저장된 위치 가져오는 함수
@@ -229,6 +238,7 @@ class WeatherFragment : Fragment() {
         locationLiveData.observe(viewLifecycleOwner, { favorites ->
             weatherAdapter.submitList(favorites)
             binding.indicatorWeather.setViewPager(binding.viewPager)
+            binding.viewPager.setCurrentItem(args.page,true)
         })
         //db에서 가져온 지역의 날씨 정보를 가져와 리스트에 담음
         weatherLiveData.observe(viewLifecycleOwner, { weather ->

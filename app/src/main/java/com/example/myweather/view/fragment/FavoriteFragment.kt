@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -157,8 +158,9 @@ class FavoriteFragment : Fragment() {
         searchResultRv.adapter = locationAdapter
         //즐겨찾기 목록 RecyclerView
         favoriteAdapter = FavoriteAdapter(
-            onItemClick = { _ ->
-                navController.navigate(R.id.action_favoriteContainer_to_weatherContainer)
+            onItemClick = { position ->
+                val action = FavoriteFragmentDirections.actionFavoriteContainerToWeatherContainer(position)
+                navController.navigate(action)
             }
         )
         favoriteRecyclerView.layoutManager =
