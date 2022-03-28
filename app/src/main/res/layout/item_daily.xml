@@ -44,7 +44,7 @@
         android:textSize="20sp"
         android:textColor="@color/gray600"
         />
-    <SeekBar
+    <com.google.android.material.slider.RangeSlider
         android:id="@+id/daily_seekbar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -52,11 +52,12 @@
         app:layout_constraintEnd_toStartOf="@id/daily_item_max_temp_tv"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:maxHeight="4dp"
-        android:minHeight="4dp"
-        android:thumb="@drawable/daily_seek_thumb"
-        android:progressDrawable="@drawable/daily_seek_background"
-        tools:progress="50"
+        android:valueFrom="-35"
+        android:valueTo="35"
+        app:thumbColor="@color/blue_center"
+        app:thumbRadius="0dp"
+        app:trackColorActive="@color/blue_center"
+        app:trackColorInactive="@color/gray600"
         />
     <TextView
         android:id="@+id/daily_item_max_temp_tv"

@@ -22,6 +22,7 @@ class DailyAdapter:ListAdapter<DailyWeatherModel,DailyAdapter.ViewHolder>(diffUt
             binding.dailyItemMinTempTv.text ="${item.temp.minTemp.roundToInt()}°"
             binding.dailySeekbar.isEnabled = false
             binding.dailyItemWeatherIconIv.text = item.weather.first().main.emoji
+            binding.dailySeekbar.setValues(item.temp.minTemp.toFloat(),item.temp.maxTemp.toFloat())
         }
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DailyAdapter.ViewHolder {
