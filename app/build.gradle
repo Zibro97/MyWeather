@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-kapt'
     id 'androidx.navigation.safeargs.kotlin'
     id 'kotlin-parcelize'
+    id 'dagger.hilt.android.plugin'
 }
 //Properties를 선언하고 local.properties에 새로 등록된 api_key값을 load하여
 //BuildConfig에 저장
@@ -88,4 +89,11 @@ dependencies {
 
     //cirecleindicator
     implementation 'me.relex:circleindicator:2.1.6'
+
+    //hilt
+    implementation "com.google.dagger:hilt-android:2.28-alpha"
+    kapt "com.google.dagger:hilt-android-compiler:2.28-alpha"
+
+    //Timber
+    implementation "com.jakewharton.timber:timber:4.7.1"
 }

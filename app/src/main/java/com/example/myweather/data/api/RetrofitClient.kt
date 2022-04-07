@@ -7,8 +7,8 @@ object RetrofitClient {
     private const val WEATHER_BASE_URL = "https://api.openweathermap.org"
     private const val FAVORITE_BASE_URL = "http://api.vworld.kr"
 
-    val weatherService: WeatherService by lazy{ weatherRetrofit().create(WeatherService::class.java)}
-    val favoriteService : FavoriteService by lazy { favoriteRetrofit().create(FavoriteService::class.java) }
+    val WEATHER_API: WeatherApi by lazy{ weatherRetrofit().create(WeatherApi::class.java)}
+    val FAVORITE_API : FavoriteApi by lazy { favoriteRetrofit().create(FavoriteApi::class.java) }
 
     private fun weatherRetrofit():Retrofit{
         return Retrofit.Builder()

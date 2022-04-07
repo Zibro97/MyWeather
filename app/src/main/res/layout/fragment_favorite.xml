@@ -5,7 +5,7 @@
     android:id="@+id/fragment_fravorite"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.fragment.FavoriteFragment">
+    tools:context=".presentation.view.fragment.FavoriteFragment">
 
     <ProgressBar
         android:id="@+id/progress_bar"
@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="@id/favorite_recycler_view"
         app:layout_constraintBottom_toBottomOf="@id/favorite_recycler_view"
         android:indeterminateTint="@color/white"
-        android:visibility="visible"
+        android:visibility="gone"
         />
 
     <TextView
