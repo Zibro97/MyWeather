@@ -29,6 +29,9 @@ android {
     viewBinding {
         enabled = true
     }
+    dataBinding {
+        enabled = true
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -91,9 +94,13 @@ dependencies {
     implementation 'me.relex:circleindicator:2.1.6'
 
     //hilt
-    implementation "com.google.dagger:hilt-android:2.28-alpha"
-    kapt "com.google.dagger:hilt-android-compiler:2.28-alpha"
+    implementation("com.google.dagger:hilt-android:2.38.1")
+    kapt("com.google.dagger:hilt-android-compiler:2.38.1")
 
     //Timber
     implementation "com.jakewharton.timber:timber:4.7.1"
+}
+
+kapt{
+    correctErrorTypes = true
 }

@@ -9,7 +9,7 @@ class PreferenceManager(context: Context) {
 
     fun getCurrent():String? = prefs.getString(CURRENT_KEY,DEFAULT_VALUE)
 
-    fun saveCurrent(location:String) = prefs.edit { putString(CURRENT_KEY,location) }
+    fun setCurrent(location:String) = prefs.edit { putString(CURRENT_KEY,location).apply() }
 
     companion object{
         const val PREFS_NAME = "current"

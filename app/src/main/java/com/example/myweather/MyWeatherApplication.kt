@@ -17,6 +17,7 @@ class MyWeatherApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
+        //SharedPreferences 객체
         pref = PreferenceManager(applicationContext)
 
         //디버깅일때만 로그 출력
