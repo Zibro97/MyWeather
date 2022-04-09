@@ -11,7 +11,7 @@ import com.example.myweather.presentation.base.BaseViewModel
 import kotlinx.coroutines.launch
 
 class FavoriteViewModel : BaseViewModel() {
-    private val service = RetrofitClient.FAVORITE_API
+    private val service = RetrofitClient.LOCATION_API
     val searchLocateLiveData: MutableLiveData<VworldLocation> = MutableLiveData()
 
     fun locationInfo(keyword: String) {
@@ -23,7 +23,7 @@ class FavoriteViewModel : BaseViewModel() {
 
     fun removeFavorite(context: Context, favoriteEntity: FavoriteEntity) {
         viewModelScope.launch {
-            DatabaseProvider.getAppDatabase(context).favoriteDao().delete(favoriteEntity)
+            DatabaseProvider.getAppDatabase(context).favoriteDao().removeFavorite(favoriteEntity)
             getAllLocation(context)
         }
     }

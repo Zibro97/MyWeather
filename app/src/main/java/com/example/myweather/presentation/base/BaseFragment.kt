@@ -13,6 +13,8 @@ abstract class BaseFragment<VM:BaseViewModel,VB : ViewDataBinding>(private val l
     protected var _binding : VB? = null
     protected val binding get() = _binding!!
 
+    abstract val viewModel : VM
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -26,8 +28,7 @@ abstract class BaseFragment<VM:BaseViewModel,VB : ViewDataBinding>(private val l
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initViews()
-        initObserves()
+        observeData()
     }
 
     override fun onDestroyView() {
@@ -35,7 +36,6 @@ abstract class BaseFragment<VM:BaseViewModel,VB : ViewDataBinding>(private val l
         _binding = null
     }
 
-    open fun initViews(){}
 
-    open fun initObserves(){}
+    open fun observeData(){}
 }

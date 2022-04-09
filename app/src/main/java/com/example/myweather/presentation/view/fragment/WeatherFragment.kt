@@ -3,34 +3,31 @@ package com.example.myweather.presentation.view.fragment
 import android.Manifest.permission.*
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.viewModels
-import androidx.navigation.NavArgs
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.example.myweather.R
 import com.example.myweather.databinding.FragmentWeatherBinding
+import com.example.myweather.presentation.base.BaseFragment
+import com.example.myweather.presentation.util.PreferenceManager
 import com.example.myweather.presentation.view.MainActivity
 import com.example.myweather.presentation.view.adapter.WeatherAdapter
 import com.example.myweather.presentation.viewmodel.WeatherViewModel
 import com.google.android.gms.location.*
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.tasks.CancellationTokenSource
+import dagger.hilt.android.AndroidEntryPoint
 import java.lang.Exception
 import kotlin.system.exitProcess
 
@@ -42,23 +39,20 @@ import kotlin.system.exitProcess
  * 5. 날씨 정보 받아와서 ViewPager로 넘김
  * 6. 하단 circleIndicator
  */
-class WeatherFragment : Fragment() {
-    //뷰 바인딩을 위한 바인딩 객체
-    private var _binding: FragmentWeatherBinding? = null
-    private val binding get() = _binding!!
-
+@AndroidEntryPoint
+class WeatherFragment : BaseFragment<WeatherViewModel, FragmentWeatherBinding>(R.layout.fragment_weather) {
     //ViewPager에 붙일 Adapter
     private lateinit var weatherAdapter: WeatherAdapter
 
     //WeatherViewModel
-    private val viewModel: WeatherViewModel by viewModels()
+    override val viewModel: WeatherViewModel by viewModels()
 
     //현재 위치를 가져오기 위한 변수
     private var fusedLocationClient: FusedLocationProviderClient? = null
     private var cancellationTokenSource: CancellationTokenSource? = null
 
     //현재 위치를 갖고있는지 체크하기위한 SharedPreferences
-    private lateinit var prefs: SharedPreferences
+    private lateinit var preference: PreferenceManager
 
     //Fragment는 Context를 갖지 않으므로 Context를 참조할 변수
     private lateinit var mActivity: MainActivity
@@ -94,21 +88,10 @@ class WeatherFragment : Fragment() {
         mActivity = activity as MainActivity
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        // Inflate the layout for this fragment
-        _binding = FragmentWeatherBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
 
-        prefs = mActivity.getSharedPreferences("current", Context.MODE_PRIVATE)
         requestPermission()
         initViews()
         liveDatas()
@@ -145,14 +128,14 @@ class WeatherFragment : Fragment() {
                 currentLocation = location
                 context?.let { context ->
                     //sharedPreference 없으면 현재 위치 insert
-                    if (prefs.getString("current", "no current") == "no current") {
+                    if(preference.getCurrent() == PreferenceManager.DEFAULT_VALUE) {
                         viewModel.insertLocation(
                             context = context,
                             location = "나의 위치",
                             latitude = location.latitude,
                             longitude = location.longitude
                         )
-                        prefs.edit().putString("current", "나의 위치").apply()
+                        preference.setCurrent("나의 위치")
                     }
                     //sharedPreference 있으면 현재위치 update
                     else {

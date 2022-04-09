@@ -34,7 +34,7 @@ open class BaseViewModel : ViewModel() {
     //db에 저장된 모든 위치 정보 가져오는 함수
     fun getAllLocation(context: Context){
         viewModelScope.launch {
-            val favorite = DatabaseProvider.getAppDatabase(context).favoriteDao().getAll()
+            val favorite = DatabaseProvider.getAppDatabase(context).favoriteDao().getAllFavorite()
             locationLiveData.value = favorite
         }
     }
