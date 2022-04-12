@@ -39,6 +39,7 @@ import kotlin.system.exitProcess
  * 5. 날씨 정보 받아와서 ViewPager로 넘김
  * 6. 하단 circleIndicator
  */
+//Hilt 구성요소로 종속항목을 가져올 수 있음
 @AndroidEntryPoint
 class WeatherFragment : BaseFragment<WeatherViewModel, FragmentWeatherBinding>(R.layout.fragment_weather) {
     //ViewPager에 붙일 Adapter
