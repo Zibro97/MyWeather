@@ -5,7 +5,7 @@
     android:id="@+id/fragment_fravorite"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.view.fragment.FavoriteFragment">
+    tools:context=".presentation.ui.favorite.FavoriteFragment">
 
     <ProgressBar
         android:id="@+id/progress_bar"

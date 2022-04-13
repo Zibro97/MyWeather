@@ -1,4 +1,4 @@
-package com.example.myweather.presentation.view.adapter
+package com.example.myweather.presentation.ui.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -11,6 +11,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.myweather.databinding.ItemFavoriteBinding
 import com.example.myweather.domain.entity.favorite.FavoriteEntity
 import com.example.myweather.domain.entity.favoriteweather.FavoriteWeatherInfo
+import com.example.myweather.presentation.util.loadGif
 import java.text.SimpleDateFormat
 import kotlin.math.roundToInt
 
@@ -30,13 +31,7 @@ class FavoriteAdapter(
             descriptionTextView.text = weatherInfo.weather.first().main.label
             currentTempTextView.text = "${weatherInfo.main.temp.roundToInt()}°"
             maxMinTempTextView.text ="최고:${weatherInfo.main.max.roundToInt()}° 최저:${weatherInfo.main.min.roundToInt()}°"
-
-            Glide.with(root)
-                .asGif()
-                .centerCrop()
-                .load(weatherInfo.weather.first().main.background)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .into(itemBackgroundImageView)
+            itemBackgroundImageView.loadGif(weatherInfo.weather.first().main.background)
             when(item.location){
                 "나의 위치" -> {
                     countryTextView.text = "광명시"

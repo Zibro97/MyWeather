@@ -7,7 +7,7 @@
     <!--지역별 날씨 상세 정보 보여주는 Fragment-->
     <fragment
         android:id="@+id/weatherContainer"
-        android:name="com.example.myweather.presentation.view.fragment.WeatherFragment"
+        android:name="com.example.myweather.presentation.ui.weather.WeatherFragment"
         android:label="fragment_weather"
         tools:layout="@layout/fragment_weather"
         >
@@ -29,7 +29,7 @@
     <!--관심지역 보여주는 Fragment-->
     <fragment
         android:id="@+id/favoriteContainer"
-        android:name="com.example.myweather.presentation.view.fragment.FavoriteFragment"
+        android:name="com.example.myweather.presentation.ui.favorite.FavoriteFragment"
         android:label="fragment_favorite"
         tools:layout="@layout/fragment_favorite">
         <action
@@ -42,7 +42,7 @@
     <!--기온 보여주는 지도 Fragment-->
     <fragment
         android:id="@+id/mapContainer"
-        android:name="com.example.myweather.presentation.view.fragment.MapFragment"
+        android:name="com.example.myweather.presentation.ui.map.MapFragment"
         android:label="fragment_map"
         tools:layout="@layout/fragment_map">
         <action

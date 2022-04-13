@@ -1,4 +1,4 @@
-package com.example.myweather.presentation.view.fragment
+package com.example.myweather.presentation.ui.weather
 
 import android.Manifest.permission.*
 import android.annotation.SuppressLint
@@ -21,9 +21,8 @@ import com.example.myweather.R
 import com.example.myweather.databinding.FragmentWeatherBinding
 import com.example.myweather.presentation.base.BaseFragment
 import com.example.myweather.presentation.util.PreferenceManager
-import com.example.myweather.presentation.view.MainActivity
-import com.example.myweather.presentation.view.adapter.WeatherAdapter
-import com.example.myweather.presentation.viewmodel.WeatherViewModel
+import com.example.myweather.presentation.ui.MainActivity
+import com.example.myweather.presentation.ui.adapter.WeatherAdapter
 import com.google.android.gms.location.*
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.tasks.CancellationTokenSource
@@ -82,7 +81,6 @@ class WeatherFragment : BaseFragment<WeatherViewModel, FragmentWeatherBinding>(R
             }
         }
     }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         //프래그먼트가 액티비티에 붙을때 Context를 액티비티로 형변환해서 할당
@@ -95,7 +93,7 @@ class WeatherFragment : BaseFragment<WeatherViewModel, FragmentWeatherBinding>(R
 
         requestPermission()
         initViews()
-        liveDatas()
+        observeData()
     }
 
     override fun onResume() {
@@ -107,12 +105,6 @@ class WeatherFragment : BaseFragment<WeatherViewModel, FragmentWeatherBinding>(R
         super.onDestroy()
         //위치 요청을 취소
         cancellationTokenSource?.cancel()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        //메모리 누수 방지
-        _binding = null
     }
 
     //위치 가져오는 함수
@@ -216,23 +208,6 @@ class WeatherFragment : BaseFragment<WeatherViewModel, FragmentWeatherBinding>(R
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    private fun liveDatas() = with(viewModel) {
-        //db에서 지역 가져오는 LiveData
-        locationLiveData.observe(viewLifecycleOwner, { favorites ->
-            weatherAdapter.submitList(favorites)
-            binding.indicatorWeather.setViewPager(binding.viewPager)
-            binding.viewPager.setCurrentItem(args.page,true)
-        })
-        //db에서 가져온 지역의 날씨 정보를 가져와 리스트에 담음
-        weatherLiveData.observe(viewLifecycleOwner, { weather ->
-            weatherAdapter.weather = weather
-            weatherAdapter.notifyDataSetChanged()
-            binding.progressBar.visibility = View.GONE
-            binding.bottomNavigationView.visibility = View.VISIBLE
-        })
-    }
-
     //백그라운드 위치 권한 요청
     //Android 11이상 부터는 위치 권한 항상 허용 옵션이 포함되지 않아서
     //포그라운드 위치권한과 백그라운드 위치 권한을 동시에 요청하면 시스템이 요청을 무시하고 앱에 어떤 권한도 부여하지 않음
@@ -266,5 +241,21 @@ class WeatherFragment : BaseFragment<WeatherViewModel, FragmentWeatherBinding>(R
             }
             .create()
             .show()
+    }
+
+    override fun observeData() = with(viewModel){
+        //db에서 지역 가져오는 LiveData
+        locationLiveData.observe(viewLifecycleOwner, { favorites ->
+            weatherAdapter.submitList(favorites)
+            binding.indicatorWeather.setViewPager(binding.viewPager)
+            binding.viewPager.setCurrentItem(args.page,true)
+        })
+        //db에서 가져온 지역의 날씨 정보를 가져와 리스트에 담음
+        weatherLiveData.observe(viewLifecycleOwner, { weather ->
+            weatherAdapter.weather = weather
+            weatherAdapter.notifyDataSetChanged()
+            binding.progressBar.visibility = View.GONE
+            binding.bottomNavigationView.visibility = View.VISIBLE
+        })
     }
 }

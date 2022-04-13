@@ -10,8 +10,7 @@ import androidx.fragment.app.Fragment
 
 abstract class BaseFragment<VM:BaseViewModel,VB : ViewDataBinding>(private val layoutId:Int) :Fragment() {
 
-    protected var _binding : VB? = null
-    protected val binding get() = _binding!!
+    protected lateinit var binding:VB
 
     abstract val viewModel : VM
 
@@ -20,7 +19,7 @@ abstract class BaseFragment<VM:BaseViewModel,VB : ViewDataBinding>(private val l
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = DataBindingUtil.inflate(inflater,layoutId,container,false)
+        binding = DataBindingUtil.inflate(inflater,layoutId,container,false)
         binding.lifecycleOwner = this
         return binding.root
     }
@@ -31,11 +30,5 @@ abstract class BaseFragment<VM:BaseViewModel,VB : ViewDataBinding>(private val l
         observeData()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-
-    open fun observeData(){}
+    abstract fun observeData()
 }

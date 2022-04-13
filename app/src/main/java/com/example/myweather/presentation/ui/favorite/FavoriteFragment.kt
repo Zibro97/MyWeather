@@ -1,4 +1,4 @@
-package com.example.myweather.presentation.view.fragment
+package com.example.myweather.presentation.ui.favorite
 
 import android.annotation.SuppressLint
 import android.graphics.Canvas
@@ -9,23 +9,18 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myweather.databinding.FragmentFavoriteBinding
 import com.example.myweather.databinding.InsertFavoriteDialogCustomBinding
 import com.example.myweather.domain.entity.favorite.FavoriteEntity
 import com.example.myweather.presentation.util.SwipeController
 import com.example.myweather.presentation.util.SwipeControllerActions
-import com.example.myweather.presentation.view.adapter.FavoriteAdapter
-import com.example.myweather.presentation.view.adapter.LocationAdapter
-import com.example.myweather.presentation.viewmodel.FavoriteViewModel
+import com.example.myweather.presentation.ui.adapter.FavoriteAdapter
+import com.example.myweather.presentation.ui.adapter.LocationAdapter
 
 /***
  * 관심지역 추가

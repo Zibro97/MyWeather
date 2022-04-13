@@ -1,4 +1,4 @@
-package com.example.myweather.presentation.view.fragment
+package com.example.myweather.presentation.ui.map
 
 import android.os.Bundle
 import android.util.Log
@@ -19,10 +19,8 @@ import java.net.MalformedURLException
 import java.net.URL
 import java.util.*
 
-import android.widget.PopupMenu
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import com.example.myweather.R
 
 
 /***

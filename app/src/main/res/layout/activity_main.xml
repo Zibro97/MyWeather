@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.view.MainActivity">
+    tools:context=".presentation.ui.MainActivity">
 
     <!--name : NavHost 구현의 클래스 이름-->
     <!--navGraph : 앱에서 이동할 수 있는 모든 플로우를 보여주고 앱 내의 Fragment를 한눈에 확인 할 수 있는 xml 리소스-->

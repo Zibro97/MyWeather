@@ -1,4 +1,4 @@
-package com.example.myweather.presentation.view
+package com.example.myweather.presentation.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

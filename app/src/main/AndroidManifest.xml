@@ -24,7 +24,7 @@
         tools:ignore="AllowBackup">
         <activity
             android:screenOrientation="portrait"
-            android:name=".presentation.view.MainActivity"
+            android:name=".presentation.ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
