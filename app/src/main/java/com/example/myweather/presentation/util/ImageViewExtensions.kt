@@ -11,3 +11,11 @@ fun ImageView.loadGif(url:Int) =
         .load(url)
         .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
         .into(this)
+
+fun ImageView.loadGifFitCenter(url: Int) =
+    Glide.with(context)
+        .asGif()
+        .fitCenter()
+        .load(url)
+        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+        .into(this)

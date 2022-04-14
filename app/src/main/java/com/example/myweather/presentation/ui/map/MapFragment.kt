@@ -1,11 +1,11 @@
 package com.example.myweather.presentation.ui.map
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.navigation.fragment.navArgs
 import com.example.myweather.BuildConfig
 import com.example.myweather.databinding.FragmentMapBinding
@@ -21,6 +21,8 @@ import java.util.*
 
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import com.example.myweather.R
+import dagger.hilt.android.AndroidEntryPoint
 
 
 /***
@@ -30,6 +32,7 @@ import androidx.navigation.Navigation
  * 4. 현재위치 받아와서 지도 카메라 현위치로 옮기기
 * */
 //날씨를 지도로 표현해 보여주는 Fragment
+@AndroidEntryPoint
 class MapFragment : Fragment(),OnMapReadyCallback {
     //바인딩 객체
     private var _binding : FragmentMapBinding? = null
@@ -59,7 +62,7 @@ class MapFragment : Fragment(),OnMapReadyCallback {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMapBinding.inflate(inflater,container,false)
-        mapView = binding.mapFragment as MapView
+        mapView = binding.mapFragment
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
         return binding.root
@@ -127,15 +130,12 @@ class MapFragment : Fragment(),OnMapReadyCallback {
             @Synchronized
             //사용자가 보고있는 부분에 사용할 타일 이미지를 가리키는 URL을 반환
             override fun getTileUrl(x: Int, y: Int, zoom: Int): URL? {
-                val s = String.format(Locale.US, MAP_URL_FORMAT, layer,zoom,x,y)
-                var url:URL? = null
-                url = try {
+                val s = String.format(Locale.US, MAP_URL_FORMAT, layer, zoom, x, y)
+                return try {
                     URL(s)
-                }catch (e:MalformedURLException){
+                } catch (e: MalformedURLException) {
                     throw AssertionError(e)
                 }
-                Log.d("TAG", "getTileUrl: $layer $s")
-                return url
             }
         }
         //TileOverlay : 기본 지도 위에 표시되는 이미지 컬렉션

@@ -1,14 +1,17 @@
 package com.example.myweather.data.repository
 
 import com.example.myweather.data.db.FavoriteDao
+import com.example.myweather.di.IODispatcher
 import com.example.myweather.domain.entity.favorite.FavoriteEntity
 import com.example.myweather.domain.repository.FavoriteRepository
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class FavoriteRepositoryImpl(
+class FavoriteRepositoryImpl @Inject constructor(
     private val favoriteDao: FavoriteDao,
-    private val ioDispatcher : CoroutineDispatcher
+    @IODispatcher private val ioDispatcher : CoroutineDispatcher = Dispatchers.IO
 ) : FavoriteRepository {
 
     override suspend fun insertFavorite(favorite: FavoriteEntity) = withContext(ioDispatcher){

@@ -24,5 +24,5 @@ interface WeatherRepository {
     suspend fun getLocationId(
         latitude:Double,
         longitude:Double
-    ) : LocationIdModel
+    ) : Int
 }

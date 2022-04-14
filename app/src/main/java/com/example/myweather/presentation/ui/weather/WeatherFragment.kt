@@ -92,8 +92,6 @@ class WeatherFragment : BaseFragment<WeatherViewModel, FragmentWeatherBinding>(R
         navController = Navigation.findNavController(view)
 
         requestPermission()
-        initViews()
-        observeData()
     }
 
     override fun onResume() {
@@ -176,7 +174,7 @@ class WeatherFragment : BaseFragment<WeatherViewModel, FragmentWeatherBinding>(R
     }
 
     //viewPager 초기화 및 날씨 정보 넘겨주는 함수
-    private fun initViews() = with(binding){
+    override fun initViews() = with(binding){
         if(::weatherAdapter.isInitialized.not()){
             weatherAdapter = WeatherAdapter()
         }
@@ -204,7 +202,7 @@ class WeatherFragment : BaseFragment<WeatherViewModel, FragmentWeatherBinding>(R
     //db에 저장된 위치 가져오는 함수
     private fun getLatLngs() {
         context?.let { context ->
-            viewModel.getAllLocation(context)
+            viewModel.getAllFavorites(context)
         }
     }
 
@@ -243,6 +241,7 @@ class WeatherFragment : BaseFragment<WeatherViewModel, FragmentWeatherBinding>(R
             .show()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun observeData() = with(viewModel){
         //db에서 지역 가져오는 LiveData
         locationLiveData.observe(viewLifecycleOwner, { favorites ->

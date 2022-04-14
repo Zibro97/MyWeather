@@ -1,6 +1,7 @@
 package com.example.myweather.data.repository
 
 import com.example.myweather.data.api.WeatherApi
+import com.example.myweather.di.IODispatcher
 import com.example.myweather.domain.entity.favoriteweather.FavoriteWeatherModel
 import com.example.myweather.domain.entity.favoriteweather.LocationIdModel
 import com.example.myweather.domain.entity.weather.WeatherDTO
@@ -10,10 +11,11 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.lang.Exception
+import javax.inject.Inject
 
-class WeatherRepositoryImpl(
+class WeatherRepositoryImpl @Inject constructor(
     private val weatherApi: WeatherApi,
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+    @IODispatcher private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : WeatherRepository {
     override suspend fun getWeather(latitude: Double, longitude: Double): WeatherDTO =
         withContext(ioDispatcher){
@@ -25,8 +27,8 @@ class WeatherRepositoryImpl(
             weatherApi.locations(idList)
         }
 
-    override suspend fun getLocationId(latitude: Double, longitude: Double): LocationIdModel =
+    override suspend fun getLocationId(latitude: Double, longitude: Double): Int =
         withContext(ioDispatcher){
-            weatherApi.getLocationId(latitude,longitude)
+            weatherApi.getLocationId(latitude,longitude).id
         }
 }

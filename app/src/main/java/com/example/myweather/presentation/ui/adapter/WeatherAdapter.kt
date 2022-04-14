@@ -13,6 +13,7 @@ import com.example.myweather.R
 import com.example.myweather.databinding.ItemWeatherBinding
 import com.example.myweather.domain.entity.favorite.FavoriteEntity
 import com.example.myweather.domain.entity.weather.WeatherDTO
+import com.example.myweather.presentation.util.loadGifFitCenter
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -49,6 +50,7 @@ class WeatherAdapter: ListAdapter<FavoriteEntity, WeatherAdapter.ViewHolder>(dif
                 dewPointTextView.text = "현재 이슬점이 ${weather.current.dewPoint.roundToInt()}°입니다."
                 realVisibilityTextView.text = "${weather.current.visibility/1000}KM"
                 tempDescriptionTv.text = "${weather.current.temp.roundToInt()}°|${weather.current.weather.first().main.label}"
+                weatherBackground.loadGifFitCenter(weather.current.weather.first().main.background)
                 when(weather.current.weather.first().main.label){
                     "눈" -> {
                         snowRainTextView.text = root.context.resources.getString(R.string.snow_text)
@@ -63,13 +65,6 @@ class WeatherAdapter: ListAdapter<FavoriteEntity, WeatherAdapter.ViewHolder>(dif
                             else "${weather.current.rain.h}mm"
                         }
                     }
-
-                    Glide.with(root)
-                        .asGif()
-                        .fitCenter()
-                        .load(weather.current.weather.first().main.background)
-                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                        .into(weatherBackground)
                 }
         }
     }

@@ -8,5 +8,4 @@ import com.example.myweather.domain.entity.vworld.VworldLocation
 interface LocationRepository {
     //지역 정보를 가져오는 메서드
     suspend fun getLocationInfo(keyword: String) : VworldLocation
-
 }
