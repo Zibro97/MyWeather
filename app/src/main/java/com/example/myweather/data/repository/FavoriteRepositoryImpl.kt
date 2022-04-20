@@ -6,6 +6,7 @@ import com.example.myweather.domain.entity.favorite.FavoriteEntity
 import com.example.myweather.domain.repository.FavoriteRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -22,9 +23,8 @@ class FavoriteRepositoryImpl @Inject constructor(
         favoriteDao.removeFavorite(favorite)
     }
 
-    override suspend fun getAllFavorite(): List<FavoriteEntity> = withContext(ioDispatcher){
-        favoriteDao.getAllFavorite()
-    }
+    override fun getAllFavorite(): Flow<List<FavoriteEntity>> = favoriteDao.getAllFavorite()
+
 
     override suspend fun updateCurrentFavorite(favorite: FavoriteEntity) = withContext(ioDispatcher){
         favoriteDao.updateCurrentFavorite(favorite)

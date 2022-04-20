@@ -2,12 +2,13 @@ package com.example.myweather.data.db
 
 import androidx.room.*
 import com.example.myweather.domain.entity.favorite.FavoriteEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FavoriteDao {
     //즐겨찾기 된 지역 리스트 불러오는 쿼리
     @Query("SELECT * FROM FavoriteEntity")
-    suspend fun getAllFavorite():List<FavoriteEntity>
+    fun getAllFavorite():Flow<List<FavoriteEntity>>
     //즐겨찾기 추가하는 쿼리
     @Insert
     suspend fun insertFavorite(favorite: FavoriteEntity)

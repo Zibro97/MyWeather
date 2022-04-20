@@ -1,10 +1,8 @@
 package com.example.myweather.presentation.ui.favorite
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.myweather.data.db.DatabaseProvider
 import com.example.myweather.domain.entity.favorite.FavoriteEntity
 import com.example.myweather.domain.entity.vworld.VworldLocation
 import com.example.myweather.domain.usecase.*

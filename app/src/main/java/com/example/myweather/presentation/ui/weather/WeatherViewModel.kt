@@ -3,24 +3,30 @@ package com.example.myweather.presentation.ui.weather
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.myweather.domain.entity.favorite.FavoriteEntity
 import com.example.myweather.domain.entity.favoriteweather.FavoriteWeatherModel
 import com.example.myweather.domain.entity.weather.WeatherDTO
 import com.example.myweather.domain.usecase.GetWeatherListUseCase
 import com.example.myweather.domain.usecase.GetWeatherUseCase
+import com.example.myweather.domain.usecase.InsertFavoriteUseCase
+import com.example.myweather.domain.usecase.UpdateCurrentFavoriteUseCase
 import com.example.myweather.presentation.base.BaseViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class WeatherViewModel @Inject constructor(
     private val getWeatherUseCase :GetWeatherUseCase,
-    private val getWeatherListUseCase: GetWeatherListUseCase
+    private val getWeatherListUseCase: GetWeatherListUseCase,
+    private val insertFavoriteUseCase : InsertFavoriteUseCase,
+    private val UpdateFavoriteUseCase : UpdateCurrentFavoriteUseCase
 ): BaseViewModel() {
     //날씨 정보 LiveData
     private val _weatherLiveData:MutableLiveData<WeatherDTO> = MutableLiveData()
-    val weatherLveData : LiveData<WeatherDTO> = _weatherLiveData
+    val weatherLiveData : LiveData<WeatherDTO> = _weatherLiveData
     //날씨 정보 리스트 LiveData
     private val _weatherListLiveData : MutableLiveData<FavoriteWeatherModel> = MutableLiveData()
     val weatherListLiveData : LiveData<FavoriteWeatherModel> = _weatherListLiveData
+
 
     //동작 과정
     //1. view에서 getWeather함수를 호출
@@ -37,9 +43,16 @@ class WeatherViewModel @Inject constructor(
     }
 
     //관심지역들 날씨 정보 가져오는 함수
-    fun locations(id:String){
+//    fun locations(id:String){
+//        viewModelScope.launch {
+//            _weatherListLiveData.value = getWeatherListUseCase.invoke(id)
+//        }
+//    }
+    fun insertFavorite(favorite:FavoriteEntity){
         viewModelScope.launch {
-            _weatherListLiveData.value = getWeatherListUseCase.invoke(id)
+            insertFavoriteUseCase.invoke(favorite)
         }
     }
+
+
 }
