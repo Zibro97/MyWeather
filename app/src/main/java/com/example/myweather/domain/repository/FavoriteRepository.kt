@@ -14,7 +14,7 @@ interface FavoriteRepository {
     suspend fun removeFavorite(favorite: FavoriteEntity)
 
     //모든 관심 지역 가져옴
-    fun getAllFavorite() : Flow<List<FavoriteEntity>>
+    suspend fun getAllFavorite() : List<FavoriteEntity>
 
     //관심 지역 정보 수정
     suspend fun updateCurrentFavorite(favorite: FavoriteEntity)

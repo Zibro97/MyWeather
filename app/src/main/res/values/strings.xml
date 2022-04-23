@@ -50,4 +50,5 @@
     <string name="temp_lange_textview">55\n30\n20\n10\n0\n-20\n-40</string>
     <string name="complete">완료</string>
     <string name="temp_image">temp_image</string>
+    <string name="no_result_text">결과없음</string>
 </resources>

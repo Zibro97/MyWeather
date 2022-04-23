@@ -1,26 +1,30 @@
 package com.example.myweather.presentation.ui.favorite
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.graphics.Canvas
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.myweather.R
 import com.example.myweather.databinding.FragmentFavoriteBinding
 import com.example.myweather.databinding.InsertFavoriteDialogCustomBinding
 import com.example.myweather.domain.entity.favorite.FavoriteEntity
+import com.example.myweather.presentation.base.BaseFragment
 import com.example.myweather.presentation.util.SwipeController
 import com.example.myweather.presentation.util.SwipeControllerActions
 import com.example.myweather.presentation.ui.adapter.FavoriteAdapter
 import com.example.myweather.presentation.ui.adapter.LocationAdapter
+import dagger.hilt.android.AndroidEntryPoint
 
 /***
  * 관심지역 추가
@@ -30,17 +34,12 @@ import com.example.myweather.presentation.ui.adapter.LocationAdapter
  * 1. Room에 저장된 지역들의 id들을 가져와 문자열로 변환
  * 2. 변환한 문자열을 가지고 지역들 날씨정보 가져옴
 */
-class FavoriteFragment : Fragment() {
-
-    //FavoriteFragment 바인딩 객체
-    private var _binding: FragmentFavoriteBinding? = null
-    private val binding get() = _binding!!
-
+@AndroidEntryPoint
+class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(R.layout.fragment_favorite) {
     //지역 목록 RecyclerView에 바인딩시킬 Adapter
     private lateinit var favoriteAdapter: FavoriteAdapter
     private lateinit var locationAdapter: LocationAdapter
 
-    //viewModel
     private val viewModel: FavoriteViewModel by viewModels()
 
     //navigation Controller
@@ -49,34 +48,16 @@ class FavoriteFragment : Fragment() {
     //Swipe Controller
     private var swipeController : SwipeController? = null
 
-    //Layout을 inflate하는 곳
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
-
-        return binding.root
-    }
-
     //onCreateView에서 반환된 View객체의 초기값 설정, LiveData옵저빙, Adapter 설정 등등하는 곳
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
 
-        getLocations()
-        initViews()
+        viewModel.getAllFavorites()
         initRecyclerView()
-        liveData()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-    private fun initViews() = with(binding) {
+    override fun initViews() = with(binding) {
         //search View 검색어 초기화,포커스 제거
         searchCanelButton.setOnClickListener {
             clearSearchView()
@@ -113,7 +94,7 @@ class FavoriteFragment : Fragment() {
                     false
                 } else {
                     binding.favoriteRecyclerView.alpha = 1.0F
-                    viewModel.locationInfo(newText)
+                    viewModel.getLocationInfo(newText)
                     true
                 }
             }
@@ -138,7 +119,7 @@ class FavoriteFragment : Fragment() {
 
                 dialogCustomBinding.confirmInsertText.text = "${city}를 추가하시겠습니까?"
                 dialogCustomBinding.insertButton.setOnClickListener {
-                    viewModel.insertLocation(context,city!!,location.point.y,location.point.x)
+                    viewModel.insertLocation(city!!,location.point.y,location.point.x)
                     dialog.dismiss()
                     clearSearchView()
                 }
@@ -162,9 +143,7 @@ class FavoriteFragment : Fragment() {
             override fun onRightClicked(position: Int) {
                 when(position){
                     0-> Toast.makeText(context,"나의 위치는 삭제하실 수 없습니다.",Toast.LENGTH_SHORT).show()
-                    else -> context?.let { context->
-                        viewModel.removeFavorite(context, favoriteAdapter.currentList[position])
-                    }
+                    else -> viewModel.removeFavorite(favoriteAdapter.currentList[position])
                 }
             }
         })
@@ -175,20 +154,26 @@ class FavoriteFragment : Fragment() {
             }
         })
     }
-
-    //즐겨찾기 해둔 지역 정보 가져오는 함수
-    private fun getLocations() {
-        context?.let { context ->
-            viewModel.getAllLocation(context)
-        }
+    //검색창 clear하고 focus 날리기
+    private fun clearSearchView()= with(binding){
+        searchView.setQuery("", false)
+        searchView.clearFocus()
     }
-    //LiveData
-    @SuppressLint("NotifyDataSetChanged")
-    private fun liveData() = with(viewModel) {
+    //관심 지역 id들을 ,,,로 만들어서 파라미터로 넘기기 위한 함수
+    private fun getLocationIdList(ids : List<FavoriteEntity>) : String {
+        var locationIdList = ""
+        ids.forEach {
+            locationIdList += ",${it.locationId}"
+        }
+        locationIdList = locationIdList.removePrefix(",")
+        return locationIdList
+    }
+
+    override fun observeData() = with(viewModel){
         //db 즐겨찾기 LiveData
         locationLiveData.observe(viewLifecycleOwner, { favorite ->
             favoriteAdapter.submitList(favorite)
-            viewModel.locations(getLocationIdList(favorite))
+            getLocationsWeather(getLocationIdList(favorite))
         })
         //검색 결과 LiveData
         searchLocateLiveData.observe(viewLifecycleOwner, { locations ->
@@ -210,24 +195,10 @@ class FavoriteFragment : Fragment() {
                 locationAdapter.submitList(locations.response.result.items)
             }
         })
-        locationsLiveData.observe(viewLifecycleOwner, { weatherList ->
+        weatherListLiveData.observe(viewLifecycleOwner, { weatherList ->
             favoriteAdapter.weatherList = weatherList.favoriteList
             binding.progressBar.visibility = GONE
             binding.favoriteRecyclerView.visibility = VISIBLE
         })
-    }
-    //검색창 clear하고 focus 날리기
-    private fun clearSearchView()= with(binding){
-        searchView.setQuery("", false)
-        searchView.clearFocus()
-    }
-    //관심 지역 id들을 ,,,로 만들어서 파라미터로 넘기기 위한 함수
-    private fun getLocationIdList(ids : List<FavoriteEntity>) : String {
-        var locationIdList = ""
-        ids.forEach {
-            locationIdList += ",${it.locationId}"
-        }
-        locationIdList = locationIdList.removePrefix(",")
-        return locationIdList
     }
 }

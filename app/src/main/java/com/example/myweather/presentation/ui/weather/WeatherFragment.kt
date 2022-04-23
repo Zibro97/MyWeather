@@ -19,6 +19,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.example.myweather.R
 import com.example.myweather.databinding.FragmentWeatherBinding
+import com.example.myweather.domain.entity.favorite.FavoriteEntity
 import com.example.myweather.presentation.base.BaseFragment
 import com.example.myweather.presentation.util.PreferenceManager
 import com.example.myweather.presentation.ui.MainActivity
@@ -28,6 +29,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.tasks.CancellationTokenSource
 import dagger.hilt.android.AndroidEntryPoint
 import java.lang.Exception
+import javax.inject.Inject
 import kotlin.system.exitProcess
 
 /***
@@ -40,19 +42,20 @@ import kotlin.system.exitProcess
  */
 //Hilt 구성요소로 종속항목을 가져올 수 있음
 @AndroidEntryPoint
-class WeatherFragment : BaseFragment<WeatherViewModel, FragmentWeatherBinding>(R.layout.fragment_weather) {
+class WeatherFragment : BaseFragment<FragmentWeatherBinding>(R.layout.fragment_weather) {
     //ViewPager에 붙일 Adapter
     private lateinit var weatherAdapter: WeatherAdapter
 
     //WeatherViewModel
-    override val viewModel: WeatherViewModel by viewModels()
+    private val viewModel: WeatherViewModel by viewModels()
 
     //현재 위치를 가져오기 위한 변수
     private var fusedLocationClient: FusedLocationProviderClient? = null
     private var cancellationTokenSource: CancellationTokenSource? = null
 
+    @Inject
     //현재 위치를 갖고있는지 체크하기위한 SharedPreferences
-    private lateinit var preference: PreferenceManager
+    lateinit var preference: PreferenceManager
 
     //Fragment는 Context를 갖지 않으므로 Context를 참조할 변수
     private lateinit var mActivity: MainActivity
@@ -117,27 +120,26 @@ class WeatherFragment : BaseFragment<WeatherViewModel, FragmentWeatherBinding>(R
         ).addOnSuccessListener { location ->
             try {
                 currentLocation = location
-                context?.let { context ->
-                    //sharedPreference 없으면 현재 위치 insert
-                    if(preference.getCurrent() == PreferenceManager.DEFAULT_VALUE) {
-                        viewModel.insertLocation(
-                            context = context,
-                            location = "나의 위치",
+                //sharedPreference 없으면 현재 위치 insert
+                if(preference.getCurrent() == PreferenceManager.DEFAULT_VALUE) {
+                    viewModel.insertFavorite(
+                        FavoriteEntity(id = null,
+                            locationId = null,
+                            location = "나의위치",
                             latitude = location.latitude,
-                            longitude = location.longitude
+                            longitude =location.longitude
                         )
-                        preference.setCurrent("나의 위치")
-                    }
-                    //sharedPreference 있으면 현재위치 update
-                    else {
-                        viewModel.updateCurrentLocation(
-                            context = context,
-                            latitude = location.latitude,
-                            longitude = location.longitude
-                        )
-                    }
-                    getLatLngs()
+                    )
+                    preference.setCurrent("나의 위치")
                 }
+                //sharedPreference 있으면 현재위치 update
+                else {
+                    viewModel.updateCurrentLocation(
+                        latitude = location.latitude,
+                        longitude = location.longitude
+                    )
+                }
+                viewModel.getAllFavorites()
             } catch (exception: Exception) {
                 //예외 발생시 에러 경고문구 보여주고, 다른 뷰들은 alpha값 0처리
                 binding.errorDescriptionTextView.visibility = View.VISIBLE
@@ -199,13 +201,6 @@ class WeatherFragment : BaseFragment<WeatherViewModel, FragmentWeatherBinding>(R
         }
     }
 
-    //db에 저장된 위치 가져오는 함수
-    private fun getLatLngs() {
-        context?.let { context ->
-            viewModel.getAllFavorites(context)
-        }
-    }
-
     //백그라운드 위치 권한 요청
     //Android 11이상 부터는 위치 권한 항상 허용 옵션이 포함되지 않아서
     //포그라운드 위치권한과 백그라운드 위치 권한을 동시에 요청하면 시스템이 요청을 무시하고 앱에 어떤 권한도 부여하지 않음
@@ -244,7 +239,7 @@ class WeatherFragment : BaseFragment<WeatherViewModel, FragmentWeatherBinding>(R
     @SuppressLint("NotifyDataSetChanged")
     override fun observeData() = with(viewModel){
         //db에서 지역 가져오는 LiveData
-        locationLiveData.observe(viewLifecycleOwner, { favorites ->
+        favoriteLiveData.observe(viewLifecycleOwner, { favorites ->
             weatherAdapter.submitList(favorites)
             binding.indicatorWeather.setViewPager(binding.viewPager)
             binding.viewPager.setCurrentItem(args.page,true)

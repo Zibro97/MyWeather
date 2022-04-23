@@ -2,31 +2,29 @@ package com.example.myweather.presentation.ui.weather
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myweather.domain.entity.favorite.FavoriteEntity
-import com.example.myweather.domain.entity.favoriteweather.FavoriteWeatherModel
 import com.example.myweather.domain.entity.weather.WeatherDTO
-import com.example.myweather.domain.usecase.GetWeatherListUseCase
-import com.example.myweather.domain.usecase.GetWeatherUseCase
-import com.example.myweather.domain.usecase.InsertFavoriteUseCase
-import com.example.myweather.domain.usecase.UpdateCurrentFavoriteUseCase
-import com.example.myweather.presentation.base.BaseViewModel
+import com.example.myweather.domain.usecase.*
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class WeatherViewModel @Inject constructor(
     private val getWeatherUseCase :GetWeatherUseCase,
-    private val getWeatherListUseCase: GetWeatherListUseCase,
     private val insertFavoriteUseCase : InsertFavoriteUseCase,
-    private val UpdateFavoriteUseCase : UpdateCurrentFavoriteUseCase
-): BaseViewModel() {
+    private val updateCurrentFavoriteUseCase : UpdateCurrentFavoriteUseCase,
+    private val getLocationIdUseCase: GetLocationIdUseCase,
+    private val getAllFavoriteUseCase: GetAllFavoriteUseCase
+): ViewModel() {
     //날씨 정보 LiveData
     private val _weatherLiveData:MutableLiveData<WeatherDTO> = MutableLiveData()
     val weatherLiveData : LiveData<WeatherDTO> = _weatherLiveData
-    //날씨 정보 리스트 LiveData
-    private val _weatherListLiveData : MutableLiveData<FavoriteWeatherModel> = MutableLiveData()
-    val weatherListLiveData : LiveData<FavoriteWeatherModel> = _weatherListLiveData
-
+    //관심지역 정보 LiveData
+    private val _favoriteLiveData : MutableLiveData<List<FavoriteEntity>> = MutableLiveData()
+    val favoriteLiveData : LiveData<List<FavoriteEntity>> = _favoriteLiveData
 
     //동작 과정
     //1. view에서 getWeather함수를 호출
@@ -42,17 +40,23 @@ class WeatherViewModel @Inject constructor(
         }
     }
 
-    //관심지역들 날씨 정보 가져오는 함수
-//    fun locations(id:String){
-//        viewModelScope.launch {
-//            _weatherListLiveData.value = getWeatherListUseCase.invoke(id)
-//        }
-//    }
+    //db에 저장된 모든 위치 정보 가져오는 함수
+    fun getAllFavorites(){
+        viewModelScope.launch {
+            _favoriteLiveData.value = getAllFavoriteUseCase.invoke()
+        }
+    }
     fun insertFavorite(favorite:FavoriteEntity){
         viewModelScope.launch {
             insertFavoriteUseCase.invoke(favorite)
         }
     }
-
-
+    //현재 위치 정보 수정하는 함수
+    fun updateCurrentLocation(latitude: Double,longitude: Double){
+        viewModelScope.launch {
+            val locationId = getLocationIdUseCase.invoke(latitude,longitude)
+            val favorite = FavoriteEntity(id = null,locationId = locationId,location = "나의 위치",latitude = latitude,longitude=longitude)
+            updateCurrentFavoriteUseCase.invoke(favorite)
+        }
+    }
 }

@@ -7,12 +7,11 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
 
-abstract class BaseFragment<VM:BaseViewModel,VB : ViewDataBinding>(private val layoutId:Int) :Fragment() {
+abstract class BaseFragment<VB : ViewDataBinding>(private val layoutId:Int) :Fragment() {
 
     protected lateinit var binding:VB
-
-    abstract val viewModel : VM
 
     override fun onCreateView(
         inflater: LayoutInflater,

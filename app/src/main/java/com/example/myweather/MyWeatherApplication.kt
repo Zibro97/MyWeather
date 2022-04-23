@@ -18,7 +18,7 @@ class MyWeatherApplication : Application() {
         super.onCreate()
 
         //SharedPreferences 객체
-        pref = PreferenceManager(applicationContext)
+        //pref = PreferenceManager(applicationContext)
 
         //디버깅일때만 로그 출력
         if(BuildConfig.DEBUG){
