@@ -25,6 +25,7 @@ import com.example.myweather.presentation.util.SwipeControllerActions
 import com.example.myweather.presentation.ui.adapter.FavoriteAdapter
 import com.example.myweather.presentation.ui.adapter.LocationAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 /***
  * 관심지역 추가

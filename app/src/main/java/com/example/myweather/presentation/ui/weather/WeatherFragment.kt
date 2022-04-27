@@ -123,12 +123,9 @@ class WeatherFragment : BaseFragment<FragmentWeatherBinding>(R.layout.fragment_w
                 //sharedPreference 없으면 현재 위치 insert
                 if(preference.getCurrent() == PreferenceManager.DEFAULT_VALUE) {
                     viewModel.insertFavorite(
-                        FavoriteEntity(id = null,
-                            locationId = null,
-                            location = "나의위치",
-                            latitude = location.latitude,
-                            longitude =location.longitude
-                        )
+                        location = "나의위치",
+                        latitude = location.latitude,
+                        longitude =location.longitude
                     )
                     preference.setCurrent("나의 위치")
                 }

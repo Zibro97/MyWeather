@@ -9,6 +9,7 @@ import com.example.myweather.domain.entity.weather.WeatherDTO
 import com.example.myweather.domain.usecase.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -46,8 +47,12 @@ class WeatherViewModel @Inject constructor(
             _favoriteLiveData.value = getAllFavoriteUseCase.invoke()
         }
     }
-    fun insertFavorite(favorite:FavoriteEntity){
+    //관심지역 or 현재 위치 저장하기 위한 함수
+    fun insertFavorite(location:String,latitude: Double,longitude: Double){
         viewModelScope.launch {
+            val locationId = getLocationIdUseCase.invoke(latitude,longitude)
+            Timber.tag("여기").d("$locationId")
+            val favorite = FavoriteEntity(id = null,locationId = locationId,location = location,latitude = latitude,longitude = longitude)
             insertFavoriteUseCase.invoke(favorite)
         }
     }
@@ -55,7 +60,8 @@ class WeatherViewModel @Inject constructor(
     fun updateCurrentLocation(latitude: Double,longitude: Double){
         viewModelScope.launch {
             val locationId = getLocationIdUseCase.invoke(latitude,longitude)
-            val favorite = FavoriteEntity(id = null,locationId = locationId,location = "나의 위치",latitude = latitude,longitude=longitude)
+            Timber.tag("여기").d("$locationId")
+            val favorite = FavoriteEntity(id = 1,locationId = locationId,location = "나의 위치",latitude = latitude,longitude=longitude)
             updateCurrentFavoriteUseCase.invoke(favorite)
         }
     }

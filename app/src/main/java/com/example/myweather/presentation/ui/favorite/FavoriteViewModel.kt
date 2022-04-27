@@ -10,6 +10,7 @@ import com.example.myweather.domain.entity.vworld.VworldLocation
 import com.example.myweather.domain.usecase.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
