@@ -1,6 +1,7 @@
 package com.example.myweather
 
 import android.app.Application
+import com.example.myweather.presentation.util.CustomTimberTree
 import com.example.myweather.presentation.util.PreferenceManager
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
@@ -18,11 +19,11 @@ class MyWeatherApplication : Application() {
         super.onCreate()
 
         //SharedPreferences 객체
-        //pref = PreferenceManager(applicationContext)
+        pref = PreferenceManager(applicationContext)
 
         //디버깅일때만 로그 출력
         if(BuildConfig.DEBUG){
-            Timber.plant(Timber.DebugTree())
+            Timber.plant(CustomTimberTree())
         }
     }
 }
