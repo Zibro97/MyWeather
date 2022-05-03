@@ -1,15 +1,11 @@
 package com.example.myweather.presentation.ui.weather
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.myweather.domain.entity.favorite.FavoriteEntity
 import com.example.myweather.domain.entity.weather.WeatherDTO
 import com.example.myweather.domain.usecase.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,7 +20,7 @@ class WeatherViewModel @Inject constructor(
     private val _weatherLiveData:MutableLiveData<WeatherDTO> = MutableLiveData()
     val weatherLiveData : LiveData<WeatherDTO> = _weatherLiveData
     //관심지역 정보 LiveData
-    private val _favoriteLiveData : MutableLiveData<List<FavoriteEntity>> = MutableLiveData()
+    private val _favoriteLiveData : LiveData<List<FavoriteEntity>> = getAllFavoriteUseCase.invoke().asLiveData()
     val favoriteLiveData : LiveData<List<FavoriteEntity>> = _favoriteLiveData
 
     //동작 과정
@@ -40,18 +36,10 @@ class WeatherViewModel @Inject constructor(
             _weatherLiveData.value = getWeatherUseCase.invoke(latitude,longitude)
         }
     }
-
-    //db에 저장된 모든 위치 정보 가져오는 함수
-    fun getAllFavorites(){
-        viewModelScope.launch {
-            _favoriteLiveData.value = getAllFavoriteUseCase.invoke()
-        }
-    }
     //관심지역 or 현재 위치 저장하기 위한 함수
     fun insertFavorite(location:String,latitude: Double,longitude: Double){
         viewModelScope.launch {
             val locationId = getLocationIdUseCase.invoke(latitude,longitude)
-            Timber.tag("여기").d("$locationId")
             val favorite = FavoriteEntity(id = null,locationId = locationId,location = location,latitude = latitude,longitude = longitude)
             insertFavoriteUseCase.invoke(favorite)
         }
@@ -60,7 +48,6 @@ class WeatherViewModel @Inject constructor(
     fun updateCurrentLocation(latitude: Double,longitude: Double){
         viewModelScope.launch {
             val locationId = getLocationIdUseCase.invoke(latitude,longitude)
-            Timber.tag("여기").d("$locationId")
             val favorite = FavoriteEntity(id = 1,locationId = locationId,location = "나의 위치",latitude = latitude,longitude=longitude)
             updateCurrentFavoriteUseCase.invoke(favorite)
         }

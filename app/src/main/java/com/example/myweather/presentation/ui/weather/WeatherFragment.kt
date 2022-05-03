@@ -136,7 +136,6 @@ class WeatherFragment : BaseFragment<FragmentWeatherBinding>(R.layout.fragment_w
                         longitude = location.longitude
                     )
                 }
-                viewModel.getAllFavorites()
             } catch (exception: Exception) {
                 //예외 발생시 에러 경고문구 보여주고, 다른 뷰들은 alpha값 0처리
                 binding.errorDescriptionTextView.visibility = View.VISIBLE

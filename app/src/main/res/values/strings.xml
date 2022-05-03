@@ -51,4 +51,5 @@
     <string name="complete">완료</string>
     <string name="temp_image">temp_image</string>
     <string name="no_result_text">결과없음</string>
+    <string name="search_icon_imageview">search_icon_imageview</string>
 </resources>

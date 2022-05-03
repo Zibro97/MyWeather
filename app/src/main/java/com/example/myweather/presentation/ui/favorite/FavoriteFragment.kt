@@ -54,7 +54,7 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(R.layout.fragment
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
 
-        viewModel.getAllFavorites()
+        //viewModel.getAllFavorites()
         initRecyclerView()
     }
 
@@ -160,21 +160,12 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(R.layout.fragment
         searchView.setQuery("", false)
         searchView.clearFocus()
     }
-    //관심 지역 id들을 ,,,로 만들어서 파라미터로 넘기기 위한 함수
-    private fun getLocationIdList(ids : List<FavoriteEntity>) : String {
-        var locationIdList = ""
-        ids.forEach {
-            locationIdList += ",${it.locationId}"
-        }
-        locationIdList = locationIdList.removePrefix(",")
-        return locationIdList
-    }
 
     override fun observeData() = with(viewModel){
         //db 즐겨찾기 LiveData
         locationLiveData.observe(viewLifecycleOwner, { favorite ->
+            getLocationsWeather(favorite)
             favoriteAdapter.submitList(favorite)
-            getLocationsWeather(getLocationIdList(favorite))
         })
         //검색 결과 LiveData
         searchLocateLiveData.observe(viewLifecycleOwner, { locations ->
@@ -197,8 +188,8 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(R.layout.fragment
             }
         })
         weatherListLiveData.observe(viewLifecycleOwner, { weatherList ->
+            // TODO: 2022/05/03 flow로 변경하여 관심지역 추가 삭제가 실시간으로 반영되지만 해당 위치의 날씨정보 리스트가 동시 반영이 안됨 
             favoriteAdapter.weatherList = weatherList.favoriteList
-            binding.progressBar.visibility = GONE
             binding.favoriteRecyclerView.visibility = VISIBLE
         })
     }
