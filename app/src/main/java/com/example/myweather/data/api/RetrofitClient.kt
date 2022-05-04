@@ -8,17 +8,10 @@ object RetrofitClient {
     private const val FAVORITE_BASE_URL = "http://api.vworld.kr"
 
     val WEATHER_API: WeatherApi by lazy{ weatherRetrofit().create(WeatherApi::class.java)}
-    val LOCATION_API : LocationApi by lazy { favoriteRetrofit().create(LocationApi::class.java) }
 
     private fun weatherRetrofit():Retrofit{
         return Retrofit.Builder()
             .baseUrl(WEATHER_BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
-    private fun favoriteRetrofit():Retrofit{
-        return Retrofit.Builder()
-            .baseUrl(FAVORITE_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }

@@ -6,9 +6,11 @@ import android.graphics.Canvas
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
@@ -192,9 +194,13 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(R.layout.fragment
             }
         })
         weatherListLiveData.observe(viewLifecycleOwner, { weatherList ->
-            // TODO: 2022/05/03 flow로 변경하여 관심지역 추가 삭제가 실시간으로 반영되지만 해당 위치의 날씨정보 리스트가 동시 반영이 안됨
             favoriteAdapter.weatherList = weatherList.favoriteList
             binding.favoriteRecyclerView.visibility = VISIBLE
         })
     }
+
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentFavoriteBinding = FragmentFavoriteBinding.inflate(inflater,container,false)
 }

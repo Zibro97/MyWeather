@@ -7,7 +7,9 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
@@ -28,6 +30,7 @@ import com.google.android.gms.location.*
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.tasks.CancellationTokenSource
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import java.lang.Exception
 import javax.inject.Inject
 import kotlin.system.exitProcess
@@ -119,6 +122,7 @@ class WeatherFragment : BaseFragment<FragmentWeatherBinding>(R.layout.fragment_w
             cancellationTokenSource!!.token
         ).addOnSuccessListener { location ->
             try {
+                Timber.d("location : $location")
                 currentLocation = location
                 //sharedPreference 없으면 현재 위치 insert
                 if(preference.getCurrent() == PreferenceManager.DEFAULT_VALUE) {
@@ -248,4 +252,9 @@ class WeatherFragment : BaseFragment<FragmentWeatherBinding>(R.layout.fragment_w
             binding.bottomNavigationView.visibility = View.VISIBLE
         })
     }
+
+    override fun getFragmentBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentWeatherBinding = FragmentWeatherBinding.inflate(inflater,container,false)
 }
